@@ -763,6 +763,12 @@ function renderDetails(){
  }).join("");
 }
 
+function getAttachedActualRank(p){
+ if(p.rank!=="Attachment") return p.rank;
+ const m=p.name.match(/^(MWO|SWO|WO|SGT|CPL|LAC|AC)\b/i);
+ return m ? m[1].toUpperCase() : "WO";
+}
+
 function generateGridHTML(){
  const cols=[
   ["OFFICE STRG",p=>p.rank!=="Attachment"&&p.rank!=="Civilian"&&current[p.id]!=="TD/Courier"],
@@ -788,17 +794,11 @@ function generateGridHTML(){
   ["ON PARADE",p=>current[p.id]==="On Parade"&&p.rank!=="Civilian"]
  ];
 
- const attachedActualRank=p=>{
-   if(p.rank!=="Attachment") return p.rank;
-   const m=p.name.match(/^(MWO|SWO|WO|SGT|CPL|LAC|AC)\b/i);
-   return m ? m[1].toUpperCase() : "WO";
- };
-
  let html="<thead><tr><th class='vertical rankcol'>RANK</th>"+cols.map(c=>`<th class='vertical'>${esc(c[0])}</th>`).join("")+"</tr></thead><tbody>";
 
  militaryOrder.forEach(r=>{
   const officeList = people.filter(p=>p.rank===r);
-  const attachedForThisRank = people.filter(p=>(p.rank==="Attachment"||current[p.id]==="Attachment") && attachedActualRank(p)===r);
+  const attachedForThisRank = people.filter(p=>(p.rank==="Attachment"||current[p.id]==="Attachment") && getAttachedActualRank(p)===r);
   
   const officeStrg = officeList.filter(p=>current[p.id]!=="TD/Courier"&&current[p.id]!=="Attachment").length;
   const attachStrg = attachedForThisRank.length;
@@ -876,7 +876,7 @@ function generateListsHTML(){
        dateSpan = ` (${esc(typeStr)} wef ${esc(fromStr)})`;
      }
      textContent = `${esc(p.rank)} ${esc(p.name)}${dateSpan}`;
-   } else if(key==="Civil Tech"){
+   } else if(key==="Civil Tech" || p.rank==="Civilian"){
      textContent = `${esc(p.name)}`;
    } else {
      textContent = `${esc(p.rank)} ${esc(p.name)}`;
