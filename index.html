@@ -15,99 +15,81 @@
 html, body{width:100%;max-width:100%;overflow-x:hidden;margin:0;padding:0}
 body{background:var(--bg);font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--ink);-webkit-tap-highlight-color:transparent}
 
-/* CINEMATIC HANGAR INTRO OVERLAY */
+/* REALISTIC F-7 BGI INTRO OVERLAY */
 #introOverlay{
  position:fixed;top:0;left:0;width:100vw;height:100vh;
- background:radial-gradient(circle at center, #0f2b22 0%, #040c09 85%);
+ background:linear-gradient(to bottom, #071510 0%, #030a07 100%);
  z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;
  color:#fff;overflow:hidden;touch-action:none;transition:opacity 0.6s ease, visibility 0.6s;
 }
 
-.intro-stage{position:relative;width:340px;height:340px;display:flex;align-items:center;justify-content:center}
+.intro-viewport{position:relative;width:340px;height:340px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:16px;background:#050d0a;box-shadow:0 10px 30px rgba(0,0,0,0.8);border:1px solid #1a3a2e}
 
-/* STAGE 1: TECHNICIAN GIVING SIGNAL */
-.tech-container{
+/* SCENE 1: TECHNICIAN GIVING SIGNAL */
+.scene-tech{
  position:absolute;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
- animation:techFadeOut 2.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
- z-index:10;
+ animation:sceneTechFade 2.4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
-.tech-svg{width:130px;height:auto;filter:drop-shadow(0 10px 15px rgba(0,0,0,0.8));animation:techSalute 1s infinite alternate}
-@keyframes techSalute{from{transform:translateY(0)}to{transform:translateY(-5px)}}
-
-.signal-badge{
- position:absolute;top:15px;background:#d6f07a;color:#123b32;font-size:11px;font-weight:900;
- padding:6px 14px;border-radius:14px;box-shadow:0 4px 15px rgba(214,240,122,0.5);
- text-transform:uppercase;letter-spacing:1px;animation:badgePop 0.4s ease-out;
+.tech-signal-box{
+ position:absolute;top:18px;background:#d6f07a;color:#123b32;font-size:10px;font-weight:900;
+ padding:6px 14px;border-radius:20px;box-shadow:0 4px 15px rgba(214,240,122,0.4);
+ text-transform:uppercase;letter-spacing:1px;
 }
-@keyframes badgePop{from{transform:scale(0.5);opacity:0}to{transform:scale(1);opacity:1}}
+.tech-svg{width:140px;height:auto;filter:drop-shadow(0 10px 15px rgba(0,0,0,0.9));animation:techWand 0.8s infinite alternate ease-in-out}
+@keyframes techWand{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-6px) rotate(2deg)}}
 
-@keyframes techFadeOut{
- 0%{opacity:1;transform:scale(1)}
- 75%{opacity:1;transform:scale(1)}
- 100%{opacity:0;transform:scale(0.85);visibility:hidden}
+@keyframes sceneTechFade{
+ 0%{opacity:0;transform:scale(0.95)}
+ 15%{opacity:1;transform:scale(1)}
+ 80%{opacity:1;transform:scale(1)}
+ 100%{opacity:0;transform:scale(1.05);visibility:hidden}
 }
 
-/* STAGE 2: AIRCRAFT (AC) PREPARATION & TAKEOFF */
-.ac-takeoff-container{
+/* SCENE 2: PILOT & CANOPY CLOSING */
+.scene-cockpit{
+ position:absolute;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+ opacity:0;animation:sceneCockpitFade 2.2s 2.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+.cockpit-title{position:absolute;top:18px;background:rgba(0,0,0,0.8);color:#52cbe3;font-size:10px;font-weight:900;padding:5px 12px;border-radius:12px;border:1px solid #52cbe3;letter-spacing:1px}
+.cockpit-svg{width:220px;height:auto}
+.canopy-cover{transform-origin:top center;animation:lockCanopy 1s 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards}
+@keyframes lockCanopy{0%{transform:scaleY(0.2) translateY(-20px);opacity:0.2}100%{transform:scaleY(1) translateY(0);opacity:0.9}}
+
+@keyframes sceneCockpitFade{
+ 0%{opacity:0}
+ 15%{opacity:1}
+ 80%{opacity:1}
+ 100%{opacity:0;visibility:hidden}
+}
+
+/* SCENE 3: REAL F-7 BGI TAKEOFF */
+.scene-takeoff{
  position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;
- opacity:0;animation:acFadeIn 3.5s 2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+ opacity:0;animation:sceneTakeoffFade 2.6s 4.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
-@keyframes acFadeIn{0%{opacity:0}20%{opacity:1}100%{opacity:1}}
+.f7-img-wrapper{position:relative;width:280px;height:auto;animation:f7Climb 2.5s 4.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards}
+.f7-real-img{width:100%;height:auto;border-radius:8px;filter:drop-shadow(0 15px 20px rgba(0,0,0,0.9))}
 
-.runway-stage{position:absolute;width:100%;height:100%;top:0;left:0;overflow:hidden;perspective:500px}
-.runway-track{
- position:absolute;bottom:-15%;left:50%;width:240px;height:120vh;margin-left:-120px;
- background:#111714;transform:rotateX(72deg);transform-origin:bottom center;
- box-shadow:0 0 30px rgba(0,0,0,0.9);
+.afterburner-glow{
+ position:absolute;bottom:22%;left:12%;width:22px;height:22px;background:#ffaa00;
+ border-radius:50%;filter:blur(6px);box-shadow:0 0 30px #ff3300, 0 0 60px #ffcc00;
+ animation:afterburnerPulse 0.05s infinite alternate;
 }
-.runway-lines{
- position:absolute;width:6px;height:200%;left:50%;margin-left:-3px;
- background:repeating-linear-gradient(to bottom, #d6f07a 0px, #d6f07a 30px, transparent 30px, transparent 70px);
- animation:runwaySpeed 3s linear infinite;
-}
-@keyframes runwaySpeed{from{transform:translateY(-500px)}to{transform:translateY(500px)}}
+@keyframes afterburnerPulse{from{transform:scale(0.8);opacity:0.8}to{transform:scale(1.3);opacity:1}}
 
-.jet-viewport{position:relative;width:260px;height:260px;z-index:5;display:flex;align-items:center;justify-content:center}
-.jet-animator{position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;animation:acLiftoff 3.2s 0.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards}
-.fighter-svg{width:180px;height:auto;filter:drop-shadow(0 15px 15px rgba(0,0,0,0.9));transform:rotate(-25deg);z-index:2}
-
-/* COCKPIT CANOPY CLOSING ANIMATION */
-.canopy-glass{
- transform-origin:bottom center;
- animation:closeCanopy 0.8s 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-@keyframes closeCanopy{
- 0%{transform:scaleY(0.2);opacity:0.3}
- 100%{transform:scaleY(1);opacity:0.85}
+@keyframes f7Climb{
+ 0%{transform:translate(-60px, 80px) scale(0.6) rotate(-10deg);opacity:0.2}
+ 30%{transform:translate(-20px, 30px) scale(0.85) rotate(-5deg);opacity:1}
+ 60%{transform:translate(10px, -20px) scale(1.05) rotate(5deg)}
+ 100%{transform:translate(180px, -220px) scale(1.6) rotate(18deg);opacity:0}
 }
 
-.afterburner-flame{
- position:absolute;bottom:14px;left:33%;transform:translateX(-50%) rotate(-25deg);
- width:24px;height:0px;
- background:linear-gradient(to bottom, #ffffff 0%, #77ffff 15%, #ffcc00 45%, #ff3300 75%, transparent 100%);
- border-radius:50%;filter:blur(1px);z-index:1;
- animation:ignitionFlame 2.5s 0.8s forwards;
- box-shadow:0 0 25px #ff6600, 0 0 50px #ffaa00;
-}
-@keyframes ignitionFlame{
- 0%{height:0px;opacity:0}
- 25%{height:40px;opacity:0.8}
- 50%{height:95px;opacity:1}
- 100%{height:130px;opacity:1;width:28px}
-}
-
-@keyframes acLiftoff{
- 0%{transform:translateY(160px) scale(0.65);opacity:1}
- 30%{transform:translateY(100px) scale(0.85) rotate(-2deg)}
- 55%{transform:translateY(0px) scale(1) rotate(-12deg)}
- 80%{transform:translateY(-160px) scale(1.6) rotate(-22deg)}
- 100%{transform:translateY(-950px) scale(3.5) rotate(-32deg);opacity:0}
-}
+@keyframes sceneTakeoffFade{0%{opacity:0}15%{opacity:1}100%{opacity:1}}
 
 .intro-text-box{position:relative;z-index:10;text-align:center;margin-top:16px;padding:0 15px}
 .intro-title{font-size:20px;color:#d6f07a;margin:0 0 4px;letter-spacing:1px;text-transform:uppercase;font-weight:900}
 .intro-subtitle{font-size:12px;color:#cbd8d0;margin:0;font-weight:700}
-.intro-progress-bar{position:absolute;bottom:0;left:0;height:4px;background:#d6f07a;width:0%;animation:progressBar 5.5s linear forwards}
+.intro-progress-bar{position:absolute;bottom:0;left:0;height:4px;background:#d6f07a;width:0%;animation:progressBar 6.5s linear forwards}
 @keyframes progressBar{from{width:0%}to{width:100%}}
 
 .skip-btn{
@@ -241,13 +223,13 @@ th{background:#f3f7f4;color:#3e5148}
 </head>
 <body>
 
-<!-- CINEMATIC HANGAR INTRO OVERLAY -->
+<!-- REALISTIC F-7 BGI INTRO OVERLAY -->
 <div id="introOverlay">
- <div class="intro-stage">
+ <div class="intro-viewport">
   
-  <!-- STAGE 1: TECHNICIAN GIVING SIGNAL -->
-  <div class="tech-container">
-   <div class="signal-badge">FLIGHT LINE SIGNAL: CLEAR TO TAXI!</div>
+  <!-- SCENE 1: TECHNICIAN SIGNAL -->
+  <div class="scene-tech">
+   <div class="tech-signal-box">FLIGHT LINE: CLEAR TO TAXI</div>
    <svg class="tech-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M100 35 C110 35 118 43 118 53 C118 63 110 71 100 71 C90 71 82 63 82 53 C82 43 90 35 100 35 Z" fill="#d6f07a"/>
     <path d="M70 85 L130 85 L145 150 L125 155 L100 115 L75 155 L55 150 Z" fill="#2d5243" stroke="#d6f07a" stroke-width="3"/>
@@ -257,29 +239,21 @@ th{background:#f3f7f4;color:#3e5148}
    </svg>
   </div>
 
-  <!-- STAGE 2: AIRCRAFT (AC) PREPARATION & TAKEOFF -->
-  <div class="ac-takeoff-container">
-   <div class="runway-stage">
-    <div class="runway-track">
-     <div class="runway-lines"></div>
-    </div>
-   </div>
-   
-   <div class="jet-viewport">
-    <div class="jet-animator">
-     <svg class="fighter-svg" viewBox="0 0 300 500" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M150 5 L165 140 L188 280 L198 425 L180 440 L120 440 L102 425 L112 280 L135 140 Z" fill="#b0c0b8" stroke="#485b52" stroke-width="3"/>
-      <path d="M112 240 L8 385 L102 400 L112 320 Z" fill="#95a8a0" stroke="#485b52" stroke-width="3"/>
-      <path d="M188 240 L292 385 L198 400 L188 320 Z" fill="#95a8a0" stroke="#485b52" stroke-width="3"/>
-      <path d="M150 320 L150 440 L162 445 L162 340 Z" fill="#6d8077"/>
-      <!-- Pilot Helmet inside Cockpit -->
-      <circle cx="150" cy="110" r="10" fill="#1b2a24"/>
-      <!-- Cockpit Canopy Glass (Closes down) -->
-      <path class="canopy-glass" d="M142 75 Q150 55 156 75 L158 145 Q150 155 142 145 Z" fill="#52cbe3" opacity="0.85" stroke="#1c5763" stroke-width="2"/>
-      <rect x="134" y="440" width="32" height="12" fill="#222" rx="2"/>
-     </svg>
-     <div class="afterburner-flame"></div>
-    </div>
+  <!-- SCENE 2: PILOT & CANOPY LOCKING -->
+  <div class="scene-cockpit">
+   <div class="cockpit-title">COCKPIT CANOPY LOCKDOWN</div>
+   <svg class="cockpit-svg" viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="20" y="120" width="200" height="50" fill="#1e2c26" rx="6"/>
+    <circle cx="120" cy="110" r="18" fill="#3a4f46"/>
+    <path class="canopy-cover" d="M30 115 Q120 20 210 115 Z" fill="#52cbe3" opacity="0.85" stroke="#1d4d57" stroke-width="4"/>
+   </svg>
+  </div>
+
+  <!-- SCENE 3: REAL F-7 BGI TAKEOFF PHOTO -->
+  <div class="scene-takeoff">
+   <div class="f7-img-wrapper">
+    <img src="https://i.ibb.co/Y48Msz0/f7bgi-real.jpg" alt="F-7 BGI Fighter Jet" class="f7-real-img" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'280\' height=\'180\' viewBox=\'0 0 280 180\'><rect width=\'280\' height=\'180\' fill=\'%23123b32\'/><text x=\'50%25\' y=\'50%25\' fill=\'%23d6f07a\' font-weight=\'bold\' text-anchor=\'middle\'>F-7 BGI TAKEOFF</text></svg>'">
+    <div class="afterburner-glow"></div>
    </div>
   </div>
 
@@ -443,18 +417,26 @@ th{background:#f3f7f4;color:#3e5148}
 <div class="foot no-print">State Office Manpower · Local & Realtime Cloud Edition</div>
 
 <script>
-// REALISTIC JET ENGINE AUDIO SYNTHESIS
-function playJetSound() {
+// AUTO PLAY REALISTIC JET ENGINE SOUND
+function playJetEngineAudio() {
   try {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if(!AudioCtx) return;
+    const audioCtx = new AudioCtx();
+    
+    // Auto-resume audio context if suspended by browser policy
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     
     osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(45, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(350, audioCtx.currentTime + 2.2);
+    osc.frequency.setValueAtTime(50, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(380, audioCtx.currentTime + 3.0);
     
-    const bufferSize = audioCtx.sampleRate * 3;
+    const bufferSize = audioCtx.sampleRate * 4;
     const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
     const output = noiseBuffer.getChannelData(0);
     for (let i = 0; i < bufferSize; i++) {
@@ -466,21 +448,30 @@ function playJetSound() {
     
     const filter = audioCtx.createBiquadFilter();
     filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(160, audioCtx.currentTime);
-    filter.frequency.exponentialRampToValueAtTime(2000, audioCtx.currentTime + 2.5);
+    filter.frequency.setValueAtTime(180, audioCtx.currentTime);
+    filter.frequency.exponentialRampToValueAtTime(2400, audioCtx.currentTime + 3.2);
     
     gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.35, audioCtx.currentTime + 1.5);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 5.2);
+    gain.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 2.0);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 6.0);
     
     whiteNoise.connect(filter);
     filter.connect(gain);
     gain.connect(audioCtx.destination);
     
     whiteNoise.start();
-    whiteNoise.stop(audioCtx.currentTime + 5.2);
+    whiteNoise.stop(audioCtx.currentTime + 6.0);
   } catch(e) {}
 }
+
+// Auto play audio on window load and interaction fallback
+window.addEventListener('load', () => {
+  setTimeout(playJetEngineAudio, 1200);
+});
+document.addEventListener('click', function triggerOnce() {
+  playJetEngineAudio();
+  document.removeEventListener('click', triggerOnce);
+}, { once: true });
 
 // FIREBASE REALTIME CLOUD DB
 const firebaseConfig = {
@@ -507,8 +498,7 @@ function exitOverlay() {
 }
 
 document.getElementById("skipIntroBtn").addEventListener("click", exitOverlay);
-setTimeout(() => playJetSound(), 1800);
-setTimeout(exitOverlay, 5500);
+setTimeout(exitOverlay, 6500);
 
 /* PERMANENT MASTER MILITARY ROSTER */
 const DEFAULT_RANKS = [
@@ -1027,16 +1017,6 @@ $("togglePreviewBtn").onclick=()=>{$("screenPreviewSection").classList.toggle("h
 $("assignAllBtn").onclick=()=>{const rf=$("rankFilter").value||"All ranks",q=$("search").value.trim().toLowerCase();const filtered=people.filter(p=>(rf==="All ranks"||p.rank===rf)&&(!q||(p.name+" "+p.rank).toLowerCase().includes(q)));if(!filtered.length)return alert("No personnel match the filters.");if(!confirm(`Set ${filtered.length} personnel to "${activeStatus}"?`))return;filtered.forEach(p=>current[p.id]=activeStatus);renderAll()};
 $("clearFilterBtn").onclick=()=>{$("rankFilter").value="All ranks";$("search").value="";renderRoster()};
 $("loadBtn").onclick=loadDate;
-
-$("addPersonBtn").onclick=()=>{
- const name=$("newName").value.trim();let rank=$("newRank").value.trim()||$("addRank").value;
- if(!name)return alert("Enter the personnel name first.");
- if(!rank||rank==="__new__")return alert("Choose an existing rank or type a new rank.");
- let group=ranks.find(g=>g.rank.toLowerCase()===rank.toLowerCase());
- if(!group){group={rank:rank,names:[]};ranks.push(group)}
- group.names.push(name);rebuildPeople();persistRoster();
- $("newName").value="";$("newRank").value="";renderAll();alert("Manpower added successfully.");
-};
 
 // INITIAL LOAD Sequence
 loadStore();
