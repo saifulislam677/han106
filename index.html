@@ -15,45 +15,46 @@
 html, body{width:100%;max-width:100%;overflow-x:hidden;margin:0;padding:0}
 body{background:var(--bg);font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--ink);-webkit-tap-highlight-color:transparent}
 
-/* CINEMATIC F-7BG INTRO OVERLAY */
+/* CINEMATIC HANGAR INTRO OVERLAY */
 #introOverlay{
  position:fixed;top:0;left:0;width:100vw;height:100vh;
- background:linear-gradient(to bottom, #071510 0%, #030a07 100%);
+ background:radial-gradient(circle at center, #0f2b22 0%, #040c09 85%);
  z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;
  color:#fff;overflow:hidden;touch-action:none;transition:opacity 0.6s ease, visibility 0.6s;
 }
 
-.intro-viewport{position:relative;width:340px;height:340px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:16px;background:#050d0a;box-shadow:0 10px 30px rgba(0,0,0,0.8);border:1px solid #1a3a2e}
+.intro-stage{position:relative;width:340px;height:340px;display:flex;align-items:center;justify-content:center}
 
-/* SCENE 1: TECHNICIAN SIGNAL */
+/* SCENE 1: TECHNICIAN GIVING SIGNAL */
 .scene-tech{
  position:absolute;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
  animation:sceneTechFade 2.4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+ z-index:10;
 }
 .tech-signal-box{
  position:absolute;top:18px;background:#d6f07a;color:#123b32;font-size:10px;font-weight:900;
  padding:6px 14px;border-radius:20px;box-shadow:0 4px 15px rgba(214,240,122,0.4);
  text-transform:uppercase;letter-spacing:1px;
 }
-.tech-svg{width:140px;height:auto;filter:drop-shadow(0 10px 15px rgba(0,0,0,0.9));animation:techWand 0.8s infinite alternate ease-in-out}
-@keyframes techWand{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-6px) rotate(2deg)}}
+.tech-svg{width:130px;height:auto;filter:drop-shadow(0 10px 15px rgba(0,0,0,0.8));animation:techSalute 0.8s infinite alternate ease-in-out}
+@keyframes techSalute{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-6px) rotate(2deg)}}
 
 @keyframes sceneTechFade{
- 0%{opacity:0;transform:scale(0.95)}
- 15%{opacity:1;transform:scale(1)}
- 80%{opacity:1;transform:scale(1)}
+ 0%{opacity:1;transform:scale(0.95)}
+ 75%{opacity:1;transform:scale(1)}
  100%{opacity:0;transform:scale(1.05);visibility:hidden}
 }
 
-/* SCENE 2: PILOT & CANOPY LOCKING */
+/* SCENE 2: COCKPIT CANOPY LOCKING */
 .scene-cockpit{
  position:absolute;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
- opacity:0;animation:sceneCockpitFade 2.2s 2.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+ opacity:0;animation:sceneCockpitFade 2.0s 2.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+ z-index:9;
 }
 .cockpit-title{position:absolute;top:18px;background:rgba(0,0,0,0.8);color:#52cbe3;font-size:10px;font-weight:900;padding:5px 12px;border-radius:12px;border:1px solid #52cbe3;letter-spacing:1px}
 .cockpit-svg{width:220px;height:auto}
-.canopy-cover{transform-origin:top center;animation:lockCanopy 1s 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards}
-@keyframes lockCanopy{0%{transform:scaleY(0.2) translateY(-20px);opacity:0.2}100%{transform:scaleY(1) translateY(0);opacity:0.9}}
+.canopy-cover{transform-origin:top center;animation:lockCanopy 0.8s 2.4s cubic-bezier(0.4, 0, 0.2, 1) forwards}
+@keyframes lockCanopy{0%{transform:scaleY(0.2) translateY(-20px);opacity:0.2}100%{transform:scaleY(1) translateY(0);opacity:0.85}}
 
 @keyframes sceneCockpitFade{
  0%{opacity:0}
@@ -62,29 +63,52 @@ body{background:var(--bg);font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,
  100%{opacity:0;visibility:hidden}
 }
 
-/* SCENE 3: REAL F-7BG TAKEOFF (BAF 934) */
+/* SCENE 3: ANIMATED FIGHTER JET TAKEOFF */
 .scene-takeoff{
  position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;
- opacity:0;animation:sceneTakeoffFade 2.6s 4.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+ opacity:0;animation:sceneTakeoffFade 3.0s 4.0s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
-.f7-img-wrapper{position:relative;width:290px;height:auto;animation:f7Climb 2.5s 4.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards}
-.f7-real-img{width:100%;height:auto;border-radius:8px;filter:drop-shadow(0 15px 20px rgba(0,0,0,0.9))}
-
-.afterburner-glow{
- position:absolute;bottom:24%;left:10%;width:24px;height:24px;background:#ffaa00;
- border-radius:50%;filter:blur(6px);box-shadow:0 0 35px #ff3300, 0 0 70px #ffcc00;
- animation:afterburnerPulse 0.05s infinite alternate;
-}
-@keyframes afterburnerPulse{from{transform:scale(0.8);opacity:0.8}to{transform:scale(1.3);opacity:1}}
-
-@keyframes f7Climb{
- 0%{transform:translate(-60px, 80px) scale(0.6) rotate(-10deg);opacity:0.2}
- 30%{transform:translate(-20px, 30px) scale(0.85) rotate(-5deg);opacity:1}
- 60%{transform:translate(10px, -20px) scale(1.05) rotate(5deg)}
- 100%{transform:translate(180px, -220px) scale(1.6) rotate(18deg);opacity:0}
-}
-
 @keyframes sceneTakeoffFade{0%{opacity:0}15%{opacity:1}100%{opacity:1}}
+
+.runway-stage{position:absolute;width:100%;height:100%;top:0;left:0;overflow:hidden;perspective:500px}
+.runway-track{
+ position:absolute;bottom:-15%;left:50%;width:240px;height:120vh;margin-left:-120px;
+ background:#111714;transform:rotateX(72deg);transform-origin:bottom center;
+ box-shadow:0 0 30px rgba(0,0,0,0.9);
+}
+.runway-lines{
+ position:absolute;width:6px;height:200%;left:50%;margin-left:-3px;
+ background:repeating-linear-gradient(to bottom, #d6f07a 0px, #d6f07a 30px, transparent 30px, transparent 70px);
+ animation:runwaySpeed 2s linear infinite;
+}
+@keyframes runwaySpeed{from{transform:translateY(-500px)}to{transform:translateY(500px)}}
+
+.jet-viewport{position:relative;width:260px;height:260px;z-index:5;display:flex;align-items:center;justify-content:center}
+.jet-animator{position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;animation:acLiftoff 2.8s 4.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards}
+.fighter-svg{width:180px;height:auto;filter:drop-shadow(0 15px 15px rgba(0,0,0,0.9));transform:rotate(-25deg);z-index:2}
+
+.afterburner-flame{
+ position:absolute;bottom:14px;left:33%;transform:translateX(-50%) rotate(-25deg);
+ width:24px;height:0px;
+ background:linear-gradient(to bottom, #ffffff 0%, #77ffff 15%, #ffcc00 45%, #ff3300 75%, transparent 100%);
+ border-radius:50%;filter:blur(1px);z-index:1;
+ animation:ignitionFlame 2.5s 4.3s forwards;
+ box-shadow:0 0 25px #ff6600, 0 0 50px #ffaa00;
+}
+@keyframes ignitionFlame{
+ 0%{height:0px;opacity:0}
+ 25%{height:40px;opacity:0.8}
+ 50%{height:95px;opacity:1}
+ 100%{height:130px;opacity:1;width:28px}
+}
+
+@keyframes acLiftoff{
+ 0%{transform:translateY(160px) scale(0.65);opacity:1}
+ 30%{transform:translateY(100px) scale(0.85) rotate(-2deg)}
+ 55%{transform:translateY(0px) scale(1) rotate(-12deg)}
+ 80%{transform:translateY(-160px) scale(1.6) rotate(-22deg)}
+ 100%{transform:translateY(-950px) scale(3.5) rotate(-32deg);opacity:0}
+}
 
 .intro-text-box{position:relative;z-index:10;text-align:center;margin-top:16px;padding:0 15px}
 .intro-title{font-size:20px;color:#d6f07a;margin:0 0 4px;letter-spacing:1px;text-transform:uppercase;font-weight:900}
@@ -223,9 +247,9 @@ th{background:#f3f7f4;color:#3e5148}
 </head>
 <body>
 
-<!-- REAL F-7BG BAF INTRO OVERLAY -->
+<!-- REALISTIC VECTOR INTRO OVERLAY -->
 <div id="introOverlay">
- <div class="intro-viewport">
+ <div class="intro-stage">
   
   <!-- SCENE 1: TECHNICIAN SIGNAL -->
   <div class="scene-tech">
@@ -239,7 +263,7 @@ th{background:#f3f7f4;color:#3e5148}
    </svg>
   </div>
 
-  <!-- SCENE 2: PILOT & CANOPY LOCKING -->
+  <!-- SCENE 2: COCKPIT CANOPY LOCKING -->
   <div class="scene-cockpit">
    <div class="cockpit-title">COCKPIT CANOPY LOCKDOWN</div>
    <svg class="cockpit-svg" viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -249,11 +273,26 @@ th{background:#f3f7f4;color:#3e5148}
    </svg>
   </div>
 
-  <!-- SCENE 3: REAL BAF F-7BG (934) TAKEOFF PHOTO -->
+  <!-- SCENE 3: ANIMATED FIGHTER JET TAKEOFF -->
   <div class="scene-takeoff">
-   <div class="f7-img-wrapper">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/F-7BG_%28F934%29_Bangladesh_Air_Force.jpg/1280px-F-7BG_%28F934%29_Bangladesh_Air_Force.jpg" alt="BAF F-7BG 934" class="f7-real-img" crossorigin="anonymous">
-    <div class="afterburner-glow"></div>
+   <div class="runway-stage">
+    <div class="runway-track">
+     <div class="runway-lines"></div>
+    </div>
+   </div>
+   <div class="jet-viewport">
+    <div class="jet-animator">
+     <svg class="fighter-svg" viewBox="0 0 300 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M150 5 L165 140 L188 280 L198 425 L180 440 L120 440 L102 425 L112 280 L135 140 Z" fill="#b0c0b8" stroke="#485b52" stroke-width="3"/>
+      <path d="M112 240 L8 385 L102 400 L112 320 Z" fill="#95a8a0" stroke="#485b52" stroke-width="3"/>
+      <path d="M188 240 L292 385 L198 400 L188 320 Z" fill="#95a8a0" stroke="#485b52" stroke-width="3"/>
+      <path d="M150 320 L150 440 L162 445 L162 340 Z" fill="#6d8077"/>
+      <circle cx="150" cy="110" r="10" fill="#1b2a24"/>
+      <path d="M142 75 Q150 55 156 75 L158 145 Q150 155 142 145 Z" fill="#52cbe3" opacity="0.85" stroke="#1c5763" stroke-width="2"/>
+      <rect x="134" y="440" width="32" height="12" fill="#222" rx="2"/>
+     </svg>
+     <div class="afterburner-flame"></div>
+    </div>
    </div>
   </div>
 
@@ -417,7 +456,7 @@ th{background:#f3f7f4;color:#3e5148}
 <div class="foot no-print">State Office Manpower · Local & Realtime Cloud Edition</div>
 
 <script>
-// AUTO PLAY REALISTIC JET ENGINE SOUND
+// AUTO PLAY REALISTIC JET ENGINE AUDIO SYNTHESIS
 function playJetEngineAudio() {
   try {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -926,7 +965,7 @@ function renderAll(reRoster=true){
 }
 
 function refreshRankSelectors(){
- const rf=$("rankFilter"),old=rf.value||"All ranks";rf.innerHTML='<option>All ranks</option>'+ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("");rf.value=["All ranks",...ranks.map(g.rank)].includes(old)?old:"All ranks";
+ const rf=$("rankFilter"),old=rf.value||"All ranks";rf.innerHTML='<option>All ranks</option>'+ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("");rf.value=["All ranks",...ranks.map(g=>g.rank)].includes(old)?old:"All ranks";
  const ar=$("addRank"),prev=ar.value;ar.innerHTML=ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("")+'<option value="__new__">New rank…</option>';ar.value=ranks.some(g=>g.rank===prev)?prev:(ranks[0]?.rank||"__new__");
 }
 
@@ -1011,7 +1050,7 @@ $("assignAllBtn").onclick=()=>{const rf=$("rankFilter").value||"All ranks",q=$("
 $("clearFilterBtn").onclick=()=>{$("rankFilter").value="All ranks";$("search").value="";renderRoster()};
 $("loadBtn").onclick=loadDate;
 
-// INITIAL LOAD Sequence
+// INITIAL LOAD SEQUENCE
 loadStore();
 current = blank();
 if(saved[today()]){
