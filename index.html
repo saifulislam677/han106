@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#123b32">
 <title>AC Taking & Handing over Flt - Parade/ PT/FOD state</title>
+
+<!-- Firebase SDK Scripts -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
 <style>
 :root{--green:#123b32;--lime:#d6f07a;--bg:#f3f6f4;--card:#fff;--ink:#182521;--muted:#687771;--line:#dce5df;--red:#a33232}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden}
@@ -37,6 +42,7 @@ button{border:0;border-radius:8px;padding:10px 14px;font-weight:750;cursor:point
 
 .red-date-filter{background:#a33232;color:#fff;border:1.5px solid #782222;font-weight:800;border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer}
 .red-date-filter option{background:#fff;color:#182521;font-weight:600}
+.cloud-badge{font-size:11px;font-weight:800;color:#2e7d32;background:#e8f5e9;padding:4px 8px;border-radius:6px;display:inline-block;margin-left:8px}
 
 @media(min-width:780px){main{grid-template-columns:1fr 1fr;align-items:start}.wide{grid-column:1/-1}}@media(max-width:779px){.print-layout-container{grid-template-columns:1fr;gap:10px}}
 @media print{@page{size:A4 landscape;margin:3mm}html,body{height:100%;background:#fff;font-size:7.5px;color:#000;margin:0;padding:0;overflow:hidden;font-weight:bold}header,.no-print,.tabs,.foot,#reportArea,#editorArea,.screen-only,.hint,.statusnote,#togglePreviewBtn,.modal-overlay,#introOverlay{display:none!important}main{display:block;max-width:none;padding:0;margin:0}.card{box-shadow:none;border:0;padding:0;margin:0}#printState{display:block!important}#screenPreviewWrapper{border:0;padding:0;margin:0}.print-grid th{background:#fff!important;font-weight:900}.print-grid td{font-weight:900}.print-block li{font-weight:800}.print-layout-container{grid-template-columns:1.1fr 1.1fr 1.8fr 1.1fr;gap:10px}.signatures-bottom{margin-top:10px}.signatures-bottom b{margin-bottom:10px}}
@@ -88,7 +94,7 @@ input, select, button { max-width: 100%; }
 <div id="introOverlay"><div class="runway-stage"><div class="runway-track"><div class="runway-lines"></div></div></div>
 <div class="jet-viewport"><div class="f7-takeoff-wrapper"><svg class="f7-svg-jet" viewBox="0 0 300 500" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M150 10 L165 140 L190 280 L200 420 L180 440 L120 440 L100 420 L110 280 L135 140 Z" fill="#93a59e" stroke="#52635c" stroke-width="3"/><path d="M110 240 L10 380 L100 400 L110 320 Z" fill="#81948c" stroke="#52635c" stroke-width="3"/><path d="M190 240 L290 380 L200 400 L190 320 Z" fill="#81948c" stroke="#52635c" stroke-width="3"/><path d="M150 330 L150 440 L160 445 L160 350 Z" fill="#60736b"/><path d="M150 0 L150 20" stroke="#d6f07a" stroke-width="4"/><path d="M148 10 L152 10 L150 35 Z" fill="#2d4037"/><path d="M145 80 Q150 60 155 80 L157 150 Q150 160 143 150 Z" fill="#48b2c9" opacity=".8" stroke="#1c5561" stroke-width="2"/><rect x="135" y="440" width="30" height="15" fill="#333" rx="2"/></svg><div class="afterburner-flame"></div></div></div>
 <div class="intro-text-box"><h1 class="intro-title">Welcome to 106 Hangar</h1><p class="intro-subtitle">This Application Developed By Cpl Saiful</p></div><div class="intro-timer-bar"></div><button class="skip-btn" id="skipIntroBtn">START ENGINE & ENTER</button></div>
-<header class="no-print"><div class="eyebrow">Personnel & Daily State</div><h1>State Office Manpower</h1><p>Rank-wise roster · Daily disposal · Final available strength</p></header>
+<header class="no-print"><div class="eyebrow">Personnel & Daily State <span id="cloudStatus" class="cloud-badge">Cloud Syncing…</span></div><h1>State Office Manpower</h1><p>Rank-wise roster · Daily disposal · Final available strength</p></header>
 <main>
 <section class="card wide no-print">
   <div class="row">
@@ -109,7 +115,7 @@ input, select, button { max-width: 100%; }
       <button class="secondary" id="printBtn">Print state (1 Page)</button>
     </div>
   </div>
-  <p class="hint">Edits save on this browser. Auto-backup preserves your state if you accidentally switch dates.</p>
+  <p class="hint">Edits save permanently in Cloud Realtime Database & local browser memory.</p>
 </section>
 
 <section class="card wide no-print" id="screenPreviewSection"><h2>Live Print Sheet Preview (100% Match)</h2><div id="screenPreviewWrapper"><div class="print-top-header"><div class="unit-title">AC Taking & Handing over Flt</div><div class="doc-title">Parade/ PT/FOD state</div><div class="date-str">DATE : <span id="previewDate"></span></div></div><table class="print-grid" id="previewGrid"></table><div class="print-layout-container" id="previewListsContainer"></div><div class="signatures-bottom"><div><b>PREPARED BY</b><br><span id="previewPreparedBy">PARVEZ<br>SGT</span></div><div><b>JCOIC</b></div><div><b>OIC</b></div></div></div></section>
@@ -130,12 +136,34 @@ input, select, button { max-width: 100%; }
 <div id="edModal" class="modal-overlay hidden"><div class="modal-card"><h3 id="modalEdPersonName">ED / Course Details</h3><p>Specify course start date and finish date.</p><div class="modal-form"><div><label for="modalEdStartDate">START DATE / WEF</label><input type="date" id="modalEdStartDate"></div><div><label for="modalEdReportDate">FINISH DATE / TO DATE</label><input type="date" id="modalEdReportDate"></div></div><div class="modal-actions"><button class="secondary" type="button" id="closeEdModalBtn">Cancel</button><button type="button" id="saveEdBtn">Save ED/Course</button></div></div></div>
 
 <section class="card wide no-print"><h2>Saved daily records</h2><div class="row"><div><label for="savedSelect">OPEN A SAVED DATE</label><select id="savedSelect"><option value="">No saved records yet</option></select></div><button class="secondary" id="loadBtn">Load date</button><button class="danger" id="deleteBtn">Delete saved date</button></div></section>
-</main><div class="foot no-print">State Office Manpower · Local-device edition</div>
+</main><div class="foot no-print">State Office Manpower · Cloud Sync Edition</div>
 
 <script>
+// --- FIREBASE REALTIME CLOUD SYNC CONFIGURATION ---
+const firebaseConfig = {
+  databaseURL: "https://hangar-2f228-default-rtdb.firebaseio.com/"
+};
+
+let dbRef = null;
+let isCloudEnabled = false;
+
+try {
+  if(firebaseConfig.databaseURL && firebaseConfig.databaseURL !== "YOUR_FIREBASE_DATABASE_URL_HERE"){
+    firebase.initializeApp(firebaseConfig);
+    dbRef = firebase.database().ref("manpower_app");
+    isCloudEnabled = true;
+    document.getElementById("cloudStatus").textContent = "Cloud Active ✓";
+  } else {
+    document.getElementById("cloudStatus").textContent = "Local Only";
+  }
+} catch(e) {
+  document.getElementById("cloudStatus").textContent = "Local Mode";
+}
+
 const removeIntroOverlay=()=>{const o=document.getElementById("introOverlay");if(o&&o.parentNode){o.style.opacity="0";o.style.pointerEvents="none";setTimeout(()=>{if(o&&o.parentNode)o.parentNode.removeChild(o)},300)}};
 document.getElementById("skipIntroBtn").addEventListener("click",removeIntroOverlay);setTimeout(removeIntroOverlay,7500);if(location.href.indexOf("content://")!==-1)setTimeout(removeIntroOverlay,1000);
-let ranks=[{rank:"MWO",names:["Shaheen (JCOIC)","Nazrul(Armt)"]},{rank:"SWO",names:["M. Ali (Wg Mech)","Khasrul (F>F Spl)"]},{rank:"WO",names:["Jahangir(Fuel sys","Khairul F2-8","Hasan- cockpit mech","Salam- F8-28","Hasim","Kalam","Josim","Kamrul","Enam","Raisul"]},{rank:"SGT",names:["Akash","Alek","Habib","Ashik","Shimul","Shaheen","M. Ali","Parvez","Kaisar","Anis","Imran","Abdullah","Jafor","Adam","Rakib"]},{rank:"CPL",names:["Saiful","Chunnu","Imran","Arif","Jahid","Razzak","Milon","Bokul","Nasim","Shawon","Al Amin","Rejaul","Sajed","Sujon","Jomir","Tofazzol"]},{rank:"LAC",names:["Rakib","Tanvir","Sento","Mohit","Hossain"]},{rank:"AC",names:[]},{rank:"Civilian",names:["MSG Sajon","MSG Khairul","MC1 Hafiz","MC1 Hero","MC2 Masum","TM Ismail","TM Imam"]},{rank:"Attachment",names:["WO Khalek","SGT Sourav","CPL Akbar"]}];
+
+let ranks=[{rank:"MWO",names:["Shaheen","Nazrul"]},{rank:"SWO",names:["M. Ali","Kusru"]},{rank:"WO",names:["Jahangir","Khairul","Hasan","Salam","Hasim","Kalam","Josim","Kamrul","Enam","Raisul"]},{rank:"SGT",names:["Akash","Alek","Habib","Ashik","Shimul","Shaheen","M. Ali","Parvez","Kaisar","Anis","Imran","Abdullah","Jafor","Adam","Rakib"]},{rank:"CPL",names:["Saiful","Chunnu","Imran","Arif","Jahid","Razzak","Milon","Bokul","Nasim","Shawon","Al Amin","Rejaul","Sajed","Sujon","Jomir","Tofazzol"]},{rank:"LAC",names:["Rakib","Tanvir","Sento","Mohit","Hossain"]},{rank:"AC",names:[]},{rank:"Civilian",names:["MSG Sajon","MSG Khairul","MC1 Hafiz","MC1 Hero","MC2 Masum","TM Ismail","TM Imam"]},{rank:"Attachment",names:["WO Khalek","SGT Sourav","CPL Akbar"]}];
 
 const statuses=["All Duty On","All Duty Off","Leave","QRF Duty","CMH","Form 295","On Parade","ON PT","ON FOD","Civil Tech","TD/Courier","Mess/Canteen","CMH SR/FMLY SR","CMH / M Room Admit","Milk Duty","EDP/PG/ITD C","BASAE Out/Exam","Under Clearance","GST/GH","Afternoon","Parade","Out of Parade","Attachment"];
 const statusShort={"All Duty On":"Duty On","All Duty Off":"Duty Off","Leave":"Leave","QRF Duty":"QRF Duty","CMH":"CMH","Form 295":"Form 295","On Parade":"On Parade","ON PT":"ON PT","ON FOD":"ON FOD","Civil Tech":"Civil Tech","TD/Courier":"TD/Courier","Mess/Canteen":"Mess/Canteen","CMH SR/FMLY SR":"CMH SR/FMLY SR","CMH / M Room Admit":"CMH / M Room Admit","Milk Duty":"Milk Duty","EDP/PG/ITD C":"EDP/PG/ITD C","BASAE Out/Exam":"BASAE Out/Exam","Under Clearance":"Under Clearance","GST/GH":"GST/GH","Afternoon":"Afternoon","Parade":"Parade","Out of Parade":"Out of Parade","Attachment":"Attachment"};
@@ -180,6 +208,7 @@ function applyUndo(){
  currentDuty = last.currentDuty;
  currentEd = last.currentEd;
  renderAll();
+ syncToCloud();
  alert("Undo applied!");
 }
 
@@ -189,14 +218,46 @@ const today=()=>{let d=new Date();return `${d.getFullYear()}-${String(d.getMonth
 function blank(){const x={};people.forEach(p=>x[p.id]="On Parade");return x}
 function key(){return "state-office-manpower-v1"}function rosterKey(){return "state-office-manpower-roster-v1"}
 
+function syncToCloud(){
+ if(!isCloudEnabled || !dbRef) return;
+ dbRef.set({
+  ranks: ranks,
+  saved: saved
+ });
+}
+
+function initCloudListener(){
+ if(!isCloudEnabled || !dbRef) return;
+ dbRef.on('value', (snapshot) => {
+  const data = snapshot.val();
+  if(data){
+   if(data.ranks && Array.isArray(data.ranks)){
+    ranks = data.ranks;
+    rebuildPeople();
+   }
+   if(data.saved && typeof data.saved === 'object'){
+    saved = data.saved;
+    Object.keys(saved).forEach(d=>saved[d]=normalizeRecord(saved[d]));
+   }
+   if(saved[date()]) applyRecord(saved[date()]);
+   refreshSaved();
+   renderAll(true);
+  }
+ });
+}
+
 function loadStore(){
  try{const x=JSON.parse(localStorage.getItem(key())||"{}");saved=x&&typeof x==="object"&&!Array.isArray(x)?x:{}}catch(e){saved={}}
  try{const custom=JSON.parse(localStorage.getItem(rosterKey())||"null");if(Array.isArray(custom)&&custom.length&&custom.every(g=>g&&typeof g.rank==="string"&&Array.isArray(g.names))){ranks=custom;rebuildPeople()}}catch(e){}
  Object.keys(saved).forEach(d=>{if(saved[d]&&typeof saved[d]==="object")saved[d]=normalizeRecord(saved[d])});
 }
 
-function persistStore(){try{localStorage.setItem(key(),JSON.stringify(saved));return true}catch(e){alert("Could not save daily records on this device.");return false}}
-function persistRoster(){try{localStorage.setItem(rosterKey(),JSON.stringify(ranks));return true}catch(e){alert("Could not save the personnel roster.");return false}}
+function persistStore(){
+ try{localStorage.setItem(key(),JSON.stringify(saved)); syncToCloud(); return true}catch(e){return false}
+}
+function persistRoster(){
+ try{localStorage.setItem(rosterKey(),JSON.stringify(ranks)); syncToCloud(); return true}catch(e){return false}
+}
 
 function normalizeRecord(record){
  const out={statuses:{},leaveDetails:{},dutyDetails:{},edDetails:{},savedAt:record&&record.savedAt||new Date().toISOString()};
@@ -225,19 +286,27 @@ function applyRecord(record){
 
 function checkActiveDateRanges(selectedIsoDate){
  if(!selectedIsoDate) return;
- people.forEach(p=>{
-  const lv = currentLeave[p.id];
-  if(lv && lv.from && lv.to){
-   if(selectedIsoDate >= lv.from && selectedIsoDate <= lv.to){
-    current[p.id] = "Leave";
+ Object.values(saved).forEach(rec=>{
+  if(!rec) return;
+  const lvDetails = rec.leaveDetails || {};
+  const edDetails = rec.edDetails || {};
+
+  people.forEach(p=>{
+   const lv = lvDetails[p.id];
+   if(lv && lv.from && lv.to){
+    if(selectedIsoDate >= lv.from && selectedIsoDate <= lv.to){
+     current[p.id] = "Leave";
+     currentLeave[p.id] = lv;
+    }
    }
-  }
-  const ed = currentEd[p.id];
-  if(ed && ed.from && ed.to){
-   if(selectedIsoDate >= ed.from && selectedIsoDate <= ed.to){
-    current[p.id] = "EDP/PG/ITD C";
+   const ed = edDetails[p.id];
+   if(ed && ed.from && ed.to){
+    if(selectedIsoDate >= ed.from && selectedIsoDate <= ed.to){
+     current[p.id] = "EDP/PG/ITD C";
+     currentEd[p.id] = ed;
+    }
    }
-  }
+  });
  });
 }
 
@@ -301,6 +370,7 @@ function renderRoster(){
    delete currentDuty[id];
    delete currentEd[id];
    renderAll(false);
+   autoSaveBuffer();
   }
  });
  $("roster").querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>editPerson(b.dataset.edit));
@@ -318,6 +388,7 @@ $("saveLeaveBtn").onclick=()=>{
  currentLeave[activeLeavePersonId]={type:$("modalLeaveType").value,from,to};
  closeLeaveModal(false);
  renderAll();
+ autoSaveBuffer();
 };
 
 function openDutyModal(id){
@@ -342,6 +413,7 @@ $("saveDutyBtn").onclick=()=>{
  currentDuty[activeDutyPersonId] = $("modalDutyType").value;
  closeDutyModal(false);
  renderAll();
+ autoSaveBuffer();
 };
 
 function openEdModal(id){
@@ -364,6 +436,7 @@ $("saveEdBtn").onclick=()=>{
  currentEd[activeEdPersonId]={from,to};
  closeEdModal(false);
  renderAll();
+ autoSaveBuffer();
 };
 
 function displayDate(iso){if(!iso)return "";const a=iso.split("-");return a.length===3?`${a[2]}.${a[1]}.${a[0].slice(-2)}`:iso}
@@ -378,6 +451,7 @@ function deletePerson(id){
  }
  delete current[id];delete currentLeave[id];delete currentDuty[id];delete currentEd[id];
  rebuildPeople();persistRoster();persistStore();renderAll();
+ autoSaveBuffer();
 }
 
 function editPerson(id){
@@ -399,6 +473,7 @@ function editPerson(id){
  const matches=people.filter(x=>x.rank.toLowerCase()===rank.trim().toLowerCase()&&x.name===name.trim()),np=matches[matches.length-1];
  if(np){current[np.id]=status;if(leave)currentLeave[np.id]=leave;if(duty)currentDuty[np.id]=duty;if(ed)currentEd[np.id]=ed}
  persistRoster();persistStore();renderAll();
+ autoSaveBuffer();
 }
 
 function renderRankTable(){
@@ -667,6 +742,7 @@ $("assignAllBtn").onclick=()=>{
  if(!confirm(`Set ${ps.length} personnel to "${activeStatus}"?`))return;
  ps.forEach(p=>current[p.id]=activeStatus);
  renderAll();
+ autoSaveBuffer();
 };
 
 $("clearFilterBtn").onclick=()=>{$("rankFilter").value="All ranks";$("search").value="";renderRoster()};
@@ -685,6 +761,7 @@ $("addPersonBtn").onclick=()=>{
  $("newName").value=""; $("newRank").value="";
  renderAll();
  alert("Manpower added successfully.");
+ autoSaveBuffer();
 };
 
 loadStore();
@@ -692,6 +769,7 @@ current=blank();
 if(saved[today()]) applyRecord(saved[today()]);
 refreshSaved();
 renderAll();
+initCloudListener();
 </script>
 </body>
 </html>
