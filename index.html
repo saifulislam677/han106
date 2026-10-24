@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#123b32">
 <title>AC Taking & Handing over Flt - Parade/ PT/FOD state</title>
+
 <!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
@@ -15,7 +16,7 @@
 html, body{width:100%;max-width:100%;overflow-x:hidden;margin:0;padding:0}
 body{background:var(--bg);font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--ink);-webkit-tap-highlight-color:transparent}
 
-/* REALISTIC VECTOR INTRO OVERLAY */
+/* CINEMATIC HANGAR INTRO OVERLAY */
 #introOverlay{
  position:fixed;top:0;left:0;width:100vw;height:100vh;
  background:radial-gradient(circle at center, #0f2b22 0%, #040c09 85%);
@@ -558,13 +559,25 @@ function rebuildPeople(){
  ranks.forEach(g=>g.names.forEach((name,i)=>people.push({id:g.rank+"_"+i,rank:g.rank,name})));
 }
 
+function ensureValidRoster(){
+ if(!people || people.length === 0){
+   ranks = JSON.parse(JSON.stringify(DEFAULT_RANKS));
+   rebuildPeople();
+   persistRoster();
+ }
+}
+
 function totalManpower(){return people.length}
 function militaryCount(){return people.filter(p=>militaryOrder.includes(p.rank)).length}
 const $=id=>document.getElementById(id);
 let current={},currentLeave={},activeStatus="On Parade",saved={},activeLeavePersonId=null;
 
 const today=()=>{let d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
-function blank(){const x={};people.forEach(p=>x[p.id]="On Parade");return x}
+function blank(){
+ const x={};
+ people.forEach(p=>x[p.id]="On Parade");
+ return x;
+}
 function key(){return "state-office-manpower-v1"}
 function rosterKey(){return "state-office-manpower-roster-v1"}
 
@@ -581,10 +594,7 @@ function loadStore(){
    ranks = JSON.parse(JSON.stringify(DEFAULT_RANKS));
  }
  rebuildPeople();
- if(!people.length){
-   ranks = JSON.parse(JSON.stringify(DEFAULT_RANKS));
-   rebuildPeople();
- }
+ ensureValidRoster();
 }
 
 function persistStore(){
@@ -605,6 +615,7 @@ if(db) {
      ranks = val;
      localStorage.setItem(rosterKey(), JSON.stringify(ranks));
      rebuildPeople();
+     ensureValidRoster();
      renderAll();
    }
  });
@@ -644,6 +655,7 @@ function renderTabs(){
 }
 
 function renderRoster(){
+ ensureValidRoster();
  const rf=$("rankFilter").value||"All ranks",q=$("search").value.trim().toLowerCase();
  let html="";
  ranks.forEach(g=>{
@@ -658,7 +670,7 @@ function renderRoster(){
    }
    html+=`<div class="person">
      <div class="name-box"><b>${esc(p.name)}</b><small>${esc(p.rank)}${leaveText}</small></div>
-     <select aria-label="Status for ${esc(p.rank+" "+p.name)}" data-person="${esc(p.id)}">${statusOptions(current[p.id])}</select>
+     <select aria-label="Status for ${esc(p.rank+" "+p.name)}" data-person="${esc(p.id)}">${statusOptions(current[p.id]||"On Parade")}</select>
      <div class="person-actions">
        <button class="secondary small edit-person no-print" data-edit="${esc(p.id)}">Edit</button>
        <button class="danger small delete-person no-print" data-delete="${esc(p.id)}">Del</button>
@@ -725,6 +737,7 @@ function deletePerson(id){
  delete current[id];
  delete currentLeave[id];
  rebuildPeople();
+ ensureValidRoster();
  persistRoster();
  persistStore();
  renderAll();
@@ -1079,12 +1092,8 @@ $("assignAllBtn").onclick=()=>{const rf=$("rankFilter").value||"All ranks",q=$("
 $("clearFilterBtn").onclick=()=>{$("rankFilter").value="All ranks";$("search").value="";renderRoster()};
 $("loadBtn").onclick=loadDate;
 
-// BULLETPROOF INITIAL LOAD GUARANTEE
+// INITIAL LOAD SEQUENCE WITH AUTOMATIC RESTORE RECOVERY
 loadStore();
-if(!people.length){
-  ranks = JSON.parse(JSON.stringify(DEFAULT_RANKS));
-  rebuildPeople();
-}
 current = blank();
 if(saved[today()]){
   Object.assign(current, saved[today()].statuses||{});
