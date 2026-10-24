@@ -581,6 +581,10 @@ function loadStore(){
    ranks = JSON.parse(JSON.stringify(DEFAULT_RANKS));
  }
  rebuildPeople();
+ if(!people.length){
+   ranks = JSON.parse(JSON.stringify(DEFAULT_RANKS));
+   rebuildPeople();
+ }
 }
 
 function persistStore(){
@@ -965,7 +969,7 @@ function renderAll(reRoster=true){
 }
 
 function refreshRankSelectors(){
- const rf=$("rankFilter"),old=rf.value||"All ranks";rf.innerHTML='<option>All ranks</option>'+ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("");rf.value=["All ranks",...ranks.map(g=>g.rank)].includes(old)?old:"All ranks";
+ const rf=$("rankFilter"),old=rf.value||"All ranks";rf.innerHTML='<option>All ranks</option>'+ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("");rf.value=["All ranks",...ranks.map(g.rank)].includes(old)?old:"All ranks";
  const ar=$("addRank"),prev=ar.value;ar.innerHTML=ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("")+'<option value="__new__">New rank…</option>';ar.value=ranks.some(g=>g.rank===prev)?prev:(ranks[0]?.rank||"__new__");
 }
 
@@ -1050,7 +1054,7 @@ $("assignAllBtn").onclick=()=>{const rf=$("rankFilter").value||"All ranks",q=$("
 $("clearFilterBtn").onclick=()=>{$("rankFilter").value="All ranks";$("search").value="";renderRoster()};
 $("loadBtn").onclick=loadDate;
 
-// INITIAL LOAD SEQUENCE WITH AUTOMATIC RESTORE RECOVERY
+// BULLETPROOF INITIAL LOAD GUARANTEE
 loadStore();
 if(!people.length){
   ranks = JSON.parse(JSON.stringify(DEFAULT_RANKS));
