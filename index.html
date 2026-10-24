@@ -35,7 +35,6 @@ button{border:0;border-radius:8px;padding:10px 14px;font-weight:750;cursor:point
 .print-grid{width:100%;border-collapse:collapse;table-layout:fixed;font-size:8px;font-weight:bold}.print-grid th,.print-grid td{border:1px solid #000;padding:2px 1px;text-align:center;white-space:normal;overflow-wrap:anywhere;font-weight:900}.print-grid th{font-weight:900;background:#f0f0f0!important}.print-grid th.vertical{height:80px;vertical-align:bottom;writing-mode:vertical-rl;transform:rotate(180deg);padding:2px 1px;font-size:7.5px;font-weight:900}.print-grid .rankcol{text-align:left;width:6%;font-weight:900;writing-mode:horizontal-tb;transform:none;height:auto;font-size:8px}.print-grid .totalrow{font-weight:900;background:#eee!important}
 .print-layout-container{display:grid;grid-template-columns:1.1fr 1.1fr 1.8fr 1.1fr;gap:10px;margin-top:8px;align-items:start}.print-col{display:flex;flex-direction:column;gap:8px}.print-block{break-inside:avoid}.print-block h3{font-size:8.5px;text-decoration:underline;margin:0 0 3px;font-weight:900;text-transform:uppercase}.print-block ol{margin:0;padding-left:0;list-style:none}.print-block li{margin:0 0 1.5px;line-height:1.1;font-size:7.5px;display:flex;gap:4px;font-weight:bold}.print-block li .item-num{width:14px;text-align:right;flex-shrink:0;font-weight:900}.print-block li .item-text{flex:1;font-weight:800}.on-parade-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 8px}.signatures-bottom{display:grid;grid-template-columns:1.2fr 1.8fr 1.2fr;margin-top:15px;align-items:end;font-weight:bold}.signatures-bottom div{text-align:center;font-size:8.5px;font-weight:bold}.signatures-bottom b{display:block;text-decoration:underline;margin-bottom:14px;font-weight:900}
 
-/* Filter Dropdown Styling */
 .red-date-filter{background:#a33232;color:#fff;border:1.5px solid #782222;font-weight:800;border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer}
 .red-date-filter option{background:#fff;color:#182521;font-weight:600}
 
@@ -105,11 +104,12 @@ input, select, button { max-width: 100%; }
     </div>
     <div style="display:flex;gap:8px;align-items:end;flex-wrap:wrap;flex:2">
       <button id="saveBtn">Save daily state</button>
+      <button class="secondary" id="undoBtn">Undo Last State</button>
       <button class="secondary" id="togglePreviewBtn">Toggle Sheet Preview</button>
       <button class="secondary" id="printBtn">Print state (1 Page)</button>
     </div>
   </div>
-  <p class="hint">Edits save on this browser. Use Filter State By Date to view historical states dynamically.</p>
+  <p class="hint">Edits save on this browser. Auto-backup preserves your state if you accidentally switch dates.</p>
 </section>
 
 <section class="card wide no-print" id="screenPreviewSection"><h2>Live Print Sheet Preview (100% Match)</h2><div id="screenPreviewWrapper"><div class="print-top-header"><div class="unit-title">AC Taking & Handing over Flt</div><div class="doc-title">Parade/ PT/FOD state</div><div class="date-str">DATE : <span id="previewDate"></span></div></div><table class="print-grid" id="previewGrid"></table><div class="print-layout-container" id="previewListsContainer"></div><div class="signatures-bottom"><div><b>PREPARED BY</b><br><span id="previewPreparedBy">PARVEZ<br>SGT</span></div><div><b>JCOIC</b></div><div><b>OIC</b></div></div></div></section>
@@ -135,7 +135,7 @@ input, select, button { max-width: 100%; }
 <script>
 const removeIntroOverlay=()=>{const o=document.getElementById("introOverlay");if(o&&o.parentNode){o.style.opacity="0";o.style.pointerEvents="none";setTimeout(()=>{if(o&&o.parentNode)o.parentNode.removeChild(o)},300)}};
 document.getElementById("skipIntroBtn").addEventListener("click",removeIntroOverlay);setTimeout(removeIntroOverlay,7500);if(location.href.indexOf("content://")!==-1)setTimeout(removeIntroOverlay,1000);
-let ranks=[{rank:"MWO",names:["Shaheen","Nazrul"]},{rank:"SWO",names:["M. Ali","Kusru"]},{rank:"WO",names:["Jahangir","Khairul","Hasan","Salam","Hasim","Kalam","Josim","Kamrul","Enam","Raisul"]},{rank:"SGT",names:["Akash","Alek","Habib","Ashik","Shimul","Shaheen","M. Ali","Parvez","Kaisar","Anis","Imran","Abdullah","Jafor","Adam","Rakib"]},{rank:"CPL",names:["Saiful","Chunnu","Imran","Arif","Jahid","Razzak","Milon","Bokul","Nasim","Shawon","Al Amin","Rejaul","Sajed","Sujon","Jomir","Tofazzol"]},{rank:"LAC",names:["Rakib","Tanvir","Sento","Mohit","Hossain"]},{rank:"AC",names:[]},{rank:"Civilian",names:["MSG Sajon","MSG Khairul","MC1 Hafiz","MC1 Hero","MC2 Masum","TM Ismail","TM Imam"]},{rank:"Attachment",names:["WO Khalek","SGT Sourav","CPL Akbar"]}];
+let ranks=[{rank:"MWO",names:["Shaheen (JCOIC)","Nazrul(Armt)"]},{rank:"SWO",names:["M. Ali (Wg Mech)","Khasrul (F>F Spl)"]},{rank:"WO",names:["Jahangir(Fuel sys","Khairul F2-8","Hasan- cockpit mech","Salam- F8-28","Hasim","Kalam","Josim","Kamrul","Enam","Raisul"]},{rank:"SGT",names:["Akash","Alek","Habib","Ashik","Shimul","Shaheen","M. Ali","Parvez","Kaisar","Anis","Imran","Abdullah","Jafor","Adam","Rakib"]},{rank:"CPL",names:["Saiful","Chunnu","Imran","Arif","Jahid","Razzak","Milon","Bokul","Nasim","Shawon","Al Amin","Rejaul","Sajed","Sujon","Jomir","Tofazzol"]},{rank:"LAC",names:["Rakib","Tanvir","Sento","Mohit","Hossain"]},{rank:"AC",names:[]},{rank:"Civilian",names:["MSG Sajon","MSG Khairul","MC1 Hafiz","MC1 Hero","MC2 Masum","TM Ismail","TM Imam"]},{rank:"Attachment",names:["WO Khalek","SGT Sourav","CPL Akbar"]}];
 
 const statuses=["All Duty On","All Duty Off","Leave","QRF Duty","CMH","Form 295","On Parade","ON PT","ON FOD","Civil Tech","TD/Courier","Mess/Canteen","CMH SR/FMLY SR","CMH / M Room Admit","Milk Duty","EDP/PG/ITD C","BASAE Out/Exam","Under Clearance","GST/GH","Afternoon","Parade","Out of Parade","Attachment"];
 const statusShort={"All Duty On":"Duty On","All Duty Off":"Duty Off","Leave":"Leave","QRF Duty":"QRF Duty","CMH":"CMH","Form 295":"Form 295","On Parade":"On Parade","ON PT":"ON PT","ON FOD":"ON FOD","Civil Tech":"Civil Tech","TD/Courier":"TD/Courier","Mess/Canteen":"Mess/Canteen","CMH SR/FMLY SR":"CMH SR/FMLY SR","CMH / M Room Admit":"CMH / M Room Admit","Milk Duty":"Milk Duty","EDP/PG/ITD C":"EDP/PG/ITD C","BASAE Out/Exam":"BASAE Out/Exam","Under Clearance":"Under Clearance","GST/GH":"GST/GH","Afternoon":"Afternoon","Parade":"Parade","Out of Parade":"Out of Parade","Attachment":"Attachment"};
@@ -158,6 +158,32 @@ rebuildPeople();
 
 function totalManpower(){return people.length}function militaryCount(){return people.filter(p=>militaryOrder.includes(p.rank)).length}const $=id=>document.getElementById(id);
 let current={},currentLeave={},currentDuty={},currentEd={},activeStatus="Leave",saved={},activeLeavePersonId=null,activeDutyPersonId=null,activeEdPersonId=null,pendingPreviousStatus="On Parade";
+let undoStack = [];
+
+function pushUndo(){
+ undoStack.push({
+  date: date(),
+  current: JSON.parse(JSON.stringify(current)),
+  currentLeave: JSON.parse(JSON.stringify(currentLeave)),
+  currentDuty: JSON.parse(JSON.stringify(currentDuty)),
+  currentEd: JSON.parse(JSON.stringify(currentEd))
+ });
+ if(undoStack.length > 20) undoStack.shift();
+}
+
+function applyUndo(){
+ if(!undoStack.length) return alert("No recent state changes to undo.");
+ const last = undoStack.pop();
+ $("stateDate").value = last.date;
+ current = last.current;
+ currentLeave = last.currentLeave;
+ currentDuty = last.currentDuty;
+ currentEd = last.currentEd;
+ renderAll();
+ alert("Undo applied!");
+}
+
+$("undoBtn").onclick = applyUndo;
 
 const today=()=>{let d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
 function blank(){const x={};people.forEach(p=>x[p.id]="On Parade");return x}
@@ -248,6 +274,8 @@ function renderRoster(){
     noteText=` · (${esc(currentDuty[p.id])})`;
    } else if(current[p.id]==="EDP/PG/ITD C"&&currentEd[p.id]&&currentEd[p.id].from){
     noteText=` · (wef ${esc(displayDate(currentEd[p.id].from))} to ${esc(displayDate(currentEd[p.id].to))})`;
+   } else if(current[p.id]==="TD/Courier"){
+    noteText=` · (TD)`;
    }
    html+=`<div class="person"><div class="name"><b>${esc(p.name)}</b><small>${esc(p.rank)} · Current: ${esc(current[p.id])}${noteText}</small></div><select aria-label="Status for ${esc(p.rank+" "+p.name)}" data-person="${esc(p.id)}" data-previous="${esc(current[p.id])}">${statusOptions(current[p.id])}</select><div class="person-actions"><button class="secondary small" data-edit="${esc(p.id)}">Edit</button><button class="danger small" data-delete="${esc(p.id)}">Delete</button></div></div>`;
   });
@@ -255,6 +283,7 @@ function renderRoster(){
  });
  $("roster").innerHTML=html||'<div class="empty">No personnel match your filters.</div>';
  $("roster").querySelectorAll("select[data-person]").forEach(sel=>sel.onchange=()=>{
+  pushUndo();
   const id=sel.dataset.person;
   const val=sel.value;
   current[id]=val;
@@ -299,9 +328,9 @@ function openDutyModal(id){
  const isCiv = p.rank === "Civilian";
  const dutySel = $("modalDutyType");
  if(isCiv){
-  dutySel.innerHTML='<option value="Section Night">Section Night</option>';
+  dutySel.innerHTML='<option value="Section Night">Section Night</option><option value="Form 108">Form 108</option>';
  } else {
-  dutySel.innerHTML='<option value="T/F (Task Force)">T/F (Task Force)</option><option value="Sy Duty">Sy Duty</option><option value="DO">DO</option>';
+  dutySel.innerHTML='<option value="T/F (Task Force)">T/F (Task Force)</option><option value="Sy Duty">Sy Duty</option><option value="DO">DO</option><option value="Form 108">Form 108</option>';
  }
  dutySel.value = currentDuty[id] || (isCiv ? "Section Night" : "T/F (Task Force)");
  $("dutyModal").classList.remove("hidden");
@@ -319,7 +348,7 @@ function openEdModal(id){
  activeEdPersonId=id;
  const p=people.find(x=>x.id===id);
  if(!p)return;
- $("modalEdPersonName").textContent=`${p.rank} ${p.name} - ED / Course Dates`;
+ $("modalEdPersonName").textContent=`${p.rank} ${p.name} - ED / Course Details`;
  const ed=currentEd[id]||{from:"",to:""};
  $("modalEdStartDate").value=ed.from||"";
  $("modalEdReportDate").value=ed.to||"";
@@ -340,6 +369,7 @@ $("saveEdBtn").onclick=()=>{
 function displayDate(iso){if(!iso)return "";const a=iso.split("-");return a.length===3?`${a[2]}.${a[1]}.${a[0].slice(-2)}`:iso}
 
 function deletePerson(id){
+ pushUndo();
  const p=people.find(x=>x.id===id);if(!p||!confirm(`Delete ${p.rank} ${p.name}?`))return;
  const g=ranks.find(x=>x.rank===p.rank);
  if(g){
@@ -351,6 +381,7 @@ function deletePerson(id){
 }
 
 function editPerson(id){
+ pushUndo();
  const p=people.find(x=>x.id===id);if(!p)return;
  const name=prompt("Edit name:",p.name);if(!name||!name.trim())return;
  const rank=prompt("Edit rank:",p.rank);if(!rank||!rank.trim())return;
@@ -388,6 +419,7 @@ function renderDetails(){
    if(s==="Leave"&&currentLeave[p.id]) tag=` (${esc(currentLeave[p.id].type||"A/L")} wef ${esc(displayDate(currentLeave[p.id].from))} to ${esc(displayDate(currentLeave[p.id].to))})`;
    else if(s==="All Duty On"&&currentDuty[p.id]) tag=` (${esc(currentDuty[p.id])})`;
    else if(s==="EDP/PG/ITD C"&&currentEd[p.id]) tag=` (wef ${esc(displayDate(currentEd[p.id].from))} to ${esc(displayDate(currentEd[p.id].to))})`;
+   else if(s==="TD/Courier") tag=` (TD)`;
    return `<span style="display:inline-block;margin:3px 5px 3px 0;padding:4px 8px;border:1px solid var(--line);border-radius:8px">${esc(p.rank)} ${esc(p.name)}${tag}</span>`;
   }).join(""):'<span class="empty">None assigned</span>'}</div></div>`;
  }).join("");
@@ -491,8 +523,12 @@ function generateListsHTML(){
      t = `${p.rank} ${p.name}`;
    }
 
-   if(k==="All Duty On" && currentDuty[p.id]){
-    t += ` (${currentDuty[p.id]})`;
+   if(current[p.id]==="TD/Courier"){
+    t += " - TD";
+   } else if(k==="All Duty On" && currentDuty[p.id]){
+    t += ` - ${currentDuty[p.id]}`;
+   } else if(k==="Civil Tech" && currentDuty[p.id]){
+    t += ` - ${currentDuty[p.id]}`;
    } else if(k==="EDP/PG/ITD C" && currentEd[p.id]){
     const ed = currentEd[p.id];
     if(ed.from||ed.to) t += ` (wef ${displayDate(ed.from)} to ${displayDate(ed.to)})`;
@@ -543,6 +579,12 @@ function save(){
  setTimeout(()=>$("saveBtn").textContent="Save daily state",1300);
 }
 
+function autoSaveBuffer(){
+ saved[date()]={statuses:{...current},leaveDetails:{...currentLeave},dutyDetails:{...currentDuty},edDetails:{...currentEd},savedAt:new Date().toISOString()};
+ persistStore();
+ refreshSaved();
+}
+
 function refreshSaved(){
  const ks=Object.keys(saved).sort().reverse();
  const optionsHtml = ks.length?ks.map(k=>`<option value="${esc(k)}">${esc(k)}</option>`).join(""):'<option value="">No saved records yet</option>';
@@ -551,6 +593,8 @@ function refreshSaved(){
 }
 
 function loadDate(targetDate){
+ autoSaveBuffer();
+ pushUndo();
  const d = targetDate || $("savedSelect").value || $("topRedDateFilter").value;
  if(!d||!saved[d])return alert("Choose a saved date first.");
  $("stateDate").value=d;
@@ -603,6 +647,8 @@ $("importFile").onchange=e=>{
 
 $("stateDate").value=today();
 $("stateDate").onchange=()=>{
+ autoSaveBuffer();
+ pushUndo();
  const d=date();
  if(saved[d]) applyRecord(saved[d]);
  else { current=blank(); currentLeave={}; currentDuty={}; currentEd={}; }
@@ -615,6 +661,7 @@ $("printBtn").onclick=()=>{renderPrintState();window.print()};
 $("togglePreviewBtn").onclick=()=>$("screenPreviewSection").classList.toggle("hidden");
 
 $("assignAllBtn").onclick=()=>{
+ pushUndo();
  const rf=$("rankFilter").value||"All ranks",q=$("search").value.trim().toLowerCase(),ps=people.filter(p=>(rf==="All ranks"||p.rank===rf)&&(!q||(p.name+" "+p.rank).toLowerCase().includes(q)));
  if(!ps.length)return alert("No personnel match filters.");
  if(!confirm(`Set ${ps.length} personnel to "${activeStatus}"?`))return;
@@ -626,6 +673,7 @@ $("clearFilterBtn").onclick=()=>{$("rankFilter").value="All ranks";$("search").v
 $("loadBtn").onclick=()=>loadDate();
 
 $("addPersonBtn").onclick=()=>{
+ pushUndo();
  const name=$("newName").value.trim(),selected=$("addRank").value,custom=$("newRank").value.trim();
  if(!name)return alert("Enter personnel name.");
  let rank = selected==="__new__" ? custom : selected;
