@@ -8,7 +8,8 @@
 <style>
 :root{--green:#123b32;--lime:#d6f07a;--bg:#f3f6f4;--card:#fff;--ink:#182521;--muted:#687771;--line:#dce5df;--red:#a33232}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);font:14px/1.3 system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+html, body{width:100%;overflow-x:hidden}
+body{margin:0;background:var(--bg);font:14px/1.3 system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--ink);-webkit-tap-highlight-color:transparent}
 
 /* FIGHTER JET INTRO OVERLAY */
 #introOverlay{
@@ -67,25 +68,28 @@ body{margin:0;background:var(--bg);font:14px/1.3 system-ui,-apple-system,Segoe U
  cursor:pointer;letter-spacing:1px;touch-action:manipulation;
 }
 
-/* MAIN APP & RESPONSIVE COMPACT ROSTER */
-header{background:var(--green);color:#fff;padding:12px 12px}
+/* HEADER & MAIN CONTAINER */
+header{background:var(--green);color:#fff;padding:12px}
 header .eyebrow{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:#d6f07a;font-weight:800}
 h1{font-size:18px;line-height:1.15;margin:2px 0}
 header p{margin:0;color:#d8e5df;font-size:12px}
-main{max-width:1100px;margin:auto;padding:8px;display:grid;gap:8px;position:relative;z-index:1}
-.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;box-shadow:0 1px 4px #123b3208}
+
+main{width:100%;max-width:1100px;margin:auto;padding:8px;display:grid;gap:8px;position:relative;z-index:1}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;box-shadow:0 1px 4px #123b3208;max-width:100%}
 .card h2{font-size:14px;margin:0 0 8px}
-.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.row>*{flex:1;min-width:120px}
+
+/* TOOLBAR & CONTROLS */
+.control-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(130px, 1fr));gap:6px;align-items:end}
 label{display:block;font-size:10px;color:var(--muted);font-weight:700;margin-bottom:2px}
-input,select,button{font:inherit;touch-action:manipulation}
-input[type=date],input[type=search],input[type=text],select{width:100%;padding:6px 10px;border:1px solid #cbd8d0;border-radius:6px;background:#fff;color:var(--ink);font-size:13px}
-button{border:0;border-radius:6px;padding:8px 12px;font-weight:750;cursor:pointer;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:36px}
+input,select,button{font:inherit;touch-action:manipulation;max-width:100%}
+input[type=date],input[type=search],input[type=text],select{width:100%;padding:6px 8px;border:1px solid #cbd8d0;border-radius:6px;background:#fff;color:var(--ink);font-size:13px}
+
+button{border:0;border-radius:6px;padding:8px 10px;font-weight:750;cursor:pointer;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:36px;width:100%;font-size:12px}
 button.secondary{background:#e8efeb;color:var(--green)}
 button.danger{background:#fff0f0;color:var(--red);border:1px solid #f0cccc}
-button.small{padding:4px 6px;font-size:11px;min-height:28px}
+button.small{padding:4px 8px;font-size:11px;min-height:28px;width:auto}
 
-.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:6px}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:6px}
 .metric{background:#f3f7f4;border:1px solid var(--line);border-radius:8px;padding:8px}
 .metric strong{display:block;font-size:18px;line-height:1}
 .metric span{font-size:10px;color:var(--muted)}
@@ -95,14 +99,16 @@ button.small{padding:4px 6px;font-size:11px;min-height:28px}
 .tab.active{background:var(--green);color:#fff}
 .hint{font-size:10px;color:var(--muted);margin:4px 0 0}
 
+/* RESPONSIVE ROSTER LIST & PERSON ROW */
 .rank-block{border:1px solid var(--line);border-radius:8px;margin-top:6px;overflow:hidden}
 .rank-head{background:#f2f6f3;padding:6px 8px;display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:12px}
-.person{display:flex;gap:8px;align-items:center;padding:6px 8px;border-top:1px solid #edf1ee;flex-wrap:wrap}
-.person .name-box{display:flex;flex-direction:column;min-width:140px;max-width:220px;flex:1 1 auto}
-.person .name-box b{font-size:13px;line-height:1.1}
-.person .name-box small{color:var(--muted);font-size:10px;margin-top:1px}
-.person select{width:auto;min-width:140px;max-width:180px;padding:4px 6px;font-size:12px;margin:0;flex:0 1 auto}
-.person-actions{display:flex;gap:4px;margin-left:auto}
+
+.person{display:flex;gap:6px;align-items:center;padding:8px;border-top:1px solid #edf1ee;flex-wrap:wrap;width:100%}
+.person .name-box{flex:1 1 120px;min-width:110px}
+.person .name-box b{font-size:13px;line-height:1.1;display:block}
+.person .name-box small{color:var(--muted);font-size:10px;display:block}
+.person select{flex:1 1 120px;min-width:110px;font-size:12px;padding:5px}
+.person-actions{display:flex;gap:4px;flex-shrink:0}
 
 .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table{width:100%;border-collapse:collapse;font-size:11px}
@@ -159,8 +165,6 @@ th{background:#f3f7f4;color:#3e5148}
 
 @media(max-width:779px){
  .print-layout-container{grid-template-columns:1fr;gap:8px}
- .person{gap:6px}
- .person select{min-width:110px}
 }
 
 @media print{
@@ -221,13 +225,11 @@ th{background:#f3f7f4;color:#3e5148}
 
 <main>
 <section class="card wide no-print">
- <div class="row">
-  <div class="datebox"><label for="stateDate">STATE DATE</label><input id="stateDate" type="date"></div>
-  <div style="display:flex;gap:6px;align-items:end;flex-wrap:wrap;flex:2">
-   <button id="saveBtn">Save daily state</button>
-   <button class="secondary" id="togglePreviewBtn">Toggle Sheet Preview</button>
-   <button class="secondary" id="printBtn">Print state (1 Page)</button>
-  </div>
+ <div class="control-grid">
+  <div><label for="stateDate">STATE DATE</label><input id="stateDate" type="date"></div>
+  <button id="saveBtn">Save State</button>
+  <button class="secondary" id="togglePreviewBtn">Toggle Preview</button>
+  <button class="secondary" id="printBtn">Print State (1 Page)</button>
  </div>
  <p class="hint">Records are saved locally in your browser and PC.</p>
 </section>
@@ -260,40 +262,40 @@ th{background:#f3f7f4;color:#3e5148}
 <section class="card no-print" id="editorArea">
  <h2>Assign & Manage Personnel</h2>
  <div class="tabs" id="statusTabs"></div>
- <div class="row" style="margin-top:8px">
+ <div class="control-grid" style="margin-top:8px">
   <div><label for="rankFilter">FILTER BY RANK</label><select id="rankFilter"><option>All ranks</option></select></div>
   <div><label for="search">SEARCH NAME</label><input id="search" type="search" placeholder="Type a name or rank"></div>
  </div>
  
  <div class="card" style="margin:8px 0;background:#f8faf8;box-shadow:none">
-  <h2 style="margin-bottom:6px">Add Manpower (All Ranks, Civilian & Attachment)</h2>
-  <div class="row">
+  <h2 style="margin-bottom:6px">Add Manpower</h2>
+  <div class="control-grid">
    <div><label for="addRank">RANK / CATEGORY</label><select id="addRank"></select></div>
    <div><label for="newRank">NEW RANK (OPTIONAL)</label><input id="newRank" type="text" placeholder="Custom rank"></div>
    <div><label for="newName">PERSONNEL NAME</label><input id="newName" type="text" placeholder="Full name"></div>
+   <button id="addPersonBtn" type="button">Add Person</button>
   </div>
-  <div style="margin-top:8px"><button id="addPersonBtn" type="button">Add Person</button></div>
  </div>
 
  <div class="card" style="margin:8px 0;background:#f8faf8;box-shadow:none">
   <h2 style="margin-bottom:6px">Edit "PREPARED BY" Signature</h2>
-  <div class="row">
+  <div class="control-grid">
    <div><label for="prepName">NAME</label><input id="prepName" type="text" value="PARVEZ"></div>
    <div><label for="prepRank">RANK</label><input id="prepRank" type="text" value="SGT"></div>
   </div>
  </div>
 
  <div id="roster"></div>
- <div class="row" style="margin-top:8px">
-  <button class="secondary" id="assignAllBtn">Set filtered people to selected status</button>
-  <button class="secondary" id="clearFilterBtn">Clear filters</button>
+ <div class="control-grid" style="margin-top:8px">
+  <button class="secondary" id="assignAllBtn">Set Filtered to Selected Status</button>
+  <button class="secondary" id="clearFilterBtn">Clear Filters</button>
  </div>
 </section>
 
 <section class="card no-print" id="reportArea">
- <h2>Final state report & PC Backup</h2>
+ <h2>Final State Report & PC Backup</h2>
  <div id="reportSummary"></div>
- <div class="row" style="margin:8px 0">
+ <div class="control-grid" style="margin:8px 0">
   <button class="secondary" id="exportBackup">Backup to PC File (.JSON)</button>
   <button class="secondary" id="importBtn">Restore from PC File</button>
   <input id="importFile" type="file" accept="application/json" class="hidden">
@@ -343,18 +345,18 @@ th{background:#f3f7f4;color:#3e5148}
    </div>
   </div>
   <div class="modal-actions">
-   <button class="secondary" type="button" id="closeModalBtn">Cancel</button>
-   <button type="button" id="saveLeaveBtn">Save Leave</button>
+   <button class="secondary small" type="button" id="closeModalBtn">Cancel</button>
+   <button class="small" type="button" id="saveLeaveBtn">Save Leave</button>
   </div>
  </div>
 </div>
 
 <section class="card wide no-print">
  <h2>Saved daily records</h2>
- <div class="row">
+ <div class="control-grid">
   <div><label for="savedSelect">OPEN A SAVED DATE</label><select id="savedSelect"><option value="">No saved records yet</option></select></div>
-  <button class="secondary" id="loadBtn">Load date</button>
-  <button class="danger" id="deleteBtn">Delete saved date</button>
+  <button class="secondary" id="loadBtn">Load Date</button>
+  <button class="danger" id="deleteBtn">Delete Date</button>
  </div>
 </section>
 </main>
@@ -405,7 +407,6 @@ const $=id=>document.getElementById(id);
 let current={},currentLeave={},activeStatus="On Parade",saved={},activeLeavePersonId=null;
 
 const today=()=>{let d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
-/* DEFAULT EVERYONE TO ON PARADE */
 function blank(){const x={};people.forEach(p=>x[p.id]="On Parade");return x}
 function key(){return "state-office-manpower-v1"}
 function rosterKey(){return "state-office-manpower-roster-v1"}
@@ -655,8 +656,6 @@ function generateListsHTML(){
   let itemsHtml = list.map(p=>{
    let numStr = numCount++;
    let textContent="";
-   
-   /* REMOVE RANK PREFIX FROM ATTACHMENT NAMES IN PRINT */
    if(key==="ATTACHMENT"){
      let cleanName = p.name.replace(/^(MWO|SWO|WO|SGT|CPL|LAC|AC)\s+/i, "");
      textContent = esc(cleanName);
@@ -757,7 +756,7 @@ function refreshRankSelectors(){
  const ar=$("addRank"),prev=ar.value;ar.innerHTML=ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("")+'<option value="__new__">New rank…</option>';ar.value=ranks.some(g=>g.rank===prev)?prev:(ranks[0]?.rank||"__new__");
 }
 
-function save(){saved[date()]={statuses:{...current},leaveDetails:{...currentLeave},savedAt:new Date().toISOString()};persistStore();refreshSaved();$("saveBtn").textContent="Saved ✓";setTimeout(()=>$("saveBtn").textContent="Save daily state",1300)}
+function save(){saved[date()]={statuses:{...current},leaveDetails:{...currentLeave},savedAt:new Date().toISOString()};persistStore();refreshSaved();$("saveBtn").textContent="Saved ✓";setTimeout(()=>$("saveBtn").textContent="Save State",1300)}
 function refreshSaved(){const keys=Object.keys(saved).sort().reverse();$("savedSelect").innerHTML=keys.length?keys.map(k=>`<option value="${esc(k)}">${esc(k)}</option>`).join(""):'<option value="">No saved records yet</option>'}
 function loadDate(){const d=$("savedSelect").value;if(!d||!saved[d])return alert("Choose a saved date first.");$("stateDate").value=d;current=blank();Object.assign(current,saved[d].statuses||{});currentLeave={...(saved[d].leaveDetails||{})};renderAll()}
 
