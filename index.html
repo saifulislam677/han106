@@ -5,56 +5,106 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#123b32">
 <title>AC Taking & Handing over Flt - Parade/ PT/FOD state</title>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
 <style>
 :root{--green:#123b32;--lime:#d6f07a;--bg:#f3f6f4;--card:#fff;--ink:#182521;--muted:#687771;--line:#dce5df;--red:#a33232}
 *{box-sizing:border-box}
 html, body{width:100%;max-width:100%;overflow-x:hidden;margin:0;padding:0}
 body{background:var(--bg);font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--ink);-webkit-tap-highlight-color:transparent}
 
-/* FIGHTER JET INTRO OVERLAY */
+/* CINEMATIC HANGAR INTRO OVERLAY */
 #introOverlay{
  position:fixed;top:0;left:0;width:100vw;height:100vh;
- background:radial-gradient(circle at bottom, #0d221a 0%, #030807 75%);
+ background:radial-gradient(circle at center, #0f2b22 0%, #040c09 80%);
  z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;
- color:#fff;overflow:hidden;touch-action:none;transition:opacity 0.4s ease, visibility 0.4s;
+ color:#fff;overflow:hidden;touch-action:none;transition:opacity 0.6s ease, visibility 0.6s;
 }
+
+.intro-scene{position:relative;width:320px;height:320px;display:flex;align-items:center;justify-content:center}
+
+/* STAGE 1: TECHNICIAN SALUTE SIGNAL */
+.tech-container{
+ position:absolute;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+ animation:techSequence 2.5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+.tech-svg{width:140px;height:auto;filter:drop-shadow(0 10px 10px rgba(0,0,0,0.8));animation:techSaluteMotion 1.2s ease-in-out infinite alternate}
+@keyframes techSaluteMotion{from{transform:translateY(0) rotate(0deg)}to{transform:translateY(-4px) rotate(1.5deg)}}
+
+.signal-bubble{
+ position:absolute;top:20px;background:#d6f07a;color:#123b32;font-size:11px;font-weight:900;
+ padding:6px 12px;border-radius:12px;box-shadow:0 4px 15px rgba(214,240,122,0.4);
+ text-transform:uppercase;letter-spacing:1px;animation:fadeInOut 2.5s forwards;
+}
+@keyframes fadeInOut{0%{opacity:0;transform:scale(0.8)}20%{opacity:1;transform:scale(1)}80%{opacity:1}100%{opacity:0;transform:scale(0.9)}}
+
+@keyframes techSequence{
+ 0%{opacity:0;transform:scale(0.9)}
+ 15%{opacity:1;transform:scale(1)}
+ 80%{opacity:1;transform:scale(1)}
+ 100%{opacity:0;transform:scale(1.1);visibility:hidden}
+}
+
+/* STAGE 2: JET COCKPIT & TAKEOFF */
+.jet-takeoff-container{
+ position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+ opacity:0;animation:jetSequence 3s 2.3s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+@keyframes jetSequence{0%{opacity:1}100%{opacity:1}}
+
 .runway-stage{position:absolute;width:100%;height:100%;top:0;left:0;overflow:hidden;perspective:500px}
 .runway-track{
- position:absolute;bottom:-10%;left:50%;width:220px;height:120vh;margin-left:-110px;
+ position:absolute;bottom:-15%;left:50%;width:240px;height:120vh;margin-left:-120px;
  background:#111714;transform:rotateX(72deg);transform-origin:bottom center;
  box-shadow:0 0 30px rgba(0,0,0,0.9);
 }
 .runway-lines{
  position:absolute;width:6px;height:200%;left:50%;margin-left:-3px;
  background:repeating-linear-gradient(to bottom, #d6f07a 0px, #d6f07a 30px, transparent 30px, transparent 70px);
- animation:runwaySpeed 5s linear infinite;
+ animation:runwaySpeed 3s linear infinite;
 }
 @keyframes runwaySpeed{from{transform:translateY(-500px)}to{transform:translateY(500px)}}
 
-.jet-viewport{position:relative;width:240px;height:240px;z-index:5;display:flex;align-items:center;justify-content:center}
-.jet-animator{position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;animation:jetTakeoff 5.5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards}
-.fighter-svg{width:160px;height:auto;filter:drop-shadow(0 15px 12px rgba(0,0,0,0.8));transform:rotate(-25deg);z-index:2}
+.jet-viewport{position:relative;width:260px;height:260px;z-index:5;display:flex;align-items:center;justify-content:center}
+.jet-animator{position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;animation:jetLiftoff 3s cubic-bezier(0.25, 0.1, 0.25, 1) forwards}
+.fighter-svg{width:170px;height:auto;filter:drop-shadow(0 15px 12px rgba(0,0,0,0.8));transform:rotate(-25deg);z-index:2}
+
+/* COCKPIT CANOPY CLOSING ANIMATION */
+.canopy-glass{
+ transform-origin:bottom center;
+ animation:closeCanopy 0.8s 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes closeCanopy{
+ 0%{transform:scaleY(0.3);opacity:0.4}
+ 100%{transform:scaleY(1);opacity:0.85}
+}
 
 .afterburner-flame{
- position:absolute;bottom:22px;left:33%;transform:translateX(-50%) rotate(-25deg);
- width:20px;height:90px;
+ position:absolute;bottom:18px;left:33%;transform:translateX(-50%) rotate(-25deg);
+ width:24px;height:0px;
  background:linear-gradient(to bottom, #ffffff 0%, #77ffff 15%, #ffcc00 45%, #ff3300 75%, transparent 100%);
  border-radius:50%;filter:blur(1px);z-index:1;
- animation:flamePulse 0.04s infinite alternate;
- box-shadow:0 0 20px #ff6600, 0 0 40px #ffaa00;
+ animation:ignitionFlame 2.5s 0.8s forwards;
+ box-shadow:0 0 25px #ff6600, 0 0 50px #ffaa00;
 }
-@keyframes flamePulse{from{height:75px;opacity:0.85;width:16px}to{height:100px;opacity:1;width:22px}}
-
-@keyframes jetTakeoff{
- 0%{transform:translateY(260px) scale(0.35);opacity:0}
- 15%{transform:translateY(180px) scale(0.5);opacity:1}
- 40%{transform:translateY(80px) scale(0.75) rotate(-2deg)}
- 60%{transform:translateY(-10px) scale(0.95) rotate(-10deg)}
- 78%{transform:translateY(-120px) scale(1.3) rotate(-20deg)}
- 100%{transform:translateY(-1100px) scale(3.5) rotate(-32deg);opacity:0}
+@keyframes ignitionFlame{
+ 0%{height:0px;opacity:0}
+ 20%{height:40px;opacity:0.7}
+ 40%{height:90px;opacity:1}
+ 100%{height:120px;opacity:1;width:26px}
 }
 
-.intro-text-box{position:relative;z-index:10;text-align:center;margin-top:12px;padding:0 15px}
+@keyframes jetLiftoff{
+ 0%{transform:translateY(180px) scale(0.6);opacity:1}
+ 35%{transform:translateY(90px) scale(0.8) rotate(-2deg)}
+ 60%{transform:translateY(0px) scale(1) rotate(-12deg)}
+ 85%{transform:translateY(-150px) scale(1.5) rotate(-22deg)}
+ 100%{transform:translateY(-900px) scale(3.2) rotate(-30deg);opacity:0}
+}
+
+.intro-text-box{position:relative;z-index:10;text-align:center;margin-top:16px;padding:0 15px}
 .intro-title{font-size:20px;color:#d6f07a;margin:0 0 4px;letter-spacing:1px;text-transform:uppercase;font-weight:900}
 .intro-subtitle{font-size:12px;color:#cbd8d0;margin:0;font-weight:700}
 .intro-progress-bar{position:absolute;bottom:0;left:0;height:4px;background:#d6f07a;width:0%;animation:progressBar 5.5s linear forwards}
@@ -68,10 +118,18 @@ body{background:var(--bg);font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,
 }
 
 /* APP HEADER & CONTAINER */
-header{background:var(--green);color:#fff;padding:14px 16px;text-align:left}
+header{background:var(--green);color:#fff;padding:14px 16px;text-align:left;position:relative}
 header .eyebrow{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:#d6f07a;font-weight:800}
 h1{font-size:20px;line-height:1.15;margin:2px 0}
 header p{margin:0;color:#d8e5df;font-size:12px}
+
+.sync-badge{
+ position:absolute;top:14px;right:16px;font-size:10px;padding:4px 8px;border-radius:12px;
+ background:rgba(214,240,122,0.2);color:#d6f07a;border:1px solid rgba(214,240,122,0.4);
+ display:inline-flex;align-items:center;gap:4px;font-weight:bold;
+}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:#d6f07a;animation:pulseDot 1.5s infinite}
+@keyframes pulseDot{0%{opacity:0.3}50%{opacity:1}100%{opacity:0.3}}
 
 main{width:96%;max-width:1150px;margin:12px auto;display:grid;gap:12px;position:relative;z-index:1}
 .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;box-shadow:0 1px 4px rgba(0,0,0,0.05);width:100%;overflow:hidden}
@@ -183,28 +241,51 @@ th{background:#f3f7f4;color:#3e5148}
 </head>
 <body>
 
-<!-- FIGHTER JET TAKEOFF INTRO OVERLAY -->
+<!-- CINEMATIC HANGAR INTRO OVERLAY -->
 <div id="introOverlay">
- <div class="runway-stage">
-  <div class="runway-track">
-   <div class="runway-lines"></div>
-  </div>
- </div>
- 
- <div class="jet-viewport">
-  <div class="jet-animator">
-   <svg class="fighter-svg" viewBox="0 0 300 500" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M150 5 L165 140 L188 280 L198 425 L180 440 L120 440 L102 425 L112 280 L135 140 Z" fill="#b0c0b8" stroke="#485b52" stroke-width="3"/>
-    <path d="M112 240 L8 385 L102 400 L112 320 Z" fill="#95a8a0" stroke="#485b52" stroke-width="3"/>
-    <path d="M188 240 L292 385 L198 400 L188 320 Z" fill="#95a8a0" stroke="#485b52" stroke-width="3"/>
-    <path d="M150 320 L150 440 L162 445 L162 340 Z" fill="#6d8077"/>
-    <path d="M150 -10 L150 15" stroke="#d6f07a" stroke-width="4"/>
-    <path d="M146 5 L154 5 L150 30 Z" fill="#2d3d35"/>
-    <path d="M144 75 Q150 55 156 75 L158 145 Q150 155 142 145 Z" fill="#52cbe3" opacity="0.85" stroke="#1c5763" stroke-width="2"/>
-    <rect x="134" y="440" width="32" height="12" fill="#222" rx="2"/>
+ <div class="intro-scene">
+  
+  <!-- STAGE 1: TECHNICIAN SIGNAL -->
+  <div class="tech-container">
+   <div class="signal-bubble">Final Signal: Clear for Takeoff!</div>
+   <svg class="tech-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Technician Body -->
+    <path d="M100 40 C110 40 118 48 118 58 C118 68 110 76 100 76 C90 76 82 68 82 58 C82 48 90 40 100 40 Z" fill="#d6f07a"/>
+    <path d="M70 90 L130 90 L145 150 L125 155 L100 115 L75 155 L55 150 Z" fill="#2d5243" stroke="#d6f07a" stroke-width="3"/>
+    <!-- Saluting Arm -->
+    <path d="M70 95 Q40 80 55 60" stroke="#d6f07a" stroke-width="8" stroke-linecap="round"/>
+    <!-- Signaling Wand Arm -->
+    <path d="M130 95 Q165 70 155 50" stroke="#d6f07a" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="155" cy="45" r="7" fill="#ff3300"/>
    </svg>
-   <div class="afterburner-flame"></div>
   </div>
+
+  <!-- STAGE 2: PILOT COCKPIT & JET TAKEOFF -->
+  <div class="jet-takeoff-container">
+   <div class="runway-stage">
+    <div class="runway-track">
+     <div class="runway-lines"></div>
+    </div>
+   </div>
+   
+   <div class="jet-viewport">
+    <div class="jet-animator">
+     <svg class="fighter-svg" viewBox="0 0 300 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M150 5 L165 140 L188 280 L198 425 L180 440 L120 440 L102 425 L112 280 L135 140 Z" fill="#b0c0b8" stroke="#485b52" stroke-width="3"/>
+      <path d="M112 240 L8 385 L102 400 L112 320 Z" fill="#95a8a0" stroke="#485b52" stroke-width="3"/>
+      <path d="M188 240 L292 385 L198 400 L188 320 Z" fill="#95a8a0" stroke="#485b52" stroke-width="3"/>
+      <path d="M150 320 L150 440 L162 445 L162 340 Z" fill="#6d8077"/>
+      <!-- Pilot Helmet inside Cockpit -->
+      <circle cx="150" cy="110" r="10" fill="#1b2a24"/>
+      <!-- Cockpit Canopy Glass (Closes down) -->
+      <path class="canopy-glass" d="M142 75 Q150 55 156 75 L158 145 Q150 155 142 145 Z" fill="#52cbe3" opacity="0.85" stroke="#1c5763" stroke-width="2"/>
+      <rect x="134" y="440" width="32" height="12" fill="#222" rx="2"/>
+     </svg>
+     <div class="afterburner-flame"></div>
+    </div>
+   </div>
+  </div>
+
  </div>
 
  <div class="intro-text-box">
@@ -213,13 +294,14 @@ th{background:#f3f7f4;color:#3e5148}
  </div>
  
  <div class="intro-progress-bar"></div>
- <button class="skip-btn" id="skipIntroBtn">START ENGINE & ENTER</button>
+ <button class="skip-btn" id="skipIntroBtn">SKIP ANIMATION</button>
 </div>
 
 <header class="no-print">
  <div class="eyebrow">Personnel & Daily State</div>
  <h1>State Office Manpower</h1>
  <p>Rank-wise roster · Daily disposal · Final available strength</p>
+ <div class="sync-badge" id="syncStatus"><div class="sync-dot"></div> Live Cloud Sync</div>
 </header>
 
 <main>
@@ -230,7 +312,7 @@ th{background:#f3f7f4;color:#3e5148}
   <div><button class="secondary" id="togglePreviewBtn">Toggle Preview</button></div>
   <div><button class="secondary" id="printBtn">Print State (1 Page)</button></div>
  </div>
- <p class="hint">Records are saved locally in your browser and PC.</p>
+ <p class="hint">Records auto-sync across all devices & save locally.</p>
 </section>
 
 <!-- LIVE SCREEN PREVIEW SECTION -->
@@ -288,6 +370,7 @@ th{background:#f3f7f4;color:#3e5148}
  <div class="form-row" style="margin-top:10px">
   <div><button class="secondary" id="assignAllBtn">Set Filtered to Selected Status</button></div>
   <div><button class="secondary" id="clearFilterBtn">Clear Filters</button></div>
+  <div><button class="danger" id="resetRosterBtn">Restore Default Roster</button></div>
  </div>
 </section>
 
@@ -360,9 +443,66 @@ th{background:#f3f7f4;color:#3e5148}
 </section>
 </main>
 
-<div class="foot no-print">State Office Manpower · Local-device edition</div>
+<div class="foot no-print">State Office Manpower · Local & Realtime Cloud Edition</div>
 
 <script>
+// REALISTIC JET ENGINE AUDIO SYNTHESIS
+function playJetSound() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    // Low rumble engine idling / spooling up
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(40, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(320, audioCtx.currentTime + 2.2);
+    
+    // Jet roar white noise
+    const bufferSize = audioCtx.sampleRate * 3;
+    const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = Math.random() * 2 - 1;
+    }
+    
+    const whiteNoise = audioCtx.createBufferSource();
+    whiteNoise.buffer = noiseBuffer;
+    
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(150, audioCtx.currentTime);
+    filter.frequency.exponentialRampToValueAtTime(1800, audioCtx.currentTime + 2.5);
+    
+    gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.35, audioCtx.currentTime + 1.5);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 5.2);
+    
+    whiteNoise.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioCtx.destination);
+    
+    whiteNoise.start();
+    whiteNoise.stop(audioCtx.currentTime + 5.2);
+  } catch(e) {
+    console.log("Audio context suppressed");
+  }
+}
+
+// FIREBASE DB (BUILT-IN CLOUD SYNC)
+const firebaseConfig = {
+  databaseURL: "https://hangar106-state-default-rtdb.firebaseio.com"
+};
+
+let db = null;
+try {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.database();
+} catch(e) {
+  console.log("Offline mode initialized");
+}
+
 function exitOverlay() {
   const overlay = document.getElementById("introOverlay");
   if (overlay) {
@@ -372,14 +512,17 @@ function exitOverlay() {
       if (overlay && overlay.parentNode) {
         overlay.parentNode.removeChild(overlay);
       }
-    }, 400);
+    }, 600);
   }
 }
 
 document.getElementById("skipIntroBtn").addEventListener("click", exitOverlay);
+setTimeout(() => {
+  playJetSound();
+}, 2200);
 setTimeout(exitOverlay, 5500);
 
-/* PERMANENT DEFAULT ROSTER PRESERVATION */
+/* DEFAULT MASTER ROSTER */
 const DEFAULT_RANKS = [
  {rank:"MWO",names:["Shaheen","Nazrul"]},
  {rank:"SWO",names:["M. Ali","Kusru"]},
@@ -427,8 +570,50 @@ function loadStore(){
  }
  rebuildPeople();
 }
-function persistStore(){localStorage.setItem(key(),JSON.stringify(saved))}
-function persistRoster(){localStorage.setItem(rosterKey(),JSON.stringify(ranks))}
+
+function persistStore(){
+ localStorage.setItem(key(),JSON.stringify(saved));
+ if(db) {
+   db.ref("saved_records").set(saved);
+ }
+}
+
+function persistRoster(){
+ localStorage.setItem(rosterKey(),JSON.stringify(ranks));
+ if(db) {
+   db.ref("master_ranks").set(ranks);
+ }
+}
+
+// REALTIME CLOUD LISTENERS
+if(db) {
+ db.ref("master_ranks").on("value", (snapshot)=>{
+   const val = snapshot.val();
+   if(val && Array.isArray(val) && val.length > 0) {
+     ranks = val;
+     localStorage.setItem(rosterKey(), JSON.stringify(ranks));
+     rebuildPeople();
+     renderAll();
+   }
+ });
+ 
+ db.ref("saved_records").on("value", (snapshot)=>{
+   const val = snapshot.val();
+   if(val) {
+     saved = val;
+     localStorage.setItem(key(), JSON.stringify(saved));
+     refreshSaved();
+     const d = date();
+     if(saved[d]){
+       current = blank();
+       Object.assign(current, saved[d].statuses||{});
+       currentLeave = {...(saved[d].leaveDetails||{})};
+       renderAll(false);
+     }
+   }
+ });
+}
+
 function date(){return $("stateDate").value||today()}
 function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function statusOptions(selected){return statuses.map(s=>`<option value="${esc(s)}" ${s===selected?"selected":""}>${esc(s)}</option>`).join("")}
@@ -517,7 +702,7 @@ function displayDate(iso){if(!iso)return "";const a=iso.split("-");return a.leng
 
 function deletePerson(id){
  const person=people.find(p=>p.id===id);if(!person)return;
- if(!confirm(`Are you sure you want to delete ${person.rank} ${person.name}?`)) return;
+ if(!confirm(`Are you sure you want to permanently delete ${person.rank} ${person.name}?`)) return;
  const g=ranks.find(group=>group.rank===person.rank);
  if(g){
   g.names=g.names.filter(n=>n!==person.name);
@@ -764,11 +949,18 @@ $("prepRank").oninput = renderPrintState;
 function renderAll(reRoster=true){renderMetrics();renderTabs();refreshRankSelectors();if(reRoster)renderRoster();renderRankTable();renderDetails();renderPrintState()}
 
 function refreshRankSelectors(){
- const rf=$("rankFilter"),old=rf.value||"All ranks";rf.innerHTML='<option>All ranks</option>'+ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("");rf.value=["All ranks",...ranks.map(g=>g.rank)].includes(old)?old:"All ranks";
+ const rf=$("rankFilter"),old=rf.value||"All ranks";rf.innerHTML='<option>All ranks</option>'+ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("");rf.value=["All ranks",...ranks.map(g.rank)].includes(old)?old:"All ranks";
  const ar=$("addRank"),prev=ar.value;ar.innerHTML=ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("")+'<option value="__new__">New rank…</option>';ar.value=ranks.some(g=>g.rank===prev)?prev:(ranks[0]?.rank||"__new__");
 }
 
-function save(){saved[date()]={statuses:{...current},leaveDetails:{...currentLeave},savedAt:new Date().toISOString()};persistStore();refreshSaved();$("saveBtn").textContent="Saved ✓";setTimeout(()=>$("saveBtn").textContent="Save State",1300)}
+function save(){
+ saved[date()]={statuses:{...current},leaveDetails:{...currentLeave},savedAt:new Date().toISOString()};
+ persistStore();
+ refreshSaved();
+ $("saveBtn").textContent="Saved ✓";
+ setTimeout(()=>$("saveBtn").textContent="Save State",1300);
+}
+
 function refreshSaved(){const keys=Object.keys(saved).sort().reverse();$("savedSelect").innerHTML=keys.length?keys.map(k=>`<option value="${esc(k)}">${esc(k)}</option>`).join(""):'<option value="">No saved records yet</option>'}
 function loadDate(){const d=$("savedSelect").value;if(!d||!saved[d])return alert("Choose a saved date first.");$("stateDate").value=d;current=blank();Object.assign(current,saved[d].statuses||{});currentLeave={...(saved[d].leaveDetails||{})};renderAll()}
 
@@ -782,6 +974,16 @@ function deleteSavedDate(){
    alert("Deleted successfully.");
  }
 }
+
+$("resetRosterBtn").onclick = ()=>{
+ if(confirm("Restore master military roster to defaults? All custom edits will reset.")){
+   ranks = JSON.parse(JSON.stringify(DEFAULT_RANKS));
+   rebuildPeople();
+   persistRoster();
+   renderAll();
+   alert("Default roster restored!");
+ }
+};
 
 $("deleteBtn").onclick = deleteSavedDate;
 
