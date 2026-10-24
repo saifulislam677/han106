@@ -1,0 +1,737 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#123b32">
+<title>AC Taking & Handing over Flt - Parade/ PT/FOD state</title>
+<style>
+:root{--green:#123b32;--lime:#d6f07a;--bg:#f3f6f4;--card:#fff;--ink:#182521;--muted:#687771;--line:#dce5df;--red:#a33232}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--ink);-webkit-tap-highlight-color:transparent}
+
+header{background:var(--green);color:#fff;padding:16px 14px}
+header .eyebrow{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#d6f07a;font-weight:800}
+h1{font-size:22px;line-height:1.15;margin:4px 0}
+header p{margin:0;color:#d8e5df;font-size:13px}
+
+.jet-banner-card{background:#0a1c17;padding:12px;text-align:center;border-bottom:3px solid var(--lime);position:relative;overflow:hidden}
+.jet-photo-container{max-width:320px;margin:0 auto;position:relative;border-radius:8px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.5);border:1px solid rgba(214,240,122,0.4)}
+.jet-real-img{width:100%;height:auto;display:block;filter:contrast(1.05) brightness(1.02)}
+.afterburner-glow{position:absolute;bottom:8px;left:28%;width:15px;height:35px;background:radial-gradient(ellipse at center, #ffff33 0%, #ff6600 50%, transparent 80%);filter:blur(3px);animation:pulseGlow 0.1s infinite alternate}
+@keyframes pulseGlow{from{opacity:0.7;transform:scale(0.9)}to{opacity:1;transform:scale(1.2)}}
+
+main{max-width:1100px;margin:auto;padding:12px;display:grid;gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:0 2px 8px #123b3208}
+.card h2{font-size:16px;margin:0 0 10px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.row>*{flex:1;min-width:140px}
+label{display:block;font-size:11px;color:var(--muted);font-weight:700;margin-bottom:4px}
+input,select,button{font:inherit;touch-action:manipulation}
+input[type=date],input[type=search],input[type=text],select{width:100%;padding:10px 12px;border:1px solid #cbd8d0;border-radius:8px;background:#fff;color:var(--ink);font-size:14px}
+button{border:0;border-radius:8px;padding:10px 14px;font-weight:750;cursor:pointer;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px}
+button.secondary{background:#e8efeb;color:var(--green)}
+button.danger{background:#fff0f0;color:var(--red);border:1px solid #f0cccc}
+button.small{padding:5px 8px;font-size:11px;min-height:30px}
+
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.metric{background:#f3f7f4;border:1px solid var(--line);border-radius:10px;padding:10px}
+.metric strong{display:block;font-size:20px;line-height:1.1}
+.metric span{font-size:11px;color:var(--muted)}
+
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.tab{white-space:nowrap;background:#e8efeb;color:var(--green);padding:8px 10px;font-size:12px;border-radius:6px;flex-shrink:0}
+.tab.active{background:var(--green);color:#fff}
+.hint{font-size:11px;color:var(--muted);margin:6px 0 0}
+
+.rank-block{border:1px solid var(--line);border-radius:10px;margin-top:8px;overflow:hidden}
+.rank-head{background:#f2f6f3;padding:8px 10px;display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:13px}
+.person{display:flex;gap:8px;align-items:center;padding:10px;border-top:1px solid #edf1ee;flex-wrap:wrap}
+.person .name{flex:1 1 180px;min-width:0}
+.person small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.person select{flex:1 1 120px;max-width:100%;padding:8px;font-size:12px}
+.person-actions{display:flex;gap:4px;flex-shrink:0}
+
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{background:#f3f7f4;color:#3e5148}
+.empty{color:var(--muted);padding:10px 0}
+.foot{font-size:11px;color:var(--muted);text-align:center;padding:10px}
+.statusnote{padding:8px 10px;border-radius:8px;background:#fff8df;color:#66531c;font-size:11px;margin-top:8px}
+.hidden{display:none!important}
+
+/* LEAVE MODAL STYLES */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:15px;backdrop-filter:blur(2px)}
+.modal-card{background:#fff;border-radius:14px;width:100%;max-width:420px;padding:20px;box-shadow:0 10px 25px rgba(0,0,0,0.2);animation:popIn 0.2s ease-out}
+@keyframes popIn{from{transform:scale(0.92);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-card h3{margin:0 0 4px;font-size:18px;color:var(--green)}
+.modal-card p{margin:0 0 14px;font-size:12px;color:var(--muted)}
+.modal-form{display:flex;flex-direction:column;gap:12px}
+.modal-actions{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
+
+#screenPreviewWrapper{background:#fff;border:2px solid var(--green);border-radius:10px;padding:12px;margin-top:12px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+/* PRINT TOP HEADER & GRID STYLING */
+.print-top-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:4px;font-weight:bold;font-size:10px;border-bottom:1px solid #000;padding-bottom:2px}
+.print-top-header .unit-title{font-size:11px;text-transform:uppercase}
+.print-top-header .doc-title{font-size:12px;text-transform:uppercase;text-decoration:underline}
+.print-top-header .date-str{font-size:10px}
+
+.print-grid{width:100%;border-collapse:collapse;table-layout:fixed;font-size:8px}
+.print-grid th,.print-grid td{border:1px solid #000;padding:2px 1px;text-align:center;white-space:normal;overflow-wrap:anywhere}
+.print-grid th{font-weight:bold;background:#f0f0f0!important}
+.print-grid th.vertical{height:80px;vertical-align:bottom;writing-mode:vertical-rl;transform:rotate(180deg);padding:2px 1px;font-size:7.5px}
+.print-grid .rankcol{text-align:left;width:6%;font-weight:bold;writing-mode:horizontal-tb;transform:none;height:auto;font-size:8px}
+.print-grid .totalrow{font-weight:bold;background:#eee!important}
+
+/* 4-COLUMN LAYOUT BELOW GRID */
+.print-layout-container{display:grid;grid-template-columns:1.1fr 1.1fr 1.8fr 1.1fr;gap:10px;margin-top:8px;align-items:start}
+.print-col{display:flex;flex-direction:column;gap:8px}
+
+.print-block{break-inside:avoid}
+.print-block h3{font-size:8.5px;text-decoration:underline;margin:0 0 3px;font-weight:bold;text-transform:uppercase}
+.print-block ol{margin:0;padding-left:0;list-style:none}
+.print-block li{margin:0 0 1.5px;line-height:1.1;font-size:7.5px;display:flex;gap:4px}
+.print-block li .item-num{width:14px;text-align:right;flex-shrink:0;font-weight:bold}
+.print-block li .item-text{flex:1}
+
+.on-parade-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 8px}
+
+.signatures-bottom{display:grid;grid-template-columns:1.2fr 1.8fr 1.2fr;margin-top:15px;align-items:end}
+.signatures-bottom div{text-align:center;font-size:8.5px}
+.signatures-bottom b{display:block;text-decoration:underline;margin-bottom:14px}
+
+@media(min-width:780px){
+ main{grid-template-columns:1fr 1fr;align-items:start}
+ .wide{grid-column:1/-1}
+}
+
+@media(max-width:779px){
+ .print-layout-container{grid-template-columns:1fr;gap:10px}
+}
+
+/* STRICT SINGLE PAGE PRINT RULES */
+@media print{
+ @page{size:A4 landscape;margin:3mm 3mm 3mm 3mm}
+ html, body{height:100%;background:#fff;font-size:7.5px;color:#000;margin:0;padding:0;overflow:hidden}
+ header, .no-print, .tabs, .foot, #reportArea, #editorArea, .screen-only, .hint, .statusnote, #togglePreviewBtn, .modal-overlay, .jet-banner-card{display:none!important}
+ main{display:block;max-width:none;padding:0;margin:0}
+ .card{box-shadow:none;border:0;padding:0;margin:0}
+ #printState{display:block!important}
+ #screenPreviewWrapper{border:0;padding:0;margin:0}
+ .print-grid th{background:#fff!important}
+ .print-layout-container{grid-template-columns:1.1fr 1.1fr 1.8fr 1.1fr;gap:10px}
+ .signatures-bottom{margin-top:10px}
+ .signatures-bottom b{margin-bottom:10px}
+}
+</style>
+</head>
+<body>
+
+<header class="no-print">
+ <div class="eyebrow">Personnel & Daily State</div>
+ <h1>State Office Manpower</h1>
+ <p>Rank-wise roster · Daily disposal · Final available strength</p>
+</header>
+
+<div class="jet-banner-card no-print">
+ <div class="jet-photo-container">
+  <img class="jet-real-img" src="data:image/jpeg;base64,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" alt="F-7 Jet Fighter">
+  <div class="afterburner-glow"></div>
+ </div>
+</div>
+
+<main>
+<section class="card wide no-print">
+ <div class="row">
+  <div class="datebox"><label for="stateDate">STATE DATE</label><input id="stateDate" type="date"></div>
+  <div style="display:flex;gap:8px;align-items:end;flex-wrap:wrap;flex:2">
+   <button id="saveBtn">Save daily state</button>
+   <button class="secondary" id="togglePreviewBtn">Toggle Sheet Preview</button>
+   <button class="secondary" id="printBtn">Print state (1 Page)</button>
+  </div>
+ </div>
+ <p class="hint">Records are saved locally in your browser and PC.</p>
+</section>
+
+<section class="card wide no-print" id="screenPreviewSection">
+ <h2>Live Print Sheet Preview (100% Match)</h2>
+ <div id="screenPreviewWrapper">
+  <div class="print-top-header">
+   <div class="unit-title">AC Taking & Handing over Flt</div>
+   <div class="doc-title">Parade/ PT/FOD state</div>
+   <div class="date-str">DATE : <span id="previewDate"></span></div>
+  </div>
+  <table class="print-grid" id="previewGrid"></table>
+  <div class="print-layout-container" id="previewListsContainer"></div>
+  <div class="signatures-bottom">
+   <div><b>PREPARED BY</b><br><span id="previewPreparedBy">PARVEZ<br>SGT</span></div>
+   <div><b>JCOIC</b></div>
+   <div><b>OIC</b></div>
+  </div>
+ </div>
+</section>
+
+<section class="card wide no-print">
+ <h2>Manpower overview</h2>
+ <div class="metrics" id="metrics"></div>
+ <div class="statusnote">Counting rule: each person has one current status only. Total counts are strictly distinct.</div>
+</section>
+
+<section class="card no-print" id="editorArea">
+ <h2>Assign & Manage Personnel</h2>
+ <div class="tabs" id="statusTabs"></div>
+ <div class="row" style="margin-top:12px">
+  <div><label for="rankFilter">FILTER BY RANK</label><select id="rankFilter"><option>All ranks</option></select></div>
+  <div><label for="search">SEARCH NAME</label><input id="search" type="search" placeholder="Type a name or rank"></div>
+ </div>
+ 
+ <div class="card" style="margin:12px 0;background:#f8faf8;box-shadow:none">
+  <h2 style="margin-bottom:10px">Add Manpower (All Ranks, Civilian & Attachment)</h2>
+  <div class="row">
+   <div><label for="addRank">RANK / CATEGORY</label><select id="addRank"></select></div>
+   <div><label for="newRank">NEW RANK (OPTIONAL)</label><input id="newRank" type="text" placeholder="Enter custom rank name"></div>
+   <div><label for="newName">PERSONNEL NAME</label><input id="newName" type="text" placeholder="Enter full name"></div>
+  </div>
+  <div style="margin-top:10px"><button id="addPersonBtn" type="button">Add Person</button></div>
+ </div>
+
+ <div class="card" style="margin:12px 0;background:#f8faf8;box-shadow:none">
+  <h2 style="margin-bottom:10px">Edit "PREPARED BY" Signature</h2>
+  <div class="row">
+   <div><label for="prepName">NAME</label><input id="prepName" type="text" value="PARVEZ"></div>
+   <div><label for="prepRank">RANK</label><input id="prepRank" type="text" value="SGT"></div>
+  </div>
+ </div>
+
+ <div id="roster"></div>
+ <div class="row" style="margin-top:12px">
+  <button class="secondary" id="assignAllBtn">Set filtered people to selected status</button>
+  <button class="secondary" id="clearFilterBtn">Clear filters</button>
+ </div>
+</section>
+
+<section class="card no-print" id="reportArea">
+ <h2>Final state report & PC Backup</h2>
+ <div id="reportSummary"></div>
+ <div class="row" style="margin:12px 0">
+  <button class="secondary" id="exportBackup">Backup to PC File (.JSON)</button>
+  <button class="secondary" id="importBtn">Restore from PC File</button>
+  <input id="importFile" type="file" accept="application/json" class="hidden">
+ </div>
+ <h2 style="margin-top:16px">Rank-wise status count</h2><div class="tablewrap" id="rankTable"></div>
+ <h2 style="margin-top:16px">Personnel by status</h2><div id="statusDetails"></div>
+</section>
+
+<section id="printState" class="hidden">
+ <div class="print-top-header">
+  <div class="unit-title">AC Taking & Handing over Flt</div>
+  <div class="doc-title">Parade/ PT/FOD state</div>
+  <div class="date-str">DATE : <span id="printDate"></span></div>
+ </div>
+ <table class="print-grid" id="printGrid"></table>
+ <div class="print-layout-container" id="printListsContainer"></div>
+ <div class="signatures-bottom">
+  <div><b>PREPARED BY</b><br><span id="previewPreparedBy">PARVEZ<br>SGT</span></div>
+  <div><b>JCOIC</b></div>
+  <div><b>OIC</b></div>
+ </div>
+</section>
+
+<div id="leaveModal" class="modal-overlay hidden">
+ <div class="modal-card">
+  <h3 id="modalPersonName">Leave Details</h3>
+  <p>Specify leave type and dates for this person.</p>
+  <div class="modal-form">
+   <div>
+    <label for="modalLeaveType">TYPE OF LEAVE</label>
+    <select id="modalLeaveType">
+     <option value="A/L">A/L (Annual Leave)</option>
+     <option value="S/L">S/L (Sick Leave)</option>
+     <option value="R/L">R/L (Recreation Leave)</option>
+     <option value="C/L">C/L (Casual Leave)</option>
+    </select>
+   </div>
+   <div>
+    <label for="modalStartDate">START DATE / WEF</label>
+    <input type="date" id="modalStartDate">
+   </div>
+   <div>
+    <label for="modalReportDate">REPORT DATE / TO DATE</label>
+    <input type="date" id="modalReportDate">
+   </div>
+  </div>
+  <div class="modal-actions">
+   <button class="secondary" type="button" id="closeModalBtn">Cancel</button>
+   <button type="button" id="saveLeaveBtn">Save Leave</button>
+  </div>
+ </div>
+</div>
+
+<section class="card wide no-print">
+ <h2>Saved daily records</h2>
+ <div class="row">
+  <div><label for="savedSelect">OPEN A SAVED DATE</label><select id="savedSelect"><option value="">No saved records yet</option></select></div>
+  <button class="secondary" id="loadBtn">Load date</button>
+  <button class="danger" id="deleteBtn">Delete saved date</button>
+ </div>
+</section>
+</main>
+
+<div class="foot no-print">State Office Manpower · Local-device edition</div>
+
+<script>
+let ranks=[
+ {rank:"MWO",names:["Shaheen","Nazrul"]},
+ {rank:"SWO",names:["M. Ali","Kusru"]},
+ {rank:"WO",names:["Jahangir","Khairul","Hasan","Salam","Hasim","Kalam","Josim","Kamrul","Enam","Raisul"]},
+ {rank:"SGT",names:["Akash","Alek","Habib","Ashik","Shimul","Shaheen","M. Ali","Parvez","Kaisar","Anis","Imran","Abdullah","Jafor","Adam","Rakib"]},
+ {rank:"CPL",names:["Saiful","Chunnu","Imran","Arif","Jahid","Razzak","Milon","Bokul","Nasim","Shawon","Al Amin","Rejaul","Sajed","Sujon","Jomir","Tofazzol"]},
+ {rank:"LAC",names:["Rakib","Tanvir","Sento","Mohit","Hossain"]},
+ {rank:"AC",names:[]},
+ {rank:"Civilian",names:["MSG Sajon","MSG Khairul","MC1 Hafiz","MC1 Hero","MC2 Masum","TM Ismail","TM Imam"]},
+ {rank:"Attachment",names:["WO Khalek","SGT Sourav","CPL Akbar"]}
+];
+
+const statuses=["All Duty On","All Duty Off","Leave","QRF Duty","CMH","Form 295","On Parade","Civil Tech","TD/Courier","Mess/Canteen","CMH SR/FMLY SR","CMH / M Room Admit","Milk Duty","EDP/PG/ITD C","BASAE Out/Exam","Under Clearance","GST/GH","Afternoon","Parade","Out of Parade","Attachment"];
+const statusShort={"All Duty On":"Duty On","All Duty Off":"Duty Off","Leave":"Leave","QRF Duty":"QRF Duty","CMH":"CMH","Form 295":"Form 295","On Parade":"On Parade","Civil Tech":"Civil Tech","TD/Courier":"TD/Courier","Mess/Canteen":"Mess/Canteen","CMH SR/FMLY SR":"CMH SR/FMLY SR","CMH / M Room Admit":"CMH / M Room Admit","Milk Duty":"Milk Duty","EDP/PG/ITD C":"EDP/PG/ITD C","BASAE Out/Exam":"BASAE Out/Exam","Under Clearance":"Under Clearance","GST/GH":"GST/GH","Afternoon":"Afternoon","Parade":"Parade","Out of Parade":"Out of Parade","Attachment":"Attachment"};
+
+const militaryOrder=["MWO","SWO","WO","SGT","CPL","LAC","AC"];
+
+let people=[];
+function rebuildPeople(){people=[];ranks.forEach(g=>g.names.forEach((name,i)=>people.push({id:g.rank+"_"+i,rank:g.rank,name})));}
+rebuildPeople();
+
+function totalManpower(){return people.length}
+function militaryCount(){return people.filter(p=>militaryOrder.includes(p.rank)).length}
+const $=id=>document.getElementById(id);
+let current={},currentLeave={},activeStatus="Leave",saved={},activeLeavePersonId=null;
+
+const today=()=>{let d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
+function blank(){const x={};people.forEach(p=>x[p.id]="All Duty On");return x}
+function key(){return "state-office-manpower-v1"}
+function rosterKey(){return "state-office-manpower-roster-v1"}
+
+function loadStore(){
+ try{saved=JSON.parse(localStorage.getItem(key())||"{}")}catch(e){saved={}};
+ try{const custom=JSON.parse(localStorage.getItem(rosterKey())||"null");if(Array.isArray(custom)&&custom.length){ranks=custom;rebuildPeople()}}catch(e){}
+}
+function persistStore(){localStorage.setItem(key(),JSON.stringify(saved))}
+function persistRoster(){localStorage.setItem(rosterKey(),JSON.stringify(ranks))}
+function date(){return $("stateDate").value||today()}
+function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function statusOptions(selected){return statuses.map(s=>`<option value="${esc(s)}" ${s===selected?"selected":""}>${esc(s)}</option>`).join("")}
+function countStatus(s){return people.filter(p=>current[p.id]===s).length}
+function countRankStatus(rank,s){return people.filter(p=>(rank==="Total"||p.rank===rank)&&current[p.id]===s).length}
+function available(){return people.filter(p=>["All Duty On","On Parade"].includes(current[p.id])).length}
+
+function renderMetrics(){
+ const boxes=[["Total manpower",totalManpower()],["Military",militaryCount()],["Civilian",people.filter(p=>p.rank==="Civilian").length],["Attachment",people.filter(p=>p.rank==="Attachment").length],["Available",available()],["On leave",countStatus("Leave")],["All Duty Off",countStatus("All Duty Off")],["Other disposal",totalManpower()-available()-countStatus("Leave")-countStatus("All Duty Off")]];
+ $("metrics").innerHTML=boxes.map(([l,n])=>`<div class="metric"><strong>${n}</strong><span>${l}</span></div>`).join("");
+}
+
+function renderTabs(){
+ $("statusTabs").innerHTML=statuses.map(s=>`<button class="tab ${s===activeStatus?"active":""}" data-status="${esc(s)}">${esc(statusShort[s])} <span>(${countStatus(s)})</span></button>`).join("");
+ $("statusTabs").querySelectorAll("button").forEach(b=>b.onclick=()=>{activeStatus=b.dataset.status;renderTabs();renderRoster()});
+}
+
+function renderRoster(){
+ const rf=$("rankFilter").value||"All ranks",q=$("search").value.trim().toLowerCase();
+ let html="";
+ ranks.forEach(g=>{
+  const group=people.filter(p=>p.rank===g.rank&&(rf==="All ranks"||p.rank===rf)&&(!q||(p.name+" "+p.rank).toLowerCase().includes(q)));
+  if(!group.length)return;
+  html+=`<div class="rank-block"><div class="rank-head"><span>${esc(g.rank)}</span><span class="count-pill">${group.filter(p=>current[p.id]===activeStatus).length}/${group.length} · ${group.length} listed</span></div>`;
+  group.forEach(p=>{
+   const leave=currentLeave[p.id]||{type:"A/L",from:"",to:""};
+   let leaveText = "";
+   if(current[p.id]==="Leave" && leave.from && leave.to){
+     leaveText = ` · (${esc(leave.type)} wef ${esc(displayDate(leave.from))} to ${esc(displayDate(leave.to))})`;
+   }
+   html+=`<div class="person">
+     <div class="name"><b>${esc(p.name)}</b><small>${esc(p.rank)} · Current: ${esc(current[p.id])}${leaveText}</small></div>
+     <select aria-label="Status for ${esc(p.rank+" "+p.name)}" data-person="${esc(p.id)}">${statusOptions(current[p.id])}</select>
+     <div class="person-actions">
+       <button class="secondary small edit-person no-print" data-edit="${esc(p.id)}">Edit</button>
+       <button class="danger small delete-person no-print" data-delete="${esc(p.id)}">Delete</button>
+     </div>
+   </div>`;
+  });
+  html+="</div>";
+ });
+ $("roster").innerHTML=html||'<div class="empty">No personnel match your filters.</div>';
+ $("roster").querySelectorAll("select[data-person]").forEach(sel=>sel.onchange=()=>{
+   const id=sel.dataset.person;
+   current[id]=sel.value;
+   if(sel.value==="Leave"){
+     openLeaveModal(id);
+   } else {
+     renderAll(false);
+   }
+ });
+ $("roster").querySelectorAll("[data-edit]").forEach(btn=>btn.onclick=()=>editPerson(btn.dataset.edit));
+ $("roster").querySelectorAll("[data-delete]").forEach(btn=>btn.onclick=()=>deletePerson(btn.dataset.delete));
+}
+
+function openLeaveModal(id){
+ activeLeavePersonId = id;
+ const p = people.find(x=>x.id===id);
+ if(!p) return;
+ $("modalPersonName").textContent = `${p.rank} ${p.name} - Leave Entry`;
+ const lv = currentLeave[id] || {type:"A/L",from:"",to:""};
+ $("modalLeaveType").value = lv.type || "A/L";
+ $("modalStartDate").value = lv.from || "";
+ $("modalReportDate").value = lv.to || "";
+ $("leaveModal").classList.remove("hidden");
+}
+
+function closeLeaveModal(){
+ $("leaveModal").classList.add("hidden");
+ activeLeavePersonId = null;
+}
+
+$("closeModalBtn").onclick = closeLeaveModal;
+
+$("saveLeaveBtn").onclick = ()=>{
+ if(!activeLeavePersonId) return;
+ const type = $("modalLeaveType").value;
+ const from = $("modalStartDate").value;
+ const to = $("modalReportDate").value;
+ currentLeave[activeLeavePersonId] = {type, from, to};
+ closeLeaveModal();
+ renderAll();
+};
+
+function displayDate(iso){if(!iso)return "";const a=iso.split("-");return a.length===3?`${Number(a[2]).toString().padStart(2,"0")}.${Number(a[1]).toString().padStart(2,"0")}.${a[0].slice(-2)}`:iso}
+
+function deletePerson(id){
+ const person=people.find(p=>p.id===id);if(!person)return;
+ if(!confirm(`Are you sure you want to delete ${person.rank} ${person.name}?`)) return;
+ const g=ranks.find(group=>group.rank===person.rank);
+ if(g){
+  g.names=g.names.filter(n=>n!==person.name);
+  if(g.names.length===0 && !["MWO","SWO","WO","SGT","CPL","LAC","AC","Civilian","Attachment"].includes(g.rank)){
+   ranks=ranks.filter(group=>group.rank!==g.rank);
+  }
+ }
+ delete current[id];
+ delete currentLeave[id];
+ rebuildPeople();
+ persistRoster();
+ persistStore();
+ renderAll();
+}
+
+function editPerson(id){
+ const person=people.find(p=>p.id===id);if(!person)return;
+ const newName=prompt("Edit personnel name:",person.name);if(newName===null)return;
+ const name=newName.trim();if(!name)return alert("Name cannot be empty.");
+ const newRankInput=prompt("Edit rank:",person.rank);if(newRankInput===null)return;
+ const rank=newRankInput.trim();if(!rank)return alert("Rank cannot be empty.");
+ 
+ const oldRank=person.rank,oldName=person.name,oldId=person.id,oldStatus=current[oldId]||"All Duty On",oldLeave=currentLeave[oldId];
+ const oldGroup=ranks.find(g=>g.rank===oldRank);if(oldGroup)oldGroup.names=oldGroup.names.filter((n,i)=>!(n===oldName&&oldRank===person.rank&&i===Number(oldId.split("_").pop())));
+ let newGroup=ranks.find(g=>g.rank.toLowerCase()===rank.toLowerCase());if(!newGroup){newGroup={rank,names:[]};ranks.push(newGroup)}
+ newGroup.names.push(name);
+ 
+ delete current[oldId];delete currentLeave[oldId];
+ rebuildPeople();
+ const updated=people.find(p=>p.rank.toLowerCase()===rank.toLowerCase()&&p.name===name);
+ if(updated){current[updated.id]=oldStatus;if(oldLeave)currentLeave[updated.id]=oldLeave}
+ persistRoster();persistStore();renderAll();
+}
+
+function renderRankTable(){
+ const reportStatuses=statuses.filter(s=>s!=="Form 295"||countStatus("Form 295")>0);
+ let html="<table><thead><tr><th>Rank</th><th>Total</th>"+reportStatuses.map(s=>`<th>${esc(statusShort[s])}</th>`).join("")+"<th>Available</th></tr></thead><tbody>";
+ [...ranks.map(g=>g.rank),"Total"].forEach(r=>{
+  const n=people.filter(p=>r==="Total"||p.rank===r).length;
+  html+=`<tr><th>${esc(r)}</th><td>${n}</td>`+reportStatuses.map(s=>`<td>${countRankStatus(r,s)}</td>`).join("")+`<td>${countRankStatus(r,"All Duty On")+countRankStatus(r,"On Parade")}</td></tr>`;
+ });
+ $("rankTable").innerHTML=html+"</tbody></table>";
+}
+
+function renderDetails(){
+ $("reportSummary").innerHTML=`<p><b>Daily state date:</b> ${esc(date())}</p><p><b>Total listed:</b> ${totalManpower()} &nbsp; <b>Available:</b> ${available()} &nbsp; <b>Not available:</b> ${totalManpower()-available()}</p>`;
+ $("statusDetails").innerHTML=statuses.filter(s=>s!=="Form 295"||countStatus("Form 295")>0).map(s=>{
+  const list=people.filter(p=>current[p.id]===s);
+  return `<div class="rank-block"><div class="rank-head"><span>${esc(s)}</span><span class="count-pill">${list.length} personnel</span></div><div style="padding:8px 10px">${list.length?list.map(p=>`<span style="display:inline-block;margin:3px 5px 3px 0;padding:4px 8px;border:1px solid var(--line);border-radius:8px">${esc(p.rank)} ${esc(p.name)}${s==="Leave"&&currentLeave[p.id]?` (${esc(currentLeave[p.id].type||"A/L")} wef ${esc(displayDate(currentLeave[p.id].from))} to ${esc(displayDate(currentLeave[p.id].to))})`:""}</span>`).join(""):'<span class="empty">None assigned</span>'}</div></div>`;
+ }).join("");
+}
+
+function generateGridHTML(){
+ const cols=[
+  ["OFFICE STRG",p=>p.rank!=="Attachment"&&p.rank!=="Civilian"&&current[p.id]!=="TD/Courier"],
+  ["TD/COUR/UN",p=>current[p.id]==="TD/Courier"],
+  ["ATTACH",p=>p.rank==="Attachment"||current[p.id]==="Attachment"],
+  ["EFFECTIVE STRG",p=>p.rank!=="Civilian"],
+  ["LEAVE",p=>current[p.id]==="Leave"&&p.rank!=="Civilian"],
+  ["F-295 / Air Movement",p=>current[p.id]==="Form 295"&&p.rank!=="Civilian"],
+  ["QRT DUTY",p=>current[p.id]==="QRF Duty"&&p.rank!=="Civilian"],
+  ["ALL DUTY ON",p=>current[p.id]==="All Duty On"&&p.rank!=="Civilian"],
+  ["ALL DUTY OFF",p=>current[p.id]==="All Duty Off"&&p.rank!=="Civilian"],
+  ["MESS/CANTEEN",p=>current[p.id]==="Mess/Canteen"&&p.rank!=="Civilian"],
+  ["CMH S/R, FMLY SR",p=>current[p.id]==="CMH SR/FMLY SR"&&p.rank!=="Civilian"],
+  ["CMH / MI ROOM ADMIT",p=>(current[p.id]==="CMH / M Room Admit"||current[p.id]==="CMH")&&p.rank!=="Civilian"],
+  ["MILK DUTY",p=>current[p.id]==="Milk Duty"&&p.rank!=="Civilian"],
+  ["ED/PPGF/ATTD C",p=>current[p.id]==="EDP/PG/ITD C"&&p.rank!=="Civilian"],
+  ["BASAE OJT/EXAM",p=>current[p.id]==="BASAE Out/Exam"&&p.rank!=="Civilian"],
+  ["UNDER CLEARENCE",p=>current[p.id]==="Under Clearance"&&p.rank!=="Civilian"],
+  ["GST / GH",p=>current[p.id]==="GST/GH"&&p.rank!=="Civilian"],
+  ["AFTERNOON",p=>current[p.id]==="Afternoon"&&p.rank!=="Civilian"],
+  ["PARADE",p=>current[p.id]==="Parade"&&p.rank!=="Civilian"],
+  ["OUT OF PARADE",p=>current[p.id]==="Out of Parade"&&p.rank!=="Civilian"],
+  ["ON PARADE",p=>current[p.id]==="On Parade"&&p.rank!=="Civilian"]
+ ];
+
+ const attachedActualRank=p=>{
+   if(p.rank!=="Attachment") return p.rank;
+   const m=p.name.match(/^(MWO|SWO|WO|SGT|CPL|LAC|AC)\b/i);
+   return m ? m[1].toUpperCase() : "WO";
+ };
+
+ let html="<thead><tr><th class='vertical rankcol'>RANK</th>"+cols.map(c=>`<th class='vertical'>${esc(c[0])}</th>`).join("")+"</tr></thead><tbody>";
+
+ militaryOrder.forEach(r=>{
+  const officeList = people.filter(p=>p.rank===r);
+  const attachedForThisRank = people.filter(p=>(p.rank==="Attachment"||current[p.id]==="Attachment") && attachedActualRank(p)===r);
+  
+  const officeStrg = officeList.filter(p=>current[p.id]!=="TD/Courier"&&current[p.id]!=="Attachment").length;
+  const attachStrg = attachedForThisRank.length;
+  const effectiveStrg = officeStrg + attachStrg;
+
+  html+=`<tr><th class="rankcol">${esc(r)}</th>`+cols.map((c,i)=>{
+   let val=0;
+   if(i===0) val=officeStrg;
+   else if(i===1) val=officeList.filter(p=>current[p.id]==="TD/Courier").length;
+   else if(i===2) val=attachStrg;
+   else if(i===3) val=effectiveStrg;
+   else val=officeList.filter(c[1]).length;
+   return `<td>${val||""}</td>`;
+  }).join("")+"</tr>";
+ });
+
+ html+=`<tr class="totalrow"><th class="rankcol">TOTAL</th>`+cols.map((c,i)=>{
+  const list=people.filter(p=>militaryOrder.includes(p.rank));
+  const totalAttached = people.filter(p=>p.rank==="Attachment"||current[p.id]==="Attachment").length;
+  const totalOffice = list.filter(p=>current[p.id]!=="TD/Courier"&&current[p.id]!=="Attachment").length;
+  
+  let val=0;
+  if(i===0) val=totalOffice;
+  else if(i===1) val=list.filter(p=>current[p.id]==="TD/Courier").length;
+  else if(i===2) val=totalAttached;
+  else if(i===3) val=totalOffice + totalAttached;
+  else val=list.filter(c[1]).length;
+  return `<td>${val||""}</td>`;
+ }).join("")+"</tr>";
+
+ const civCount = people.filter(p=>p.rank==="Civilian").length;
+ html+=`<tr class="totalrow"><th class="rankcol">CIVILIAN</th><td colspan="${cols.length}">${civCount||0}</td></tr>`;
+
+ return html+"</tbody>";
+}
+
+function generateListsHTML(){
+ function getCategoryBlock(key, title){
+  let list=[];
+  if(key==="ATTACHMENT"){
+    list=people.filter(p=>p.rank==="Attachment"||(current[p.id]==="Attachment"&&p.rank!=="Civilian"));
+  } else if(key==="Civil Tech"){
+    list=people.filter(p=>p.rank==="Civilian");
+  } else if(key==="ON PARADE"){
+    list=people.filter(p=>p.rank!=="Civilian"&&p.rank!=="Attachment"&&current[p.id]==="On Parade"&&current[p.id]!=="Attachment");
+    list.sort((a,b)=>militaryOrder.indexOf(a.rank) - militaryOrder.indexOf(b.rank));
+  } else if(key==="ALL DUTY ON"){
+    list=people.filter(p=>p.rank!=="Civilian"&&p.rank!=="Attachment"&&current[p.id]==="All Duty On");
+  } else if(key==="ALL DUTY OFF"){
+    list=people.filter(p=>p.rank!=="Civilian"&&p.rank!=="Attachment"&&current[p.id]==="All Duty Off");
+  } else if(key==="F-295"){
+    list=people.filter(p=>p.rank!=="Civilian"&&p.rank!=="Attachment"&&current[p.id]==="Form 295");
+  } else {
+    list=people.filter(p=>p.rank!=="Civilian"&&p.rank!=="Attachment"&&current[p.id]===key);
+  }
+
+  if(!list.length) return "";
+
+  let numCount = 1;
+  let itemsHtml = list.map(p=>{
+   let numStr = numCount++;
+   let textContent="";
+   if(key==="ATTACHMENT"){
+     textContent = `${esc(p.rank)} ${esc(p.name)}`;
+   } else if(key==="Leave"){
+     const lv=currentLeave[p.id]||{};
+     const typeStr=lv.type||"A/L";
+     const fromStr=lv.from?displayDate(lv.from):"";
+     const toStr=lv.to?displayDate(lv.to):"";
+     let dateSpan = "";
+     if(fromStr && toStr){
+       dateSpan = ` (${esc(typeStr)} wef ${esc(fromStr)} to ${esc(toStr)})`;
+     } else if(fromStr){
+       dateSpan = ` (${esc(typeStr)} wef ${esc(fromStr)})`;
+     }
+     textContent = `${esc(p.rank)} ${esc(p.name)}${dateSpan}`;
+   } else if(key==="Civil Tech"){
+     textContent = `${esc(p.name)}`;
+   } else {
+     textContent = `${esc(p.rank)} ${esc(p.name)}`;
+   }
+   return `<li><span class="item-num">${numStr}</span><span class="item-text">${textContent}</span></li>`;
+  }).join("");
+
+  const gridClass = key==="ON PARADE" ? 'class="on-parade-grid"' : '';
+  return `<div class="print-block"><h3>${title}</h3><ol ${gridClass}>${itemsHtml}</ol></div>`;
+ }
+
+ const leaveBlock = getCategoryBlock("Leave", "LEAVE");
+ const qrfBlock = getCategoryBlock("QRF Duty", "QRF DUTY");
+ const cmhBlock = getCategoryBlock("CMH", "CMH");
+
+ const dutyOnBlock = getCategoryBlock("All Duty On", "ALL DUTY ON");
+ const dutyOffBlock = getCategoryBlock("All Duty Off", "ALL DUTY OFF");
+ const f295Block = getCategoryBlock("F-295", "F-295");
+ const messBlock = getCategoryBlock("Mess/Canteen", "MESS / CANTEEN");
+ const tdBlock = getCategoryBlock("TD/Courier", "TD / COURIER");
+ const edpBlock = getCategoryBlock("EDP/PG/ITD C", "ED / PPGF / ATTD C");
+
+ const onParadeBlock = getCategoryBlock("ON PARADE", "ON PARADE");
+
+ const attachBlock = getCategoryBlock("ATTACHMENT", "ATTACHMENT");
+ const civilTechBlock = getCategoryBlock("Civil Tech", "Civil Tech");
+
+ return `
+  <div class="print-col">
+   ${leaveBlock}
+   ${qrfBlock}
+   ${cmhBlock}
+  </div>
+
+  <div class="print-col">
+   ${dutyOnBlock}
+   ${dutyOffBlock}
+   ${f295Block}
+   ${messBlock}
+   ${tdBlock}
+   ${edpBlock}
+  </div>
+
+  <div class="print-col">
+   ${onParadeBlock}
+  </div>
+
+  <div class="print-col">
+   ${attachBlock}
+   ${civilTechBlock}
+  </div>
+ `;
+}
+
+function renderPrintState(){
+ const formattedDate=date().split("-").reverse().join("/");
+ const grid=generateGridHTML();
+ const lists=generateListsHTML();
+
+ const pName = esc($("prepName").value.trim() || "PARVEZ");
+ const pRank = esc($("prepRank").value.trim() || "SGT");
+ const preparedHtml = `${pName}<br>${pRank}`;
+
+ $("printDate").textContent=formattedDate;
+ $("printGrid").innerHTML=grid;
+ $("printListsContainer").innerHTML=lists;
+ $("printPreparedBy").innerHTML=preparedHtml;
+
+ $("previewDate").textContent=formattedDate;
+ $("previewGrid").innerHTML=grid;
+ $("previewListsContainer").innerHTML=lists;
+ $("previewPreparedBy").innerHTML=preparedHtml;
+}
+
+$("prepName").oninput = renderPrintState;
+$("prepRank").oninput = renderPrintState;
+
+function renderAll(reRoster=true){renderMetrics();renderTabs();refreshRankSelectors();if(reRoster)renderRoster();renderRankTable();renderDetails();renderPrintState()}
+
+function refreshRankSelectors(){
+ const rf=$("rankFilter"),old=rf.value||"All ranks";rf.innerHTML='<option>All ranks</option>'+ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("");rf.value=["All ranks",...ranks.map(g=>g.rank)].includes(old)?old:"All ranks";
+ const ar=$("addRank"),prev=ar.value;ar.innerHTML=ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("")+'<option value="__new__">New rank…</option>';ar.value=ranks.some(g=>g.rank===prev)?prev:(ranks[0]?.rank||"__new__");
+}
+
+function save(){saved[date()]={statuses:{...current},leaveDetails:{...currentLeave},savedAt:new Date().toISOString()};persistStore();refreshSaved();$("saveBtn").textContent="Saved ✓";setTimeout(()=>$("saveBtn").textContent="Save daily state",1300)}
+function refreshSaved(){const keys=Object.keys(saved).sort().reverse();$("savedSelect").innerHTML=keys.length?keys.map(k=>`<option value="${esc(k)}">${esc(k)}</option>`).join(""):'<option value="">No saved records yet</option>'}
+function loadDate(){const d=$("savedSelect").value;if(!d||!saved[d])return alert("Choose a saved date first.");$("stateDate").value=d;current=blank();Object.assign(current,saved[d].statuses||{});currentLeave={...(saved[d].leaveDetails||{})};renderAll()}
+
+function deleteSavedDate(){
+ const d=$("savedSelect").value;
+ if(!d||!saved[d]) return alert("Select a date to delete.");
+ if(confirm(`Delete saved record for ${d}?`)){
+   delete saved[d];
+   persistStore();
+   refreshSaved();
+   alert("Deleted successfully.");
+ }
+}
+
+$("deleteBtn").onclick = deleteSavedDate;
+
+$("exportBackup").onclick = ()=>{
+ const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ranks, saved}));
+ const downloadAnchor = document.createElement('a');
+ downloadAnchor.setAttribute("href", dataStr);
+ downloadAnchor.setAttribute("download", `manpower_backup_${today()}.json`);
+ document.body.appendChild(downloadAnchor);
+ downloadAnchor.click();
+ downloadAnchor.remove();
+};
+
+$("importBtn").onclick = ()=>$("importFile").click();
+$("importFile").onchange = (e)=>{
+ const file = e.target.files[0];
+ if(!file) return;
+ const reader = new FileReader();
+ reader.onload = (evt)=>{
+   try {
+     const imported = JSON.parse(evt.target.result);
+     if(imported.ranks) {
+       ranks = imported.ranks;
+       persistRoster();
+     }
+     if(imported.saved) {
+       saved = imported.saved;
+       persistStore();
+     }
+     rebuildPeople();
+     renderAll();
+     alert("Backup restored successfully!");
+   } catch(err) {
+     alert("Invalid backup file.");
+   }
+ };
+ reader.readAsText(file);
+};
+
+$("stateDate").value=today();
+$("stateDate").onchange=()=>{const d=date();if(saved[d]){current=blank();Object.assign(current,saved[d].statuses||{});currentLeave={...(saved[d].leaveDetails||{})}}else{current=blank();currentLeave={}}renderAll()};
+$("rankFilter").onchange=renderRoster;$("search").oninput=renderRoster;
+$("saveBtn").onclick=save;
+$("printBtn").onclick=()=>{renderPrintState();window.print()};
+$("togglePreviewBtn").onclick=()=>{$("screenPreviewSection").classList.toggle("hidden")};
+
+$("assignAllBtn").onclick=()=>{const rf=$("rankFilter").value||"All ranks",q=$("search").value.trim().toLowerCase();const filtered=people.filter(p=>(rf==="All ranks"||p.rank===rf)&&(!q||(p.name+" "+p.rank).toLowerCase().includes(q)));if(!filtered.length)return alert("No personnel match the filters.");if(!confirm(`Set ${filtered.length} personnel to "${activeStatus}"?`))return;filtered.forEach(p=>current[p.id]=activeStatus);renderAll()};
+$("clearFilterBtn").onclick=()=>{$("rankFilter").value="All ranks";$("search").value="";renderRoster()};
+$("loadBtn").onclick=loadDate;
+
+$("addPersonBtn").onclick=()=>{
+ const name=$("newName").value.trim();let rank=$("newRank").value.trim()||$("addRank").value;
+ if(!name)return alert("Enter the personnel name first.");
+ if(!rank||rank==="__new__")return alert("Choose an existing rank or type a new rank.");
+ let group=ranks.find(g=>g.rank.toLowerCase()===rank.toLowerCase());
+ if(!group){group={rank:rank,names:[]};ranks.push(group)}
+ group.names.push(name);rebuildPeople();persistRoster();
+ $("newName").value="";$("newRank").value="";renderAll();alert("Manpower added successfully.");
+};
+
+loadStore();current=blank();if(saved[today()]){Object.assign(current,saved[today()].statuses||{});currentLeave={...(saved[today()].leaveDetails||{})}}refreshSaved();renderAll();
+</script>
+</body>
+</html>
