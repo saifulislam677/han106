@@ -8,8 +8,8 @@
 <style>
 :root{--green:#123b32;--lime:#d6f07a;--bg:#f3f6f4;--card:#fff;--ink:#182521;--muted:#687771;--line:#dce5df;--red:#a33232}
 *{box-sizing:border-box}
-html, body{width:100%;overflow-x:hidden}
-body{margin:0;background:var(--bg);font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--ink);-webkit-tap-highlight-color:transparent}
+html, body{width:100%;max-width:100%;overflow-x:hidden;margin:0;padding:0}
+body{background:var(--bg);font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--ink);-webkit-tap-highlight-color:transparent}
 
 /* FIGHTER JET INTRO OVERLAY */
 #introOverlay{
@@ -67,69 +67,65 @@ body{margin:0;background:var(--bg);font:14px/1.4 system-ui,-apple-system,Segoe U
  cursor:pointer;letter-spacing:1px;touch-action:manipulation;
 }
 
-/* HEADER & MAIN CONTAINER */
-header{background:var(--green);color:#fff;padding:16px 20px}
+/* APP HEADER & CONTAINER */
+header{background:var(--green);color:#fff;padding:14px 16px;text-align:left}
 header .eyebrow{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:#d6f07a;font-weight:800}
-h1{font-size:22px;line-height:1.15;margin:4px 0}
-header p{margin:0;color:#d8e5df;font-size:13px}
+h1{font-size:20px;line-height:1.15;margin:2px 0}
+header p{margin:0;color:#d8e5df;font-size:12px}
 
-main{width:100%;max-width:1200px;margin:auto;padding:16px;display:grid;gap:14px;position:relative;z-index:1}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:0 2px 6px #123b3208;max-width:100%}
-.card h2{font-size:16px;margin:0 0 10px}
+main{width:96%;max-width:1150px;margin:12px auto;display:grid;gap:12px;position:relative;z-index:1}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;box-shadow:0 1px 4px rgba(0,0,0,0.05);width:100%;overflow:hidden}
+.card h2{font-size:15px;margin:0 0 10px;color:var(--green)}
 
-/* RESPONSIVE CONTROL GRIDS */
-.control-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
-.control-row>*{flex:1 1 180px}
-.control-row.actions{align-items:center}
+/* CONTROL ROWS & FORMS */
+.form-row{display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:8px;align-items:end}
+label{display:block;font-size:11px;color:var(--muted);font-weight:700;margin-bottom:3px}
+input,select,button{font:inherit;touch-action:manipulation;width:100%}
+input[type=date],input[type=search],input[type=text],select{padding:7px 9px;border:1px solid #cbd8d0;border-radius:6px;background:#fff;color:var(--ink);font-size:13px}
 
-label{display:block;font-size:11px;color:var(--muted);font-weight:700;margin-bottom:4px}
-input,select,button{font:inherit;touch-action:manipulation}
-input[type=date],input[type=search],input[type=text],select{width:100%;padding:8px 10px;border:1px solid #cbd8d0;border-radius:6px;background:#fff;color:var(--ink);font-size:14px}
-
-button{border:0;border-radius:6px;padding:9px 14px;font-weight:750;cursor:pointer;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;font-size:13px;white-space:nowrap}
+button{border:0;border-radius:6px;padding:8px 12px;font-weight:750;cursor:pointer;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:36px;font-size:12px;white-space:nowrap}
 button.secondary{background:#e8efeb;color:var(--green)}
 button.danger{background:#fff0f0;color:var(--red);border:1px solid #f0cccc}
-button.small{padding:5px 10px;font-size:12px;min-height:30px}
+button.small{padding:4px 8px;font-size:11px;min-height:28px;width:auto}
 
-.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
-.metric{background:#f3f7f4;border:1px solid var(--line);border-radius:8px;padding:10px}
-.metric strong{display:block;font-size:20px;line-height:1.1}
-.metric span{font-size:11px;color:var(--muted)}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
+.metric{background:#f3f7f4;border:1px solid var(--line);border-radius:8px;padding:8px}
+.metric strong{display:block;font-size:18px;line-height:1.1}
+.metric span{font-size:10px;color:var(--muted)}
 
-.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}
-.tab{white-space:nowrap;background:#e8efeb;color:var(--green);padding:7px 10px;font-size:12px;border-radius:6px;flex-shrink:0}
+.tabs{display:flex;gap:4px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.tab{white-space:nowrap;background:#e8efeb;color:var(--green);padding:6px 9px;font-size:11px;border-radius:6px;flex-shrink:0}
 .tab.active{background:var(--green);color:#fff}
-.hint{font-size:11px;color:var(--muted);margin:6px 0 0}
+.hint{font-size:11px;color:var(--muted);margin:4px 0 0}
 
-/* ROSTER ROW - DESKTOP & MOBILE OPTIMIZED */
+/* PERSON ROSTER LIST */
 .rank-block{border:1px solid var(--line);border-radius:8px;margin-top:8px;overflow:hidden}
-.rank-head{background:#f2f6f3;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:13px}
+.rank-head{background:#f2f6f3;padding:6px 10px;display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:12px}
 
-.person{display:flex;gap:10px;align-items:center;padding:10px 12px;border-top:1px solid #edf1ee;flex-wrap:wrap;width:100%}
-.person .name-box{flex:2 1 200px;min-width:160px}
-.person .name-box b{font-size:14px;line-height:1.2;display:block}
-.person .name-box small{color:var(--muted);font-size:11px;display:block}
-.person select{flex:2 1 180px;min-width:150px;font-size:13px;padding:6px}
-.person-actions{display:flex;gap:6px;flex-shrink:0;margin-left:auto}
+.person{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:8px 10px;border-top:1px solid #edf1ee;width:100%}
+.person .name-box b{font-size:13px;line-height:1.1;display:block}
+.person .name-box small{color:var(--muted);font-size:10px;display:block}
+.person select{min-width:120px;font-size:12px;padding:5px}
+.person-actions{display:flex;gap:4px}
 
 .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table{width:100%;border-collapse:collapse;font-size:12px}
-th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th,td{padding:6px 5px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
 th{background:#f3f7f4;color:#3e5148}
-.empty{color:var(--muted);padding:10px 0}
+.empty{color:var(--muted);padding:8px 0}
 .foot{font-size:11px;color:var(--muted);text-align:center;padding:12px}
-.statusnote{padding:8px 10px;border-radius:6px;background:#fff8df;color:#66531c;font-size:11px;margin-top:8px}
+.statusnote{padding:6px 8px;border-radius:6px;background:#fff8df;color:#66531c;font-size:11px;margin-top:8px}
 .hidden{display:none!important}
 
 /* LEAVE MODAL STYLES */
-.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px;backdrop-filter:blur(2px)}
-.modal-card{background:#fff;border-radius:12px;width:100%;max-width:400px;padding:20px;box-shadow:0 10px 25px rgba(0,0,0,0.2)}
-.modal-card h3{margin:0 0 4px;font-size:18px;color:var(--green)}
-.modal-card p{margin:0 0 12px;font-size:12px;color:var(--muted)}
-.modal-form{display:flex;flex-direction:column;gap:10px}
-.modal-actions{display:flex;gap:8px;margin-top:14px;justify-content:flex-end}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:12px;backdrop-filter:blur(2px)}
+.modal-card{background:#fff;border-radius:12px;width:100%;max-width:380px;padding:16px;box-shadow:0 10px 25px rgba(0,0,0,0.2)}
+.modal-card h3{margin:0 0 4px;font-size:16px;color:var(--green)}
+.modal-card p{margin:0 0 10px;font-size:11px;color:var(--muted)}
+.modal-form{display:flex;flex-direction:column;gap:8px}
+.modal-actions{display:flex;gap:6px;margin-top:12px;justify-content:flex-end}
 
-#screenPreviewWrapper{background:#fff;border:2px solid var(--green);border-radius:8px;padding:12px;margin-top:10px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+#screenPreviewWrapper{background:#fff;border:2px solid var(--green);border-radius:8px;padding:8px;margin-top:8px;overflow-x:auto;-webkit-overflow-scrolling:touch}
 
 /* PRINT SHEET STYLING */
 .print-top-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:4px;font-weight:bold;font-size:9px;border-bottom:1px solid #000;padding-bottom:2px}
@@ -165,11 +161,16 @@ th{background:#f3f7f4;color:#3e5148}
  .wide{grid-column:1/-1}
 }
 
+@media(max-width:600px){
+ .person{grid-template-columns:1fr;gap:6px}
+ .person-actions{justify-content:flex-end}
+}
+
 @media print{
  @page{size:A4 landscape;margin:3mm 3mm 3mm 3mm}
  html, body{height:100%;background:#fff;font-size:7.5px;color:#000;margin:0;padding:0;overflow:hidden}
  header, .no-print, .tabs, .foot, #reportArea, #editorArea, .screen-only, .hint, .statusnote, #togglePreviewBtn, .modal-overlay, #introOverlay{display:none!important}
- main{display:block;max-width:none;padding:0;margin:0}
+ main{display:block;width:100%;max-width:none;padding:0;margin:0}
  .card{box-shadow:none;border:0;padding:0;margin:0}
  #printState{display:block!important}
  #screenPreviewWrapper{border:0;padding:0;margin:0}
@@ -223,7 +224,7 @@ th{background:#f3f7f4;color:#3e5148}
 
 <main>
 <section class="card wide no-print">
- <div class="control-row">
+ <div class="form-row">
   <div><label for="stateDate">STATE DATE</label><input id="stateDate" type="date"></div>
   <div><button id="saveBtn">Save State</button></div>
   <div><button class="secondary" id="togglePreviewBtn">Toggle Preview</button></div>
@@ -260,31 +261,31 @@ th{background:#f3f7f4;color:#3e5148}
 <section class="card no-print" id="editorArea">
  <h2>Assign & Manage Personnel</h2>
  <div class="tabs" id="statusTabs"></div>
- <div class="control-row" style="margin-top:10px">
+ <div class="form-row" style="margin-top:10px">
   <div><label for="rankFilter">FILTER BY RANK</label><select id="rankFilter"><option>All ranks</option></select></div>
   <div><label for="search">SEARCH NAME</label><input id="search" type="search" placeholder="Type a name or rank"></div>
  </div>
  
  <div class="card" style="margin:10px 0;background:#f8faf8;box-shadow:none">
   <h2 style="margin-bottom:8px">Add Manpower</h2>
-  <div class="control-row actions">
+  <div class="form-row">
    <div><label for="addRank">RANK / CATEGORY</label><select id="addRank"></select></div>
    <div><label for="newRank">NEW RANK (OPTIONAL)</label><input id="newRank" type="text" placeholder="Custom rank"></div>
    <div><label for="newName">PERSONNEL NAME</label><input id="newName" type="text" placeholder="Full name"></div>
-   <div><button id="addPersonBtn" type="button" style="width:100%">Add Person</button></div>
+   <div><button id="addPersonBtn" type="button">Add Person</button></div>
   </div>
  </div>
 
  <div class="card" style="margin:10px 0;background:#f8faf8;box-shadow:none">
   <h2 style="margin-bottom:8px">Edit "PREPARED BY" Signature</h2>
-  <div class="control-row">
+  <div class="form-row">
    <div><label for="prepName">NAME</label><input id="prepName" type="text" value="PARVEZ"></div>
    <div><label for="prepRank">RANK</label><input id="prepRank" type="text" value="SGT"></div>
   </div>
  </div>
 
  <div id="roster"></div>
- <div class="control-row" style="margin-top:10px">
+ <div class="form-row" style="margin-top:10px">
   <div><button class="secondary" id="assignAllBtn">Set Filtered to Selected Status</button></div>
   <div><button class="secondary" id="clearFilterBtn">Clear Filters</button></div>
  </div>
@@ -293,7 +294,7 @@ th{background:#f3f7f4;color:#3e5148}
 <section class="card no-print" id="reportArea">
  <h2>Final State Report & PC Backup</h2>
  <div id="reportSummary"></div>
- <div class="control-row" style="margin:10px 0">
+ <div class="form-row" style="margin:10px 0">
   <div><button class="secondary" id="exportBackup">Backup to PC File (.JSON)</button></div>
   <div><button class="secondary" id="importBtn">Restore from PC File</button></div>
   <input id="importFile" type="file" accept="application/json" class="hidden">
@@ -351,7 +352,7 @@ th{background:#f3f7f4;color:#3e5148}
 
 <section class="card wide no-print">
  <h2>Saved daily records</h2>
- <div class="control-row">
+ <div class="form-row">
   <div><label for="savedSelect">OPEN A SAVED DATE</label><select id="savedSelect"><option value="">No saved records yet</option></select></div>
   <div><button class="secondary" id="loadBtn">Load Date</button></div>
   <div><button class="danger" id="deleteBtn">Delete Date</button></div>
@@ -378,7 +379,8 @@ function exitOverlay() {
 document.getElementById("skipIntroBtn").addEventListener("click", exitOverlay);
 setTimeout(exitOverlay, 5500);
 
-let ranks=[
+/* PERMANENT DEFAULT ROSTER PRESERVATION */
+const DEFAULT_RANKS = [
  {rank:"MWO",names:["Shaheen","Nazrul"]},
  {rank:"SWO",names:["M. Ali","Kusru"]},
  {rank:"WO",names:["Jahangir","Khairul","Hasan","Salam","Hasim","Kalam","Josim","Kamrul","Enam","Raisul"]},
@@ -389,6 +391,8 @@ let ranks=[
  {rank:"Civilian",names:["MSG Sajon","MSG Khairul","MC1 Hafiz","MC1 Hero","MC2 Masum","TM Ismail","TM Imam"]},
  {rank:"Attachment",names:["WO Khalek","SGT Sourav","CPL Akbar"]}
 ];
+
+let ranks = JSON.parse(JSON.stringify(DEFAULT_RANKS));
 
 const statuses=["On Parade","All Duty On","All Duty Off","Leave","QRF Duty","CMH","Form 295","Civil Tech","TD/Courier","Mess/Canteen","CMH SR/FMLY SR","CMH / M Room Admit","Milk Duty","EDP/PG/ITD C","BASAE Out/Exam","Under Clearance","GST/GH","Afternoon","Parade","Out of Parade","Attachment"];
 const statusShort={"On Parade":"On Parade","All Duty On":"Duty On","All Duty Off":"Duty Off","Leave":"Leave","QRF Duty":"QRF Duty","CMH":"CMH","Form 295":"Form 295","Civil Tech":"Civil Tech","TD/Courier":"TD/Courier","Mess/Canteen":"Mess/Canteen","CMH SR/FMLY SR":"CMH SR/FMLY SR","CMH / M Room Admit":"CMH / M Room Admit","Milk Duty":"Milk Duty","EDP/PG/ITD C":"EDP/PG/ITD C","BASAE Out/Exam":"BASAE Out/Exam","Under Clearance":"Under Clearance","GST/GH":"GST/GH","Afternoon":"Afternoon","Parade":"Parade","Out of Parade":"Out of Parade","Attachment":"Attachment"};
@@ -411,7 +415,17 @@ function rosterKey(){return "state-office-manpower-roster-v1"}
 
 function loadStore(){
  try{saved=JSON.parse(localStorage.getItem(key())||"{}")}catch(e){saved={}};
- try{const custom=JSON.parse(localStorage.getItem(rosterKey())||"null");if(Array.isArray(custom)&&custom.length){ranks=custom;rebuildPeople()}}catch(e){}
+ try{
+   const custom=JSON.parse(localStorage.getItem(rosterKey())||"null");
+   if(Array.isArray(custom) && custom.length > 0){
+     ranks = custom;
+   } else {
+     ranks = JSON.parse(JSON.stringify(DEFAULT_RANKS));
+   }
+ }catch(e){
+   ranks = JSON.parse(JSON.stringify(DEFAULT_RANKS));
+ }
+ rebuildPeople();
 }
 function persistStore(){localStorage.setItem(key(),JSON.stringify(saved))}
 function persistRoster(){localStorage.setItem(rosterKey(),JSON.stringify(ranks))}
@@ -750,7 +764,7 @@ $("prepRank").oninput = renderPrintState;
 function renderAll(reRoster=true){renderMetrics();renderTabs();refreshRankSelectors();if(reRoster)renderRoster();renderRankTable();renderDetails();renderPrintState()}
 
 function refreshRankSelectors(){
- const rf=$("rankFilter"),old=rf.value||"All ranks";rf.innerHTML='<option>All ranks</option>'+ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("");rf.value=["All ranks",...ranks.map(g.rank)].includes(old)?old:"All ranks";
+ const rf=$("rankFilter"),old=rf.value||"All ranks";rf.innerHTML='<option>All ranks</option>'+ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("");rf.value=["All ranks",...ranks.map(g=>g.rank)].includes(old)?old:"All ranks";
  const ar=$("addRank"),prev=ar.value;ar.innerHTML=ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("")+'<option value="__new__">New rank…</option>';ar.value=ranks.some(g=>g.rank===prev)?prev:(ranks[0]?.rank||"__new__");
 }
 
