@@ -18,41 +18,41 @@ body{background:var(--bg);font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,
 /* CINEMATIC HANGAR INTRO OVERLAY */
 #introOverlay{
  position:fixed;top:0;left:0;width:100vw;height:100vh;
- background:radial-gradient(circle at center, #0f2b22 0%, #040c09 80%);
+ background:radial-gradient(circle at center, #0f2b22 0%, #040c09 85%);
  z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;
  color:#fff;overflow:hidden;touch-action:none;transition:opacity 0.6s ease, visibility 0.6s;
 }
 
-.intro-scene{position:relative;width:320px;height:320px;display:flex;align-items:center;justify-content:center}
+.intro-stage{position:relative;width:340px;height:340px;display:flex;align-items:center;justify-content:center}
 
-/* STAGE 1: TECHNICIAN SALUTE SIGNAL */
+/* STAGE 1: TECHNICIAN GIVING SIGNAL */
 .tech-container{
  position:absolute;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
- animation:techSequence 2.5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+ animation:techFadeOut 2.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+ z-index:10;
 }
-.tech-svg{width:140px;height:auto;filter:drop-shadow(0 10px 10px rgba(0,0,0,0.8));animation:techSaluteMotion 1.2s ease-in-out infinite alternate}
-@keyframes techSaluteMotion{from{transform:translateY(0) rotate(0deg)}to{transform:translateY(-4px) rotate(1.5deg)}}
+.tech-svg{width:130px;height:auto;filter:drop-shadow(0 10px 15px rgba(0,0,0,0.8));animation:techSalute 1s infinite alternate}
+@keyframes techSalute{from{transform:translateY(0)}to{transform:translateY(-5px)}}
 
-.signal-bubble{
- position:absolute;top:20px;background:#d6f07a;color:#123b32;font-size:11px;font-weight:900;
- padding:6px 12px;border-radius:12px;box-shadow:0 4px 15px rgba(214,240,122,0.4);
- text-transform:uppercase;letter-spacing:1px;animation:fadeInOut 2.5s forwards;
+.signal-badge{
+ position:absolute;top:15px;background:#d6f07a;color:#123b32;font-size:11px;font-weight:900;
+ padding:6px 14px;border-radius:14px;box-shadow:0 4px 15px rgba(214,240,122,0.5);
+ text-transform:uppercase;letter-spacing:1px;animation:badgePop 0.4s ease-out;
 }
-@keyframes fadeInOut{0%{opacity:0;transform:scale(0.8)}20%{opacity:1;transform:scale(1)}80%{opacity:1}100%{opacity:0;transform:scale(0.9)}}
+@keyframes badgePop{from{transform:scale(0.5);opacity:0}to{transform:scale(1);opacity:1}}
 
-@keyframes techSequence{
- 0%{opacity:0;transform:scale(0.9)}
- 15%{opacity:1;transform:scale(1)}
- 80%{opacity:1;transform:scale(1)}
- 100%{opacity:0;transform:scale(1.1);visibility:hidden}
+@keyframes techFadeOut{
+ 0%{opacity:1;transform:scale(1)}
+ 75%{opacity:1;transform:scale(1)}
+ 100%{opacity:0;transform:scale(0.85);visibility:hidden}
 }
 
-/* STAGE 2: JET COCKPIT & TAKEOFF */
-.jet-takeoff-container{
+/* STAGE 2: AIRCRAFT (AC) PREPARATION & TAKEOFF */
+.ac-takeoff-container{
  position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;
- opacity:0;animation:jetSequence 3s 2.3s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+ opacity:0;animation:acFadeIn 3.5s 2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
-@keyframes jetSequence{0%{opacity:1}100%{opacity:1}}
+@keyframes acFadeIn{0%{opacity:0}20%{opacity:1}100%{opacity:1}}
 
 .runway-stage{position:absolute;width:100%;height:100%;top:0;left:0;overflow:hidden;perspective:500px}
 .runway-track{
@@ -68,21 +68,21 @@ body{background:var(--bg);font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,
 @keyframes runwaySpeed{from{transform:translateY(-500px)}to{transform:translateY(500px)}}
 
 .jet-viewport{position:relative;width:260px;height:260px;z-index:5;display:flex;align-items:center;justify-content:center}
-.jet-animator{position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;animation:jetLiftoff 3s cubic-bezier(0.25, 0.1, 0.25, 1) forwards}
-.fighter-svg{width:170px;height:auto;filter:drop-shadow(0 15px 12px rgba(0,0,0,0.8));transform:rotate(-25deg);z-index:2}
+.jet-animator{position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;animation:acLiftoff 3.2s 0.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards}
+.fighter-svg{width:180px;height:auto;filter:drop-shadow(0 15px 15px rgba(0,0,0,0.9));transform:rotate(-25deg);z-index:2}
 
 /* COCKPIT CANOPY CLOSING ANIMATION */
 .canopy-glass{
  transform-origin:bottom center;
- animation:closeCanopy 0.8s 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+ animation:closeCanopy 0.8s 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 @keyframes closeCanopy{
- 0%{transform:scaleY(0.3);opacity:0.4}
+ 0%{transform:scaleY(0.2);opacity:0.3}
  100%{transform:scaleY(1);opacity:0.85}
 }
 
 .afterburner-flame{
- position:absolute;bottom:18px;left:33%;transform:translateX(-50%) rotate(-25deg);
+ position:absolute;bottom:14px;left:33%;transform:translateX(-50%) rotate(-25deg);
  width:24px;height:0px;
  background:linear-gradient(to bottom, #ffffff 0%, #77ffff 15%, #ffcc00 45%, #ff3300 75%, transparent 100%);
  border-radius:50%;filter:blur(1px);z-index:1;
@@ -91,17 +91,17 @@ body{background:var(--bg);font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,
 }
 @keyframes ignitionFlame{
  0%{height:0px;opacity:0}
- 20%{height:40px;opacity:0.7}
- 40%{height:90px;opacity:1}
- 100%{height:120px;opacity:1;width:26px}
+ 25%{height:40px;opacity:0.8}
+ 50%{height:95px;opacity:1}
+ 100%{height:130px;opacity:1;width:28px}
 }
 
-@keyframes jetLiftoff{
- 0%{transform:translateY(180px) scale(0.6);opacity:1}
- 35%{transform:translateY(90px) scale(0.8) rotate(-2deg)}
- 60%{transform:translateY(0px) scale(1) rotate(-12deg)}
- 85%{transform:translateY(-150px) scale(1.5) rotate(-22deg)}
- 100%{transform:translateY(-900px) scale(3.2) rotate(-30deg);opacity:0}
+@keyframes acLiftoff{
+ 0%{transform:translateY(160px) scale(0.65);opacity:1}
+ 30%{transform:translateY(100px) scale(0.85) rotate(-2deg)}
+ 55%{transform:translateY(0px) scale(1) rotate(-12deg)}
+ 80%{transform:translateY(-160px) scale(1.6) rotate(-22deg)}
+ 100%{transform:translateY(-950px) scale(3.5) rotate(-32deg);opacity:0}
 }
 
 .intro-text-box{position:relative;z-index:10;text-align:center;margin-top:16px;padding:0 15px}
@@ -243,25 +243,22 @@ th{background:#f3f7f4;color:#3e5148}
 
 <!-- CINEMATIC HANGAR INTRO OVERLAY -->
 <div id="introOverlay">
- <div class="intro-scene">
+ <div class="intro-stage">
   
-  <!-- STAGE 1: TECHNICIAN SIGNAL -->
+  <!-- STAGE 1: TECHNICIAN GIVING SIGNAL -->
   <div class="tech-container">
-   <div class="signal-bubble">Final Signal: Clear for Takeoff!</div>
+   <div class="signal-badge">FLIGHT LINE SIGNAL: CLEAR TO TAXI!</div>
    <svg class="tech-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <!-- Technician Body -->
-    <path d="M100 40 C110 40 118 48 118 58 C118 68 110 76 100 76 C90 76 82 68 82 58 C82 48 90 40 100 40 Z" fill="#d6f07a"/>
-    <path d="M70 90 L130 90 L145 150 L125 155 L100 115 L75 155 L55 150 Z" fill="#2d5243" stroke="#d6f07a" stroke-width="3"/>
-    <!-- Saluting Arm -->
-    <path d="M70 95 Q40 80 55 60" stroke="#d6f07a" stroke-width="8" stroke-linecap="round"/>
-    <!-- Signaling Wand Arm -->
-    <path d="M130 95 Q165 70 155 50" stroke="#d6f07a" stroke-width="8" stroke-linecap="round"/>
-    <circle cx="155" cy="45" r="7" fill="#ff3300"/>
+    <path d="M100 35 C110 35 118 43 118 53 C118 63 110 71 100 71 C90 71 82 63 82 53 C82 43 90 35 100 35 Z" fill="#d6f07a"/>
+    <path d="M70 85 L130 85 L145 150 L125 155 L100 115 L75 155 L55 150 Z" fill="#2d5243" stroke="#d6f07a" stroke-width="3"/>
+    <path d="M70 90 Q35 70 50 50" stroke="#d6f07a" stroke-width="8" stroke-linecap="round"/>
+    <path d="M130 90 Q165 65 155 45" stroke="#d6f07a" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="155" cy="40" r="8" fill="#ff3300"/>
    </svg>
   </div>
 
-  <!-- STAGE 2: PILOT COCKPIT & JET TAKEOFF -->
-  <div class="jet-takeoff-container">
+  <!-- STAGE 2: AIRCRAFT (AC) PREPARATION & TAKEOFF -->
+  <div class="ac-takeoff-container">
    <div class="runway-stage">
     <div class="runway-track">
      <div class="runway-lines"></div>
@@ -301,7 +298,7 @@ th{background:#f3f7f4;color:#3e5148}
  <div class="eyebrow">Personnel & Daily State</div>
  <h1>State Office Manpower</h1>
  <p>Rank-wise roster · Daily disposal · Final available strength</p>
- <div class="sync-badge" id="syncStatus"><div class="sync-dot"></div> Live Cloud Sync</div>
+ <div class="sync-badge" id="syncStatus"><div class="sync-dot"></div> Live Sync</div>
 </header>
 
 <main>
@@ -450,16 +447,13 @@ th{background:#f3f7f4;color:#3e5148}
 function playJetSound() {
   try {
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    
-    // Low rumble engine idling / spooling up
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     
     osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(40, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(320, audioCtx.currentTime + 2.2);
+    osc.frequency.setValueAtTime(45, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(350, audioCtx.currentTime + 2.2);
     
-    // Jet roar white noise
     const bufferSize = audioCtx.sampleRate * 3;
     const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
     const output = noiseBuffer.getChannelData(0);
@@ -472,8 +466,8 @@ function playJetSound() {
     
     const filter = audioCtx.createBiquadFilter();
     filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(150, audioCtx.currentTime);
-    filter.frequency.exponentialRampToValueAtTime(1800, audioCtx.currentTime + 2.5);
+    filter.frequency.setValueAtTime(160, audioCtx.currentTime);
+    filter.frequency.exponentialRampToValueAtTime(2000, audioCtx.currentTime + 2.5);
     
     gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
     gain.gain.linearRampToValueAtTime(0.35, audioCtx.currentTime + 1.5);
@@ -485,12 +479,10 @@ function playJetSound() {
     
     whiteNoise.start();
     whiteNoise.stop(audioCtx.currentTime + 5.2);
-  } catch(e) {
-    console.log("Audio context suppressed");
-  }
+  } catch(e) {}
 }
 
-// FIREBASE DB (BUILT-IN CLOUD SYNC)
+// FIREBASE REALTIME CLOUD DB
 const firebaseConfig = {
   databaseURL: "https://hangar106-state-default-rtdb.firebaseio.com"
 };
@@ -499,9 +491,7 @@ let db = null;
 try {
   firebase.initializeApp(firebaseConfig);
   db = firebase.database();
-} catch(e) {
-  console.log("Offline mode initialized");
-}
+} catch(e) {}
 
 function exitOverlay() {
   const overlay = document.getElementById("introOverlay");
@@ -517,12 +507,10 @@ function exitOverlay() {
 }
 
 document.getElementById("skipIntroBtn").addEventListener("click", exitOverlay);
-setTimeout(() => {
-  playJetSound();
-}, 2200);
+setTimeout(() => playJetSound(), 1800);
 setTimeout(exitOverlay, 5500);
 
-/* DEFAULT MASTER ROSTER */
+/* PERMANENT MASTER MILITARY ROSTER */
 const DEFAULT_RANKS = [
  {rank:"MWO",names:["Shaheen","Nazrul"]},
  {rank:"SWO",names:["M. Ali","Kusru"]},
@@ -543,8 +531,10 @@ const statusShort={"On Parade":"On Parade","All Duty On":"Duty On","All Duty Off
 const militaryOrder=["MWO","SWO","WO","SGT","CPL","LAC","AC"];
 
 let people=[];
-function rebuildPeople(){people=[];ranks.forEach(g=>g.names.forEach((name,i)=>people.push({id:g.rank+"_"+i,rank:g.rank,name})));}
-rebuildPeople();
+function rebuildPeople(){
+ people=[];
+ ranks.forEach(g=>g.names.forEach((name,i)=>people.push({id:g.rank+"_"+i,rank:g.rank,name})));
+}
 
 function totalManpower(){return people.length}
 function militaryCount(){return people.filter(p=>militaryOrder.includes(p.rank)).length}
@@ -573,19 +563,15 @@ function loadStore(){
 
 function persistStore(){
  localStorage.setItem(key(),JSON.stringify(saved));
- if(db) {
-   db.ref("saved_records").set(saved);
- }
+ if(db) db.ref("saved_records").set(saved);
 }
 
 function persistRoster(){
  localStorage.setItem(rosterKey(),JSON.stringify(ranks));
- if(db) {
-   db.ref("master_ranks").set(ranks);
- }
+ if(db) db.ref("master_ranks").set(ranks);
 }
 
-// REALTIME CLOUD LISTENERS
+// REALTIME CLOUD SYNC LISTENERS
 if(db) {
  db.ref("master_ranks").on("value", (snapshot)=>{
    const val = snapshot.val();
@@ -946,10 +932,18 @@ function renderPrintState(){
 $("prepName").oninput = renderPrintState;
 $("prepRank").oninput = renderPrintState;
 
-function renderAll(reRoster=true){renderMetrics();renderTabs();refreshRankSelectors();if(reRoster)renderRoster();renderRankTable();renderDetails();renderPrintState()}
+function renderAll(reRoster=true){
+ renderMetrics();
+ renderTabs();
+ refreshRankSelectors();
+ if(reRoster) renderRoster();
+ renderRankTable();
+ renderDetails();
+ renderPrintState();
+}
 
 function refreshRankSelectors(){
- const rf=$("rankFilter"),old=rf.value||"All ranks";rf.innerHTML='<option>All ranks</option>'+ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("");rf.value=["All ranks",...ranks.map(g.rank)].includes(old)?old:"All ranks";
+ const rf=$("rankFilter"),old=rf.value||"All ranks";rf.innerHTML='<option>All ranks</option>'+ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("");rf.value=["All ranks",...ranks.map(g=>g.rank)].includes(old)?old:"All ranks";
  const ar=$("addRank"),prev=ar.value;ar.innerHTML=ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("")+'<option value="__new__">New rank…</option>';ar.value=ranks.some(g=>g.rank===prev)?prev:(ranks[0]?.rank||"__new__");
 }
 
@@ -1044,7 +1038,15 @@ $("addPersonBtn").onclick=()=>{
  $("newName").value="";$("newRank").value="";renderAll();alert("Manpower added successfully.");
 };
 
-loadStore();current=blank();if(saved[today()]){Object.assign(current,saved[today()].statuses||{});currentLeave={...(saved[today()].leaveDetails||{})}}refreshSaved();renderAll();
+// INITIAL LOAD Sequence
+loadStore();
+current = blank();
+if(saved[today()]){
+  Object.assign(current, saved[today()].statuses||{});
+  currentLeave = {...(saved[today()].leaveDetails||{})};
+}
+refreshSaved();
+renderAll();
 </script>
 </body>
 </html>
