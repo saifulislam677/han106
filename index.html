@@ -749,6 +749,31 @@ function editPerson(id){
  persistRoster();persistStore();renderAll();
 }
 
+function addPerson(){
+ const selectedRank = $("addRank").value;
+ const customRank = $("newRank").value.trim();
+ const name = $("newName").value.trim();
+ 
+ const rank = (selectedRank === "__new__" || customRank) ? customRank : selectedRank;
+ if(!rank) return alert("Please specify a rank.");
+ if(!name) return alert("Please enter a name.");
+ 
+ let group = ranks.find(g => g.rank.toLowerCase() === rank.toLowerCase());
+ if(!group){
+   group = {rank, names: []};
+   ranks.push(group);
+ }
+ group.names.push(name);
+ $("newName").value = "";
+ $("newRank").value = "";
+ 
+ rebuildPeople();
+ persistRoster();
+ renderAll();
+}
+
+$("addPersonBtn").onclick = addPerson;
+
 function renderRankTable(){
  const reportStatuses=statuses.filter(s=>s!=="Form 295"||countStatus("Form 295")>0);
  let html="<table><thead><tr><th>Rank</th><th>Total</th>"+reportStatuses.map(s=>`<th>${esc(statusShort[s])}</th>`).join("")+"<th>Available</th></tr></thead><tbody>";
@@ -969,7 +994,7 @@ function renderAll(reRoster=true){
 }
 
 function refreshRankSelectors(){
- const rf=$("rankFilter"),old=rf.value||"All ranks";rf.innerHTML='<option>All ranks</option>'+ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("");rf.value=["All ranks",...ranks.map(g.rank)].includes(old)?old:"All ranks";
+ const rf=$("rankFilter"),old=rf.value||"All ranks";rf.innerHTML='<option>All ranks</option>'+ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("");rf.value=["All ranks",...ranks.map(g=>g.rank)].includes(old)?old:"All ranks";
  const ar=$("addRank"),prev=ar.value;ar.innerHTML=ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("")+'<option value="__new__">New rank…</option>';ar.value=ranks.some(g=>g.rank===prev)?prev:(ranks[0]?.rank||"__new__");
 }
 
