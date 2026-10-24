@@ -8,165 +8,149 @@
 <style>
 :root{--green:#123b32;--lime:#d6f07a;--bg:#f3f6f4;--card:#fff;--ink:#182521;--muted:#687771;--line:#dce5df;--red:#a33232}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+body{margin:0;background:var(--bg);font:14px/1.3 system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden}
 
-/* --- FIGHTER JET TAKEOFF INTRO OVERLAY --- */
+/* FIGHTER JET INTRO OVERLAY */
 #introOverlay{
  position:fixed;top:0;left:0;width:100vw;height:100vh;
  background:radial-gradient(circle at bottom, #0d221a 0%, #030807 75%);
  z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;
  color:#fff;overflow:hidden;touch-action:none;transition:opacity 0.4s ease, visibility 0.4s;
 }
-
-/* RUNWAY PERSPECTIVE TRACK */
 .runway-stage{position:absolute;width:100%;height:100%;top:0;left:0;overflow:hidden;perspective:500px}
 .runway-track{
- position:absolute;bottom:-10%;left:50%;width:240px;height:120vh;margin-left:-120px;
+ position:absolute;bottom:-10%;left:50%;width:220px;height:120vh;margin-left:-110px;
  background:#111714;transform:rotateX(72deg);transform-origin:bottom center;
  border-left:3px stroke #324a40;border-right:3px stroke #324a40;
  box-shadow:0 0 30px rgba(0,0,0,0.9);
 }
 .runway-lines{
- position:absolute;width:8px;height:200%;left:50%;margin-left:-4px;
- background:repeating-linear-gradient(to bottom, #d6f07a 0px, #d6f07a 35px, transparent 35px, transparent 80px);
+ position:absolute;width:6px;height:200%;left:50%;margin-left:-3px;
+ background:repeating-linear-gradient(to bottom, #d6f07a 0px, #d6f07a 30px, transparent 30px, transparent 70px);
  animation:runwaySpeed 5s linear infinite;
 }
 @keyframes runwaySpeed{from{transform:translateY(-500px)}to{transform:translateY(500px)}}
 
-/* FIGHTER JET ENGINE & AFTERBURNER */
-.jet-viewport{position:relative;width:260px;height:260px;z-index:5;display:flex;align-items:center;justify-content:center}
+.jet-viewport{position:relative;width:240px;height:240px;z-index:5;display:flex;align-items:center;justify-content:center}
 .jet-animator{position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;animation:jetTakeoff 5.5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards}
+.fighter-svg{width:160px;height:auto;filter:drop-shadow(0 15px 12px rgba(0,0,0,0.8));transform:rotate(-25deg);z-index:2}
 
-.fighter-svg{width:180px;height:auto;filter:drop-shadow(0 15px 12px rgba(0,0,0,0.8));transform:rotate(-25deg);z-index:2}
-
-/* AFTERBURNER FIRE EFFECT */
 .afterburner-flame{
  position:absolute;bottom:22px;left:33%;transform:translateX(-50%) rotate(-25deg);
- width:22px;height:95px;
+ width:20px;height:90px;
  background:linear-gradient(to bottom, #ffffff 0%, #77ffff 15%, #ffcc00 45%, #ff3300 75%, transparent 100%);
  border-radius:50%;filter:blur(1px);z-index:1;
  animation:flamePulse 0.04s infinite alternate;
  box-shadow:0 0 20px #ff6600, 0 0 40px #ffaa00;
 }
-.shock-diamond{
- position:absolute;bottom:10px;left:33%;transform:translateX(-50%) rotate(45deg);
- width:10px;height:10px;background:#fff;border:1px solid #77ffff;z-index:2;
- animation:diamondPulse 0.06s infinite alternate;
-}
+@keyframes flamePulse{from{height:75px;opacity:0.85;width:16px}to{height:100px;opacity:1;width:22px}}
 
-@keyframes flamePulse{from{height:80px;opacity:0.85;width:18px}to{height:110px;opacity:1;width:24px}}
-@keyframes diamondPulse{from{transform:translateX(-50%) rotate(45deg) scale(0.8)}to{transform:translateX(-50%) rotate(45deg) scale(1.3)}}
-
-/* TAKEOFF ANIMATION STEPS */
 @keyframes jetTakeoff{
  0%{transform:translateY(260px) scale(0.35);opacity:0}
  15%{transform:translateY(180px) scale(0.5);opacity:1}
  40%{transform:translateY(80px) scale(0.75) rotate(-2deg)}
- 60%{transform:translateY(-10px) scale(0.95) rotate(-10deg)} /* Nose Lift */
- 78%{transform:translateY(-120px) scale(1.3) rotate(-20deg)} /* Airborne */
- 100%{transform:translateY(-1100px) scale(3.5) rotate(-32deg);opacity:0} /* Supersonic Acceleration */
+ 60%{transform:translateY(-10px) scale(0.95) rotate(-10deg)}
+ 78%{transform:translateY(-120px) scale(1.3) rotate(-20deg)}
+ 100%{transform:translateY(-1100px) scale(3.5) rotate(-32deg);opacity:0}
 }
 
-.intro-text-box{position:relative;z-index:10;text-align:center;margin-top:15px;padding:0 20px}
-.intro-title{font-size:22px;color:#d6f07a;margin:0 0 6px;letter-spacing:1.5px;text-transform:uppercase;font-weight:900;text-shadow:0 0 12px rgba(214,240,122,0.6)}
-.intro-subtitle{font-size:13px;color:#cbd8d0;margin:0;font-weight:700;letter-spacing:0.5px}
-
-.intro-progress-bar{position:absolute;bottom:0;left:0;height:4px;background:#d6f07a;box-shadow:0 0 10px #d6f07a;width:0%;animation:progressBar 5.5s linear forwards}
+.intro-text-box{position:relative;z-index:10;text-align:center;margin-top:12px;padding:0 15px}
+.intro-title{font-size:20px;color:#d6f07a;margin:0 0 4px;letter-spacing:1px;text-transform:uppercase;font-weight:900}
+.intro-subtitle{font-size:12px;color:#cbd8d0;margin:0;font-weight:700}
+.intro-progress-bar{position:absolute;bottom:0;left:0;height:4px;background:#d6f07a;width:0%;animation:progressBar 5.5s linear forwards}
 @keyframes progressBar{from{width:0%}to{width:100%}}
 
 .skip-btn{
- position:absolute;bottom:25px;z-index:20;
+ position:absolute;bottom:20px;z-index:20;
  background:rgba(212,240,122,0.25);border:1.5px solid #d6f07a;color:#d6f07a;
- padding:12px 26px;border-radius:25px;font-size:13px;font-weight:800;
+ padding:10px 22px;border-radius:20px;font-size:12px;font-weight:800;
  cursor:pointer;letter-spacing:1px;touch-action:manipulation;
- shadow:0 4px 15px rgba(0,0,0,0.5);
 }
 
-/* APP LAYOUT & STYLING */
-header{background:var(--green);color:#fff;padding:16px 14px}
-header .eyebrow{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#d6f07a;font-weight:800}
-h1{font-size:22px;line-height:1.15;margin:4px 0}
-header p{margin:0;color:#d8e5df;font-size:13px}
-main{max-width:1100px;margin:auto;padding:12px;display:grid;gap:12px;position:relative;z-index:1}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:0 2px 8px #123b3208}
-.card h2{font-size:16px;margin:0 0 10px}
-.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.row>*{flex:1;min-width:140px}
-label{display:block;font-size:11px;color:var(--muted);font-weight:700;margin-bottom:4px}
+/* MAIN APP & RESPONSIVE COMPACT ROSTER */
+header{background:var(--green);color:#fff;padding:12px 12px}
+header .eyebrow{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:#d6f07a;font-weight:800}
+h1{font-size:18px;line-height:1.15;margin:2px 0}
+header p{margin:0;color:#d8e5df;font-size:12px}
+main{max-width:1100px;margin:auto;padding:8px;display:grid;gap:8px;position:relative;z-index:1}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;box-shadow:0 1px 4px #123b3208}
+.card h2{font-size:14px;margin:0 0 8px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row>*{flex:1;min-width:120px}
+label{display:block;font-size:10px;color:var(--muted);font-weight:700;margin-bottom:2px}
 input,select,button{font:inherit;touch-action:manipulation}
-input[type=date],input[type=search],input[type=text],select{width:100%;padding:10px 12px;border:1px solid #cbd8d0;border-radius:8px;background:#fff;color:var(--ink);font-size:14px}
-button{border:0;border-radius:8px;padding:10px 14px;font-weight:750;cursor:pointer;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px}
+input[type=date],input[type=search],input[type=text],select{width:100%;padding:6px 10px;border:1px solid #cbd8d0;border-radius:6px;background:#fff;color:var(--ink);font-size:13px}
+button{border:0;border-radius:6px;padding:8px 12px;font-weight:750;cursor:pointer;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:36px}
 button.secondary{background:#e8efeb;color:var(--green)}
 button.danger{background:#fff0f0;color:var(--red);border:1px solid #f0cccc}
-button.small{padding:5px 8px;font-size:11px;min-height:30px}
+button.small{padding:4px 6px;font-size:11px;min-height:28px}
 
-.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
-.metric{background:#f3f7f4;border:1px solid var(--line);border-radius:10px;padding:10px}
-.metric strong{display:block;font-size:20px;line-height:1.1}
-.metric span{font-size:11px;color:var(--muted)}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:6px}
+.metric{background:#f3f7f4;border:1px solid var(--line);border-radius:8px;padding:8px}
+.metric strong{display:block;font-size:18px;line-height:1}
+.metric span{font-size:10px;color:var(--muted)}
 
-.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
-.tab{white-space:nowrap;background:#e8efeb;color:var(--green);padding:8px 10px;font-size:12px;border-radius:6px;flex-shrink:0}
+.tabs{display:flex;gap:4px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.tab{white-space:nowrap;background:#e8efeb;color:var(--green);padding:6px 8px;font-size:11px;border-radius:5px;flex-shrink:0}
 .tab.active{background:var(--green);color:#fff}
-.hint{font-size:11px;color:var(--muted);margin:6px 0 0}
+.hint{font-size:10px;color:var(--muted);margin:4px 0 0}
 
-.rank-block{border:1px solid var(--line);border-radius:10px;margin-top:8px;overflow:hidden}
-.rank-head{background:#f2f6f3;padding:8px 10px;display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:13px}
-.person{display:flex;gap:8px;align-items:center;padding:10px;border-top:1px solid #edf1ee;flex-wrap:wrap}
-.person .name{flex:1 1 180px;min-width:0}
-.person small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
-.person select{flex:1 1 120px;max-width:100%;padding:8px;font-size:12px}
-.person-actions{display:flex;gap:4px;flex-shrink:0}
+.rank-block{border:1px solid var(--line);border-radius:8px;margin-top:6px;overflow:hidden}
+.rank-head{background:#f2f6f3;padding:6px 8px;display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:12px}
+.person{display:flex;gap:8px;align-items:center;padding:6px 8px;border-top:1px solid #edf1ee;flex-wrap:wrap}
+.person .name-box{display:flex;flex-direction:column;min-width:140px;max-width:220px;flex:1 1 auto}
+.person .name-box b{font-size:13px;line-height:1.1}
+.person .name-box small{color:var(--muted);font-size:10px;margin-top:1px}
+.person select{width:auto;min-width:140px;max-width:180px;padding:4px 6px;font-size:12px;margin:0;flex:0 1 auto}
+.person-actions{display:flex;gap:4px;margin-left:auto}
 
 .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-table{width:100%;border-collapse:collapse;font-size:12px}
-th,td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th,td{padding:6px 5px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
 th{background:#f3f7f4;color:#3e5148}
-.empty{color:var(--muted);padding:10px 0}
-.foot{font-size:11px;color:var(--muted);text-align:center;padding:10px}
-.statusnote{padding:8px 10px;border-radius:8px;background:#fff8df;color:#66531c;font-size:11px;margin-top:8px}
+.empty{color:var(--muted);padding:8px 0}
+.foot{font-size:10px;color:var(--muted);text-align:center;padding:8px}
+.statusnote{padding:6px 8px;border-radius:6px;background:#fff8df;color:#66531c;font-size:10px;margin-top:6px}
 .hidden{display:none!important}
 
 /* LEAVE MODAL STYLES */
-.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:15px;backdrop-filter:blur(2px)}
-.modal-card{background:#fff;border-radius:14px;width:100%;max-width:420px;padding:20px;box-shadow:0 10px 25px rgba(0,0,0,0.2);animation:popIn 0.2s ease-out}
-@keyframes popIn{from{transform:scale(0.92);opacity:0}to{transform:scale(1);opacity:1}}
-.modal-card h3{margin:0 0 4px;font-size:18px;color:var(--green)}
-.modal-card p{margin:0 0 14px;font-size:12px;color:var(--muted)}
-.modal-form{display:flex;flex-direction:column;gap:12px}
-.modal-actions{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:12px;backdrop-filter:blur(2px)}
+.modal-card{background:#fff;border-radius:12px;width:100%;max-width:380px;padding:16px;box-shadow:0 8px 20px rgba(0,0,0,0.2)}
+.modal-card h3{margin:0 0 2px;font-size:16px;color:var(--green)}
+.modal-card p{margin:0 0 10px;font-size:11px;color:var(--muted)}
+.modal-form{display:flex;flex-direction:column;gap:8px}
+.modal-actions{display:flex;gap:6px;margin-top:12px;justify-content:flex-end}
 
-#screenPreviewWrapper{background:#fff;border:2px solid var(--green);border-radius:10px;padding:12px;margin-top:12px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+#screenPreviewWrapper{background:#fff;border:2px solid var(--green);border-radius:8px;padding:8px;margin-top:8px;overflow-x:auto;-webkit-overflow-scrolling:touch}
 
-/* PRINT TOP HEADER & GRID STYLING */
-.print-top-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:4px;font-weight:bold;font-size:10px;border-bottom:1px solid #000;padding-bottom:2px}
-.print-top-header .unit-title{font-size:11px;text-transform:uppercase}
-.print-top-header .doc-title{font-size:12px;text-transform:uppercase;text-decoration:underline}
-.print-top-header .date-str{font-size:10px}
+/* PRINT SHEET STYLING */
+.print-top-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:4px;font-weight:bold;font-size:9px;border-bottom:1px solid #000;padding-bottom:2px}
+.print-top-header .unit-title{font-size:10px;text-transform:uppercase}
+.print-top-header .doc-title{font-size:11px;text-transform:uppercase;text-decoration:underline}
+.print-top-header .date-str{font-size:9px}
 
 .print-grid{width:100%;border-collapse:collapse;table-layout:fixed;font-size:8px}
 .print-grid th,.print-grid td{border:1px solid #000;padding:2px 1px;text-align:center;white-space:normal;overflow-wrap:anywhere}
 .print-grid th{font-weight:bold;background:#f0f0f0!important}
-.print-grid th.vertical{height:80px;vertical-align:bottom;writing-mode:vertical-rl;transform:rotate(180deg);padding:2px 1px;font-size:7.5px}
+.print-grid th.vertical{height:75px;vertical-align:bottom;writing-mode:vertical-rl;transform:rotate(180deg);padding:2px 1px;font-size:7.5px}
 .print-grid .rankcol{text-align:left;width:6%;font-weight:bold;writing-mode:horizontal-tb;transform:none;height:auto;font-size:8px}
 .print-grid .totalrow{font-weight:bold;background:#eee!important}
 
-/* 4-COLUMN LAYOUT BELOW GRID */
-.print-layout-container{display:grid;grid-template-columns:1.1fr 1.1fr 1.8fr 1.1fr;gap:10px;margin-top:8px;align-items:start}
-.print-col{display:flex;flex-direction:column;gap:8px}
+.print-layout-container{display:grid;grid-template-columns:1.1fr 1.1fr 1.8fr 1.1fr;gap:8px;margin-top:6px;align-items:start}
+.print-col{display:flex;flex-direction:column;gap:6px}
 
 .print-block{break-inside:avoid}
-.print-block h3{font-size:8.5px;text-decoration:underline;margin:0 0 3px;font-weight:bold;text-transform:uppercase}
+.print-block h3{font-size:8.5px;text-decoration:underline;margin:0 0 2px;font-weight:bold;text-transform:uppercase}
 .print-block ol{margin:0;padding-left:0;list-style:none}
-.print-block li{margin:0 0 1.5px;line-height:1.1;font-size:7.5px;display:flex;gap:4px}
-.print-block li .item-num{width:14px;text-align:right;flex-shrink:0;font-weight:bold}
+.print-block li{margin:0 0 1px;line-height:1.1;font-size:7.5px;display:flex;gap:3px}
+.print-block li .item-num{width:12px;text-align:right;flex-shrink:0;font-weight:bold}
 .print-block li .item-text{flex:1}
 
-.on-parade-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 8px}
+.on-parade-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 6px}
 
-.signatures-bottom{display:grid;grid-template-columns:1.2fr 1.8fr 1.2fr;margin-top:15px;align-items:end}
-.signatures-bottom div{text-align:center;font-size:8.5px}
-.signatures-bottom b{display:block;text-decoration:underline;margin-bottom:14px}
+.signatures-bottom{display:grid;grid-template-columns:1.2fr 1.8fr 1.2fr;margin-top:12px;align-items:end}
+.signatures-bottom div{text-align:center;font-size:8px}
+.signatures-bottom b{display:block;text-decoration:underline;margin-bottom:10px}
 
 @media(min-width:780px){
  main{grid-template-columns:1fr 1fr;align-items:start}
@@ -174,10 +158,11 @@ th{background:#f3f7f4;color:#3e5148}
 }
 
 @media(max-width:779px){
- .print-layout-container{grid-template-columns:1fr;gap:10px}
+ .print-layout-container{grid-template-columns:1fr;gap:8px}
+ .person{gap:6px}
+ .person select{min-width:110px}
 }
 
-/* STRICT SINGLE PAGE PRINT RULES */
 @media print{
  @page{size:A4 landscape;margin:3mm 3mm 3mm 3mm}
  html, body{height:100%;background:#fff;font-size:7.5px;color:#000;margin:0;padding:0;overflow:hidden}
@@ -187,9 +172,9 @@ th{background:#f3f7f4;color:#3e5148}
  #printState{display:block!important}
  #screenPreviewWrapper{border:0;padding:0;margin:0}
  .print-grid th{background:#fff!important}
- .print-layout-container{grid-template-columns:1.1fr 1.1fr 1.8fr 1.1fr;gap:10px}
+ .print-layout-container{grid-template-columns:1.1fr 1.1fr 1.8fr 1.1fr;gap:8px}
  .signatures-bottom{margin-top:10px}
- .signatures-bottom b{margin-bottom:10px}
+ .signatures-bottom b{margin-bottom:8px}
 }
 </style>
 </head>
@@ -205,7 +190,6 @@ th{background:#f3f7f4;color:#3e5148}
  
  <div class="jet-viewport">
   <div class="jet-animator">
-   <!-- Pure Vector F-7 Fighter Jet (100% Reliable, Cannot Break) -->
    <svg class="fighter-svg" viewBox="0 0 300 500" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M150 5 L165 140 L188 280 L198 425 L180 440 L120 440 L102 425 L112 280 L135 140 Z" fill="#b0c0b8" stroke="#485b52" stroke-width="3"/>
     <path d="M112 240 L8 385 L102 400 L112 320 Z" fill="#95a8a0" stroke="#485b52" stroke-width="3"/>
@@ -216,9 +200,7 @@ th{background:#f3f7f4;color:#3e5148}
     <path d="M144 75 Q150 55 156 75 L158 145 Q150 155 142 145 Z" fill="#52cbe3" opacity="0.85" stroke="#1c5763" stroke-width="2"/>
     <rect x="134" y="440" width="32" height="12" fill="#222" rx="2"/>
    </svg>
-   
    <div class="afterburner-flame"></div>
-   <div class="shock-diamond"></div>
   </div>
  </div>
 
@@ -241,7 +223,7 @@ th{background:#f3f7f4;color:#3e5148}
 <section class="card wide no-print">
  <div class="row">
   <div class="datebox"><label for="stateDate">STATE DATE</label><input id="stateDate" type="date"></div>
-  <div style="display:flex;gap:8px;align-items:end;flex-wrap:wrap;flex:2">
+  <div style="display:flex;gap:6px;align-items:end;flex-wrap:wrap;flex:2">
    <button id="saveBtn">Save daily state</button>
    <button class="secondary" id="togglePreviewBtn">Toggle Sheet Preview</button>
    <button class="secondary" id="printBtn">Print state (1 Page)</button>
@@ -278,23 +260,23 @@ th{background:#f3f7f4;color:#3e5148}
 <section class="card no-print" id="editorArea">
  <h2>Assign & Manage Personnel</h2>
  <div class="tabs" id="statusTabs"></div>
- <div class="row" style="margin-top:12px">
+ <div class="row" style="margin-top:8px">
   <div><label for="rankFilter">FILTER BY RANK</label><select id="rankFilter"><option>All ranks</option></select></div>
   <div><label for="search">SEARCH NAME</label><input id="search" type="search" placeholder="Type a name or rank"></div>
  </div>
  
- <div class="card" style="margin:12px 0;background:#f8faf8;box-shadow:none">
-  <h2 style="margin-bottom:10px">Add Manpower (All Ranks, Civilian & Attachment)</h2>
+ <div class="card" style="margin:8px 0;background:#f8faf8;box-shadow:none">
+  <h2 style="margin-bottom:6px">Add Manpower (All Ranks, Civilian & Attachment)</h2>
   <div class="row">
    <div><label for="addRank">RANK / CATEGORY</label><select id="addRank"></select></div>
-   <div><label for="newRank">NEW RANK (OPTIONAL)</label><input id="newRank" type="text" placeholder="Enter custom rank name"></div>
-   <div><label for="newName">PERSONNEL NAME</label><input id="newName" type="text" placeholder="Enter full name"></div>
+   <div><label for="newRank">NEW RANK (OPTIONAL)</label><input id="newRank" type="text" placeholder="Custom rank"></div>
+   <div><label for="newName">PERSONNEL NAME</label><input id="newName" type="text" placeholder="Full name"></div>
   </div>
-  <div style="margin-top:10px"><button id="addPersonBtn" type="button">Add Person</button></div>
+  <div style="margin-top:8px"><button id="addPersonBtn" type="button">Add Person</button></div>
  </div>
 
- <div class="card" style="margin:12px 0;background:#f8faf8;box-shadow:none">
-  <h2 style="margin-bottom:10px">Edit "PREPARED BY" Signature</h2>
+ <div class="card" style="margin:8px 0;background:#f8faf8;box-shadow:none">
+  <h2 style="margin-bottom:6px">Edit "PREPARED BY" Signature</h2>
   <div class="row">
    <div><label for="prepName">NAME</label><input id="prepName" type="text" value="PARVEZ"></div>
    <div><label for="prepRank">RANK</label><input id="prepRank" type="text" value="SGT"></div>
@@ -302,7 +284,7 @@ th{background:#f3f7f4;color:#3e5148}
  </div>
 
  <div id="roster"></div>
- <div class="row" style="margin-top:12px">
+ <div class="row" style="margin-top:8px">
   <button class="secondary" id="assignAllBtn">Set filtered people to selected status</button>
   <button class="secondary" id="clearFilterBtn">Clear filters</button>
  </div>
@@ -311,13 +293,13 @@ th{background:#f3f7f4;color:#3e5148}
 <section class="card no-print" id="reportArea">
  <h2>Final state report & PC Backup</h2>
  <div id="reportSummary"></div>
- <div class="row" style="margin:12px 0">
+ <div class="row" style="margin:8px 0">
   <button class="secondary" id="exportBackup">Backup to PC File (.JSON)</button>
   <button class="secondary" id="importBtn">Restore from PC File</button>
   <input id="importFile" type="file" accept="application/json" class="hidden">
  </div>
- <h2 style="margin-top:16px">Rank-wise status count</h2><div class="tablewrap" id="rankTable"></div>
- <h2 style="margin-top:16px">Personnel by status</h2><div id="statusDetails"></div>
+ <h2 style="margin-top:12px">Rank-wise status count</h2><div class="tablewrap" id="rankTable"></div>
+ <h2 style="margin-top:12px">Personnel by status</h2><div id="statusDetails"></div>
 </section>
 
 <!-- PRINT-ONLY AREA -->
@@ -380,7 +362,6 @@ th{background:#f3f7f4;color:#3e5148}
 <div class="foot no-print">State Office Manpower · Local-device edition</div>
 
 <script>
-// CLEAN & SAFE OVERLAY DISMISSAL
 function exitOverlay() {
   const overlay = document.getElementById("introOverlay");
   if (overlay) {
@@ -409,8 +390,8 @@ let ranks=[
  {rank:"Attachment",names:["WO Khalek","SGT Sourav","CPL Akbar"]}
 ];
 
-const statuses=["All Duty On","All Duty Off","Leave","QRF Duty","CMH","Form 295","On Parade","Civil Tech","TD/Courier","Mess/Canteen","CMH SR/FMLY SR","CMH / M Room Admit","Milk Duty","EDP/PG/ITD C","BASAE Out/Exam","Under Clearance","GST/GH","Afternoon","Parade","Out of Parade","Attachment"];
-const statusShort={"All Duty On":"Duty On","All Duty Off":"Duty Off","Leave":"Leave","QRF Duty":"QRF Duty","CMH":"CMH","Form 295":"Form 295","On Parade":"On Parade","Civil Tech":"Civil Tech","TD/Courier":"TD/Courier","Mess/Canteen":"Mess/Canteen","CMH SR/FMLY SR":"CMH SR/FMLY SR","CMH / M Room Admit":"CMH / M Room Admit","Milk Duty":"Milk Duty","EDP/PG/ITD C":"EDP/PG/ITD C","BASAE Out/Exam":"BASAE Out/Exam","Under Clearance":"Under Clearance","GST/GH":"GST/GH","Afternoon":"Afternoon","Parade":"Parade","Out of Parade":"Out of Parade","Attachment":"Attachment"};
+const statuses=["On Parade","All Duty On","All Duty Off","Leave","QRF Duty","CMH","Form 295","Civil Tech","TD/Courier","Mess/Canteen","CMH SR/FMLY SR","CMH / M Room Admit","Milk Duty","EDP/PG/ITD C","BASAE Out/Exam","Under Clearance","GST/GH","Afternoon","Parade","Out of Parade","Attachment"];
+const statusShort={"On Parade":"On Parade","All Duty On":"Duty On","All Duty Off":"Duty Off","Leave":"Leave","QRF Duty":"QRF Duty","CMH":"CMH","Form 295":"Form 295","Civil Tech":"Civil Tech","TD/Courier":"TD/Courier","Mess/Canteen":"Mess/Canteen","CMH SR/FMLY SR":"CMH SR/FMLY SR","CMH / M Room Admit":"CMH / M Room Admit","Milk Duty":"Milk Duty","EDP/PG/ITD C":"EDP/PG/ITD C","BASAE Out/Exam":"BASAE Out/Exam","Under Clearance":"Under Clearance","GST/GH":"GST/GH","Afternoon":"Afternoon","Parade":"Parade","Out of Parade":"Out of Parade","Attachment":"Attachment"};
 
 const militaryOrder=["MWO","SWO","WO","SGT","CPL","LAC","AC"];
 
@@ -421,10 +402,11 @@ rebuildPeople();
 function totalManpower(){return people.length}
 function militaryCount(){return people.filter(p=>militaryOrder.includes(p.rank)).length}
 const $=id=>document.getElementById(id);
-let current={},currentLeave={},activeStatus="Leave",saved={},activeLeavePersonId=null;
+let current={},currentLeave={},activeStatus="On Parade",saved={},activeLeavePersonId=null;
 
 const today=()=>{let d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
-function blank(){const x={};people.forEach(p=>x[p.id]="All Duty On");return x}
+/* DEFAULT EVERYONE TO ON PARADE */
+function blank(){const x={};people.forEach(p=>x[p.id]="On Parade");return x}
 function key(){return "state-office-manpower-v1"}
 function rosterKey(){return "state-office-manpower-roster-v1"}
 
@@ -465,11 +447,11 @@ function renderRoster(){
      leaveText = ` · (${esc(leave.type)} wef ${esc(displayDate(leave.from))} to ${esc(displayDate(leave.to))})`;
    }
    html+=`<div class="person">
-     <div class="name"><b>${esc(p.name)}</b><small>${esc(p.rank)} · Current: ${esc(current[p.id])}${leaveText}</small></div>
+     <div class="name-box"><b>${esc(p.name)}</b><small>${esc(p.rank)}${leaveText}</small></div>
      <select aria-label="Status for ${esc(p.rank+" "+p.name)}" data-person="${esc(p.id)}">${statusOptions(current[p.id])}</select>
      <div class="person-actions">
        <button class="secondary small edit-person no-print" data-edit="${esc(p.id)}">Edit</button>
-       <button class="danger small delete-person no-print" data-delete="${esc(p.id)}">Delete</button>
+       <button class="danger small delete-person no-print" data-delete="${esc(p.id)}">Del</button>
      </div>
    </div>`;
   });
@@ -545,7 +527,7 @@ function editPerson(id){
  const newRankInput=prompt("Edit rank:",person.rank);if(newRankInput===null)return;
  const rank=newRankInput.trim();if(!rank)return alert("Rank cannot be empty.");
  
- const oldRank=person.rank,oldName=person.name,oldId=person.id,oldStatus=current[oldId]||"All Duty On",oldLeave=currentLeave[oldId];
+ const oldRank=person.rank,oldName=person.name,oldId=person.id,oldStatus=current[oldId]||"On Parade",oldLeave=currentLeave[oldId];
  const oldGroup=ranks.find(g=>g.rank===oldRank);if(oldGroup)oldGroup.names=oldGroup.names.filter((n,i)=>!(n===oldName&&oldRank===person.rank&&i===Number(oldId.split("_").pop())));
  let newGroup=ranks.find(g=>g.rank.toLowerCase()===rank.toLowerCase());if(!newGroup){newGroup={rank,names:[]};ranks.push(newGroup)}
  newGroup.names.push(name);
@@ -571,7 +553,7 @@ function renderDetails(){
  $("reportSummary").innerHTML=`<p><b>Daily state date:</b> ${esc(date())}</p><p><b>Total listed:</b> ${totalManpower()} &nbsp; <b>Available:</b> ${available()} &nbsp; <b>Not available:</b> ${totalManpower()-available()}</p>`;
  $("statusDetails").innerHTML=statuses.filter(s=>s!=="Form 295"||countStatus("Form 295")>0).map(s=>{
   const list=people.filter(p=>current[p.id]===s);
-  return `<div class="rank-block"><div class="rank-head"><span>${esc(s)}</span><span class="count-pill">${list.length} personnel</span></div><div style="padding:8px 10px">${list.length?list.map(p=>`<span style="display:inline-block;margin:3px 5px 3px 0;padding:4px 8px;border:1px solid var(--line);border-radius:8px">${esc(p.rank)} ${esc(p.name)}${s==="Leave"&&currentLeave[p.id]?` (${esc(currentLeave[p.id].type||"A/L")} wef ${esc(displayDate(currentLeave[p.id].from))} to ${esc(displayDate(currentLeave[p.id].to))})`:""}</span>`).join(""):'<span class="empty">None assigned</span>'}</div></div>`;
+  return `<div class="rank-block"><div class="rank-head"><span>${esc(s)}</span><span class="count-pill">${list.length} personnel</span></div><div style="padding:6px 8px">${list.length?list.map(p=>`<span style="display:inline-block;margin:2px 4px 2px 0;padding:3px 6px;border:1px solid var(--line);border-radius:6px;font-size:11px">${esc(p.rank)} ${esc(p.name)}${s==="Leave"&&currentLeave[p.id]?` (${esc(currentLeave[p.id].type||"A/L")} wef ${esc(displayDate(currentLeave[p.id].from))} to ${esc(displayDate(currentLeave[p.id].to))})`:""}</span>`).join(""):'<span class="empty">None assigned</span>'}</div></div>`;
  }).join("");
 }
 
@@ -673,8 +655,11 @@ function generateListsHTML(){
   let itemsHtml = list.map(p=>{
    let numStr = numCount++;
    let textContent="";
+   
+   /* REMOVE RANK PREFIX FROM ATTACHMENT NAMES IN PRINT */
    if(key==="ATTACHMENT"){
-     textContent = `${esc(p.rank)} ${esc(p.name)}`;
+     let cleanName = p.name.replace(/^(MWO|SWO|WO|SGT|CPL|LAC|AC)\s+/i, "");
+     textContent = esc(cleanName);
    } else if(key==="Leave"){
      const lv=currentLeave[p.id]||{};
      const typeStr=lv.type||"A/L";
