@@ -43,7 +43,7 @@ button{border:0;border-radius:6px;padding:8px 12px;font-weight:750;cursor:pointe
 
 #screenPreviewWrapper{background:#fff;border:2px solid var(--green);border-radius:8px;padding:10px;margin-top:10px;overflow-x:auto}
 
-/* A4 LANDSCAPE PRINT SHEET FORMAT (NO BOX AROUND LISTS, CLEAR BOLD GRID) */
+/* A4 LANDSCAPE EXACT PHOTO MATCH FORMAT */
 .print-top-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:4px;font-size:10px;border-bottom:2px solid #000;padding-bottom:2px}
 .print-top-header .unit-title{font-size:11px;text-transform:uppercase}
 .print-top-header .doc-title{font-size:12px;text-transform:uppercase;text-decoration:underline}
@@ -56,12 +56,13 @@ button{border:0;border-radius:6px;padding:8px 12px;font-weight:750;cursor:pointe
 .print-grid .rankcol{text-align:center;width:5.5%;writing-mode:horizontal-tb;transform:none;height:auto;font-size:7.5px;background:#eaeaea!important}
 .print-grid .totalrow{background:#dedede!important}
 
-.print-layout-container{display:grid;grid-template-columns:1.1fr 1.1fr 1.8fr 1.1fr;gap:6px;margin-top:6px;align-items:start}
+/* EXACT 4-COLUMN MATCHING PHOTO LAYOUT */
+.print-layout-container{display:grid;grid-template-columns:1.2fr 1.3fr 2fr 1.1fr;gap:6px;margin-top:6px;align-items:start}
 .print-col{display:flex;flex-direction:column;gap:6px}
 .print-block{break-inside:avoid;border:none!important;padding:2px;background:#fff}
-.print-block h3{font-size:8.5px;text-decoration:underline;margin:0 0 2px;text-transform:uppercase;text-align:center;background:#f0f0f0;padding:1px;border:0.5px solid #000}
+.print-block h3{font-size:8px;text-decoration:underline;margin:0 0 2px;text-transform:uppercase;text-align:left;background:transparent;padding:0;font-weight:900}
 .print-block ol{margin:0;padding-left:0;list-style:none}
-.print-block li{margin:0 0 1px;line-height:1.05;font-size:7.5px;display:flex;gap:3px;border-bottom:0.5px dotted #ccc}
+.print-block li{margin:0 0 1px;line-height:1.05;font-size:7.5px;display:flex;gap:3px}
 .print-block li .item-num{width:12px;text-align:right;flex-shrink:0}
 .print-block li .item-text{flex:1}
 .on-parade-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 6px}
@@ -86,7 +87,7 @@ button{border:0;border-radius:6px;padding:8px 12px;font-weight:750;cursor:pointe
   .print-grid th{background:#eee!important;color:#000!important}
   .print-grid td{color:#000!important}
   .print-block{border:none!important}
-  .print-layout-container{grid-template-columns:1.1fr 1.1fr 1.8fr 1.1fr;gap:6px}
+  .print-layout-container{grid-template-columns:1.2fr 1.3fr 2fr 1.1fr;gap:6px}
   .signatures-bottom{margin-top:10px}
   .signatures-bottom b{margin-bottom:10px}
 }
@@ -245,12 +246,14 @@ function playJetSound(){
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   if(!AudioContext) return;
   const ctx = new AudioContext();
+  if(ctx.state === 'suspended'){ ctx.resume(); }
 
-  const bufferSize = ctx.sampleRate * 7.5;
+  // High intensity multi-channel jet roar synthesis
+  const bufferSize = ctx.sampleRate * 8;
   const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
   const data = buffer.getChannelData(0);
   for(let i=0; i<bufferSize; i++){
-   data[i] = Math.random() * 2 - 1;
+   data[i] = (Math.random() * 2 - 1) * 1.5;
   }
 
   const noise = ctx.createBufferSource();
@@ -258,30 +261,30 @@ function playJetSound(){
 
   const filter = ctx.createBiquadFilter();
   filter.type = 'bandpass';
-  filter.frequency.setValueAtTime(90, ctx.currentTime);
-  filter.frequency.exponentialRampToValueAtTime(700, ctx.currentTime + 6.5);
-  filter.Q.setValueAtTime(2.0, ctx.currentTime);
+  filter.frequency.setValueAtTime(60, ctx.currentTime);
+  filter.frequency.exponentialRampToValueAtTime(950, ctx.currentTime + 7);
+  filter.Q.setValueAtTime(2.5, ctx.currentTime);
 
   const gain = ctx.createGain();
   gain.gain.setValueAtTime(0.01, ctx.currentTime);
-  gain.gain.linearRampToValueAtTime(0.4, ctx.currentTime + 1.2);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 7.5);
+  gain.gain.linearRampToValueAtTime(0.95, ctx.currentTime + 1.5); // 100% Full Volume Max
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 7.9);
 
   noise.connect(filter);
   filter.connect(gain);
   gain.connect(ctx.destination);
 
   noise.start();
-  noise.stop(ctx.currentTime + 7.6);
+  noise.stop(ctx.currentTime + 8.0);
  } catch(e){}
 }
 
-window.addEventListener("DOMContentLoaded", () => {
- playJetSound();
+// 100% AUTO PLAY TRIGGER ON ALL POSSIBLE PAGE LOAD EVENTS
+window.addEventListener("load", playJetSound);
+document.addEventListener("DOMContentLoaded", playJetSound);
+["click", "touchstart", "keydown", "mousemove", "scroll"].forEach(evt => {
+ window.addEventListener(evt, playJetSound, { once: true });
 });
-document.addEventListener("click", () => {
- playJetSound();
-}, { once: true });
 
 const firebaseConfig = {
   databaseURL: "https://hangar-2f228-default-rtdb.firebaseio.com/"
@@ -317,7 +320,7 @@ document.getElementById("skipIntroBtn").addEventListener("click",()=>{
  removeIntroOverlay();
 });
 
-setTimeout(removeIntroOverlay,7500);
+setTimeout(removeIntroOverlay,7800);
 if(location.href.indexOf("content://")!==-1)setTimeout(removeIntroOverlay,1000);
 
 let ranks=[{rank:"MWO",names:["Shaheen","Nazrul"]},{rank:"SWO",names:["M. Ali","Kusru"]},{rank:"WO",names:["Jahangir","Khairul","Hasan","Salam","Hasim","Kalam","Josim","Kamrul","Enam","Raisul"]},{rank:"SGT",names:["Akash","Alek","Habib","Ashik","Shimul","Shaheen","M. Ali","Parvez","Kaisar","Anis","Imran","Abdullah","Jafor","Adam","Rakib"]},{rank:"CPL",names:["Saiful","Chunnu","Imran","Arif","Jahid","Razzak","Milon","Bokul","Nasim","Shawon","Al Amin","Rejaul","Sajed","Sujon","Jomir","Tofazzol"]},{rank:"LAC",names:["Rakib","Tanvir","Sento","Mohit","Hossain"]},{rank:"AC",names:[]},{rank:"Civilian",names:["MSG Sajon","MSG Khairul","MC1 Hafiz","MC1 Hero","MC2 Masum","TM Ismail","TM Imam"]},{rank:"Attachment",names:["WO Khalek","SGT Sourav","CPL Akbar"]}];
@@ -832,10 +835,10 @@ function generateListsHTML(){
  }
 
  const columnLayout = [
-  [["Leave","LEAVE"], ["QRF Duty","QRF DUTY"], ["CMH","CMH"], ["CMH / M Room Admit","CMH / MI ROOM ADMIT"]],
-  [["All Duty On","ALL DUTY ON"], ["All Duty Off","ALL DUTY OFF"], ["Form 295","F-295 / AIR MOVEMENT"], ["Mess/Canteen","MESS / CANTEEN"], ["TD/Courier","TD / COURIER"], ["EDP/PG/ITD C","ED / PPGF / ATTD C"]],
+  [["Leave","LEAVE"], ["QRF Duty","QRF DUTY"], ["CMH","CMH"]],
+  [["All Duty On","ALL DUTY ON"], ["All Duty Off","ALL DUTY OFF"], ["Form 295","F-295"]],
   paradeBlocks,
-  [["ATTACHMENT","ATTACHMENT"], ["Civil Tech","CIVIL TECH"]]
+  [["ATTACHMENT","ATTACHMENT"], ["Civil Tech","Civil Tech"]]
  ];
 
  return columnLayout.map(colGroup => {
@@ -984,22 +987,6 @@ function exportToExcelSheet(){
  XLSX.writeFile(wb, `State_Office_${date()}.xlsx`);
 }
 
-function save(){
- const currentSelectedDate = date();
- saved[currentSelectedDate] = {
-  statuses:{...current},
-  leaveDetails:{...currentLeave},
-  dutyDetails:{...currentDuty},
-  edDetails:{...currentEd},
-  savedAt:new Date().toISOString()
- };
- if(!persistStore()) return;
- refreshSaved();
- exportToExcelSheet();
- $("saveBtn").textContent = "Saved (" + currentSelectedDate + ") ✓";
- setTimeout(()=>$("saveBtn").textContent="Save daily state & Excel", 1500);
-}
-
 $("saveBtn").addEventListener("click", function(e){
  e.preventDefault();
  save();
@@ -1048,7 +1035,8 @@ function loadDate(targetDate){
 
 $("topRedDateFilter").onchange=function(){ if(this.value) loadDate(this.value); };
 
-function deleteSavedDate(){const d=$("savedSelect").value||$("topRedDateFilter").value;if(!d||!saved[d])return alert("Select a date to delete.");if(confirm(`Delete saved record for ${d}?`)){delete saved[d];persistStore();refreshSaved();alert("Deleted successfully.")}}$("deleteBtn").onclick=deleteSavedDate;
+function deleteSavedDate(){const d=$("savedSelect").value||$("topRedDateFilter").value;if(!d||!saved[d])return alert("Select a date to delete.");if(confirm(`Delete saved record for ${d}?`)){delete saved[d];persistStore();refreshSaved();alert("Deleted successfully.")}};
+$("deleteBtn").onclick=deleteSavedDate;
 
 $("exportBackup").onclick=()=>{const a=document.createElement("a");a.href="data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify({ranks,saved}));a.download=`manpower_backup_${today()}.json`;document.body.appendChild(a);a.click();a.remove()};
 
