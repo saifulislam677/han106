@@ -9,6 +9,8 @@
 <!-- Firebase SDK Scripts -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<!-- XLSX Library for 100% Editable Excel Downloads -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
 <style>
 :root{--green:#123b32;--lime:#d6f07a;--bg:#f3f6f4;--card:#fff;--ink:#182521;--muted:#687771;--line:#dce5df;--red:#a33232}
@@ -38,7 +40,7 @@ button{border:0;border-radius:6px;padding:8px 12px;font-weight:750;cursor:pointe
 
 #screenPreviewWrapper{background:#fff;border:2px solid var(--green);border-radius:8px;padding:10px;margin-top:10px;overflow-x:auto}
 
-/* EXACT REFERENCE PHOTO PRINT STYLING */
+/* PRINT SHEET FORMAT */
 .print-top-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3px;font-weight:900;font-size:9.5px;border-bottom:1.5px solid #000;padding-bottom:2px}
 .print-top-header .unit-title{font-size:10.5px;text-transform:uppercase;font-weight:900}
 .print-top-header .doc-title{font-size:11px;text-transform:uppercase;text-decoration:underline;font-weight:900}
@@ -147,7 +149,7 @@ input, select, button { max-width: 100%; }
       </select>
     </div>
     <div style="display:flex;gap:6px;align-items:end;flex-wrap:wrap;flex:2">
-      <button id="saveBtn">Save daily state</button>
+      <button id="saveBtn">Save daily state & Excel</button>
       <button class="secondary" id="undoBtn">Undo Last State</button>
       <button class="secondary" id="togglePreviewBtn">Toggle Sheet Preview</button>
       <button class="secondary" id="printBtn">Print state (1 Page)</button>
@@ -164,8 +166,8 @@ input, select, button { max-width: 100%; }
 <section class="card no-print" id="reportArea"><h2>Final state report & PC Backup</h2><div id="reportSummary"></div><div class="row" style="margin:10px 0"><button class="secondary" id="exportBackup">Backup to PC File (.JSON)</button><button class="secondary" id="exportHtmlBtn">Export Updated index.html File</button><button class="secondary" id="importBtn">Restore from PC File</button><input id="importFile" type="file" accept="application/json" class="hidden"></div><h2 style="margin-top:14px">Rank-wise status count</h2><div class="tablewrap" id="rankTable"></div><h2 style="margin-top:14px">Personnel by status</h2><div id="statusDetails"></div></section>
 <section id="printState" class="hidden"><div class="print-top-header"><div class="unit-title">AC Taking & Handing over Flt</div><div class="doc-title">Parade/ PT/FOD state</div><div class="date-str">DATE : <span id="printDate"></span></div></div><table class="print-grid" id="printGrid"></table><div class="print-layout-container" id="printListsContainer"></div><div class="signatures-bottom"><div><b>PREPARED BY</b><br><span id="printPreparedBy">PARVEZ<br>SGT</span></div><div><b>JCOIC</b></div><div><b>OIC</b></div></div></section>
 
-<!-- LEAVE MODAL -->
-<div id="leaveModal" class="modal-overlay hidden"><div class="modal-card"><h3 id="modalPersonName">Leave Details</h3><p>Specify leave type and dates for this person.</p><div class="modal-form"><div><label for="modalLeaveType">TYPE OF LEAVE</label><select id="modalLeaveType"><option value="A/L">A/L (Annual Leave)</option><option value="S/L">S/L (Sick Leave)</option><option value="R/L">R/L (Recreation Leave)</option><option value="C/L">C/L (Casual Leave)</option></select></div><div><label for="modalStartDate">START DATE / WEF</label><input type="date" id="modalStartDate"></div><div><label for="modalReportDate">REPORT DATE / TO DATE</label><input type="date" id="modalReportDate"></div></div><div class="modal-actions"><button class="secondary" type="button" id="closeModalBtn">Cancel</button><button type="button" id="saveLeaveBtn">Save Leave</button></div></div></div>
+<!-- LEAVE MODAL (REPORT DATE ONLY) -->
+<div id="leaveModal" class="modal-overlay hidden"><div class="modal-card"><h3 id="modalPersonName">Leave Details</h3><p>Specify leave type and report date for this person.</p><div class="modal-form"><div><label for="modalLeaveType">TYPE OF LEAVE</label><select id="modalLeaveType"><option value="A/L">A/L (Annual Leave)</option><option value="S/L">S/L (Sick Leave)</option><option value="R/L">R/L (Recreation Leave)</option><option value="C/L">C/L (Casual Leave)</option></select></div><div><label for="modalReportDate">REPORT DATE / TO DATE</label><input type="date" id="modalReportDate"></div></div><div class="modal-actions"><button class="secondary" type="button" id="closeModalBtn">Cancel</button><button type="button" id="saveLeaveBtn">Save Leave</button></div></div></div>
 
 <!-- DUTY TYPE MODAL -->
 <div id="dutyModal" class="modal-overlay hidden"><div class="modal-card"><h3 id="modalDutyPersonName">Select Duty Type</h3><p>Choose the specific duty type for this person.</p><div class="modal-form"><div><label for="modalDutyType">DUTY TYPE</label><select id="modalDutyType"></select></div></div><div class="modal-actions"><button class="secondary" type="button" id="closeDutyModalBtn">Cancel</button><button type="button" id="saveDutyBtn">Save Duty</button></div></div></div>
@@ -321,6 +323,7 @@ function applyRecord(record){
  checkActiveDateRanges(date());
 }
 
+/* PERSISTENT LEAVE ENGINE: KEEPS PEOPLE ON LEAVE UNTIL THEIR REPORT DATE HAS FINISHED */
 function checkActiveDateRanges(selectedIsoDate){
  if(!selectedIsoDate) return;
  Object.values(saved).forEach(rec=>{
@@ -330,8 +333,8 @@ function checkActiveDateRanges(selectedIsoDate){
 
   people.forEach(p=>{
    const lv = lvDetails[p.id];
-   if(lv && lv.from && lv.to){
-    if(selectedIsoDate >= lv.from && selectedIsoDate <= lv.to){
+   if(lv && lv.to){
+    if(selectedIsoDate <= lv.to){
      current[p.id] = "Leave";
      currentLeave[p.id] = lv;
     }
@@ -372,10 +375,10 @@ function renderRoster(){
   if(!group.length)return;
   html+=`<div class="rank-block"><div class="rank-head"><span>${esc(g.rank)}</span><span>${group.filter(p=>current[p.id]===activeStatus).length}/${group.length} · ${group.length} listed</span></div>`;
   group.forEach(p=>{
-   const leave=currentLeave[p.id]||{type:"A/L",from:"",to:""};
+   const leave=currentLeave[p.id]||{type:"A/L",to:""};
    let noteText="";
-   if(current[p.id]==="Leave"&&leave.from&&leave.to){
-    noteText=` · (${esc(leave.type)} wef ${esc(displayDate(leave.from))} to ${esc(displayDate(leave.to))})`;
+   if(current[p.id]==="Leave"&&leave.to){
+    noteText=` · (${esc(leave.type)} to ${esc(displayDate(leave.to))})`;
    } else if(current[p.id]==="All Duty On"&&currentDuty[p.id]){
     noteText=` · (${esc(currentDuty[p.id])})`;
    } else if(current[p.id]==="EDP/PG/ITD C"&&currentEd[p.id]&&currentEd[p.id].from){
@@ -414,15 +417,14 @@ function renderRoster(){
  $("roster").querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>deletePerson(b.dataset.delete));
 }
 
-function openLeaveModal(id){activeLeavePersonId=id;const p=people.find(x=>x.id===id);if(!p)return;$("modalPersonName").textContent=`${p.rank} ${p.name} - Leave Entry`;const lv=currentLeave[id]||{type:"A/L",from:"",to:""};$("modalLeaveType").value=lv.type||"A/L";$("modalStartDate").value=lv.from||"";$("modalReportDate").value=lv.to||"";$("leaveModal").classList.remove("hidden")}
+function openLeaveModal(id){activeLeavePersonId=id;const p=people.find(x=>x.id===id);if(!p)return;$("modalPersonName").textContent=`${p.rank} ${p.name} - Leave Entry`;const lv=currentLeave[id]||{type:"A/L",to:""};$("modalLeaveType").value=lv.type||"A/L";$("modalReportDate").value=lv.to||"";$("leaveModal").classList.remove("hidden")}
 function closeLeaveModal(restoreStatus=true){if(restoreStatus&&activeLeavePersonId){current[activeLeavePersonId]=pendingPreviousStatus;renderAll(false)}$("leaveModal").classList.add("hidden");activeLeavePersonId=null}
 $("closeModalBtn").onclick=closeLeaveModal;
 $("saveLeaveBtn").onclick=()=>{
  if(!activeLeavePersonId)return;
- const from=$("modalStartDate").value,to=$("modalReportDate").value;
- if(from&&to&&to<from)return alert("Report date cannot be earlier than start date.");
- if(!from||!to)return alert("Please enter both start and report date.");
- currentLeave[activeLeavePersonId]={type:$("modalLeaveType").value,from,to};
+ const to=$("modalReportDate").value;
+ if(!to)return alert("Please enter report date.");
+ currentLeave[activeLeavePersonId]={type:$("modalLeaveType").value,to:to};
  closeLeaveModal(false);
  renderAll();
  autoSaveBuffer();
@@ -528,7 +530,7 @@ function renderDetails(){
   const list=people.filter(p=>current[p.id]===s);
   return `<div class="rank-block"><div class="rank-head"><span>${esc(s)}</span><span>${list.length} personnel</span></div><div style="padding:6px 8px">${list.length?list.map(p=>{
    let tag = "";
-   if(s==="Leave"&&currentLeave[p.id]) tag=` (${esc(currentLeave[p.id].type||"A/L")} wef ${esc(displayDate(currentLeave[p.id].from))} to ${esc(displayDate(currentLeave[p.id].to))})`;
+   if(s==="Leave"&&currentLeave[p.id]) tag=` (${esc(currentLeave[p.id].type||"A/L")} to ${esc(displayDate(currentLeave[p.id].to))})`;
    else if(s==="All Duty On"&&currentDuty[p.id]) tag=` (${esc(currentDuty[p.id])})`;
    else if(s==="EDP/PG/ITD C"&&currentEd[p.id]) tag=` (wef ${esc(displayDate(currentEd[p.id].from))} to ${esc(displayDate(currentEd[p.id].to))})`;
    else if(s==="TD/Courier") tag=` (TD)`;
@@ -635,7 +637,11 @@ function generateListsHTML(){
      t = `${p.rank} ${p.name}`;
    }
 
-   if(current[p.id]==="TD/Courier"){
+   if(current[p.id]==="ON PT"){
+    t += " - ON PT";
+   } else if(current[p.id]==="ON FOD"){
+    t += " - ON FOD";
+   } else if(current[p.id]==="TD/Courier"){
     t += " - TD";
    } else if(k==="All Duty On" && currentDuty[p.id]){
     t += ` - ${currentDuty[p.id]}`;
@@ -646,7 +652,7 @@ function generateListsHTML(){
     if(ed.from||ed.to) t += ` (wef ${displayDate(ed.from)} to ${displayDate(ed.to)})`;
    } else if(k==="Leave"){
      const lv = currentLeave[p.id]||{};
-     if(lv.from||lv.to) t+=` (${lv.type||"A/L"}${lv.from?" wef "+displayDate(lv.from):""}${lv.to?" to "+displayDate(lv.to):""})`;
+     if(lv.to) t+=` (${lv.type||"A/L"} to ${displayDate(lv.to)})`;
    }
    return `<li><span class="item-num">${i+1}</span><span class="item-text">${esc(t)}</span></li>`;
   }).join("");
@@ -683,12 +689,72 @@ function renderAll(reRoster=true){
 
 function refreshRankSelectors(){const rf=$("rankFilter"),old=rf.value||"All ranks";rf.innerHTML='<option>All ranks</option>'+ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("");rf.value=["All ranks",...ranks.map(g=>g.rank)].includes(old)?old:"All ranks";const ar=$("addRank"),prev=ar.value;ar.innerHTML=ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("")+'<option value="__new__">New rank…</option>';ar.value=ranks.some(g=>g.rank===prev)?prev:(ranks[0]?.rank||"__new__")}
 
+/* EDITABLE EXCEL (.XLSX) GENERATOR FUNCTION */
+function exportToExcelSheet(){
+ const wb = XLSX.utils.book_new();
+ const data = [];
+
+ data.push(["AC TAKING & HANDING OVER FLT", "", "", "PARADE/ PT/FOD STATE", "", "", "DATE: " + date().split("-").reverse().join("/")]);
+ data.push([]);
+ 
+ data.push(["RANK", "OFFICE STRG", "TD/COUR/UN", "ATTACH", "EFFECTIVE STRG", "LEAVE", "F-295", "QRT DUTY", "ALL DUTY ON", "ALL DUTY OFF", "MESS/CANTEEN", "CMH S/R", "CMH ADMIT", "MILK DUTY", "ED/COURSE", "BASAE OJT", "UNDER CLEAR", "GST/GH", "AFTERNOON", "PARADE", "OUT OF PARADE", "ON PARADE"]);
+
+ militaryOrder.forEach(r => {
+  const officeList = people.filter(p=>p.rank===r && p.rank!=="Attachment");
+  const attachList = people.filter(p=>(p.rank==="Attachment"||current[p.id]==="Attachment") && actualRank(p)===r);
+  const officeStrg = officeList.filter(p=>current[p.id]!=="TD/Courier").length;
+  const attachStrg = attachList.length;
+  const effectiveStrg = officeStrg + attachStrg;
+
+  data.push([
+   r, officeStrg, officeList.filter(p=>current[p.id]==="TD/Courier").length, attachStrg, effectiveStrg,
+   officeList.filter(p=>current[p.id]==="Leave").length + attachList.filter(p=>current[p.id]==="Leave").length,
+   officeList.filter(p=>current[p.id]==="Form 295").length + attachList.filter(p=>current[p.id]==="Form 295").length,
+   officeList.filter(p=>current[p.id]==="QRF Duty").length + attachList.filter(p=>current[p.id]==="QRF Duty").length,
+   officeList.filter(p=>current[p.id]==="All Duty On").length + attachList.filter(p=>current[p.id]==="All Duty On").length,
+   officeList.filter(p=>current[p.id]==="All Duty Off").length + attachList.filter(p=>current[p.id]==="All Duty Off").length,
+   officeList.filter(p=>current[p.id]==="Mess/Canteen").length + attachList.filter(p=>current[p.id]==="Mess/Canteen").length,
+   officeList.filter(p=>current[p.id]==="CMH SR/FMLY SR").length + attachList.filter(p=>current[p.id]==="CMH SR/FMLY SR").length,
+   officeList.filter(p=>current[p.id]==="CMH / M Room Admit"||current[p.id]==="CMH").length + attachList.filter(p=>current[p.id]==="CMH / M Room Admit"||current[p.id]==="CMH").length,
+   officeList.filter(p=>current[p.id]==="Milk Duty").length + attachList.filter(p=>current[p.id]==="Milk Duty").length,
+   officeList.filter(p=>current[p.id]==="EDP/PG/ITD C").length + attachList.filter(p=>current[p.id]==="EDP/PG/ITD C").length,
+   officeList.filter(p=>current[p.id]==="BASAE Out/Exam").length + attachList.filter(p=>current[p.id]==="BASAE Out/Exam").length,
+   officeList.filter(p=>current[p.id]==="Under Clearance").length + attachList.filter(p=>current[p.id]==="Under Clearance").length,
+   officeList.filter(p=>current[p.id]==="GST/GH").length + attachList.filter(p=>current[p.id]==="GST/GH").length,
+   officeList.filter(p=>current[p.id]==="Afternoon").length + attachList.filter(p=>current[p.id]==="Afternoon").length,
+   officeList.filter(p=>current[p.id]==="Parade").length + attachList.filter(p=>current[p.id]==="Parade").length,
+   officeList.filter(p=>current[p.id]==="Out of Parade").length + attachList.filter(p=>current[p.id]==="Out of Parade").length,
+   officeList.filter(p=>["On Parade","ON PT","ON FOD"].includes(current[p.id])).length + attachList.filter(p=>["On Parade","ON PT","ON FOD"].includes(current[p.id])).length
+  ]);
+ });
+
+ data.push([]);
+ data.push(["PERSONNEL DISPOSAL DETAILS"]);
+ statuses.forEach(s => {
+  const list = people.filter(p=>current[p.id]===s);
+  if(list.length){
+   data.push([s + " (" + list.length + ")"]);
+   list.forEach((p, i) => {
+    let note = "";
+    if(s==="Leave"&&currentLeave[p.id]) note = ` (to ${displayDate(currentLeave[p.id].to)})`;
+    else if(s==="All Duty On"&&currentDuty[p.id]) note = ` (${currentDuty[p.id]})`;
+    data.push(["", i+1, `${p.rank} ${p.name}${note}`]);
+   });
+  }
+ });
+
+ const ws = XLSX.utils.aoa_to_sheet(data);
+ XLSX.utils.book_append_sheet(wb, ws, "Daily State");
+ XLSX.writeFile(wb, `State_Office_${date()}.xlsx`);
+}
+
 function save(){
  saved[date()]={statuses:{...current},leaveDetails:{...currentLeave},dutyDetails:{...currentDuty},edDetails:{...currentEd},savedAt:new Date().toISOString()};
  if(!persistStore())return;
  refreshSaved();
+ exportToExcelSheet();
  $("saveBtn").textContent="Saved ✓";
- setTimeout(()=>$("saveBtn").textContent="Save daily state",1300);
+ setTimeout(()=>$("saveBtn").textContent="Save daily state & Excel",1300);
 }
 
 function autoSaveBuffer(){
@@ -782,7 +848,6 @@ $("assignAllBtn").onclick=()=>{
  autoSaveBuffer();
 };
 
-$("clearFilterBtn").onchange=()=>{$("rankFilter").value="All ranks";$("search").value="";renderRoster()};
 $("clearFilterBtn").onclick=()=>{$("rankFilter").value="All ranks";$("search").value="";renderRoster()};
 $("loadBtn").onclick=()=>loadDate();
 
