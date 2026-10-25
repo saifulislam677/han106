@@ -20,11 +20,14 @@
 .runway-track{position:absolute;bottom:-20%;left:50%;width:300px;height:140vh;margin-left:-150px;background:#111916;transform:rotateX(75deg);transform-origin:bottom center;border-left:4px solid #3d594e;border-right:4px solid #3d594e}
 .runway-lines{position:absolute;width:10px;height:100%;left:50%;margin-left:-5px;background:repeating-linear-gradient(to bottom,#d6f07a 0 40px,transparent 40px 90px);animation:runwaySpeed 8s linear infinite}
 @keyframes runwaySpeed{from{background-position:0 -1000px}to{background-position:0 2000px}}
-.jet-viewport{position:relative;width:240px;height:240px;z-index:5}.f7-takeoff-wrapper{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;animation:takeoffSequence 8s cubic-bezier(.25,.1,.25,1) forwards}
-.f7-svg-jet{width:180px;filter:drop-shadow(0 10px 15px #d6f07a66);transform:rotate(-28deg);z-index:2}
-.afterburner-flame{position:absolute;bottom:25px;left:32%;transform:translateX(-50%) rotate(-28deg);width:20px;height:80px;background:linear-gradient(to bottom,#fff 0%,#ff3 20%,#f60 50%,red 80%,transparent 100%);border-radius:50%;animation:afterburnerPulse .05s infinite alternate;filter:blur(1px);z-index:1;box-shadow:0 0 25px #f60,0 0 45px #fa0}
-@keyframes afterburnerPulse{from{height:70px;opacity:.85;width:16px}to{height:100px;opacity:1;width:22px}}
-@keyframes takeoffSequence{0%{transform:translateY(280px) scale(.35);opacity:0}15%{transform:translateY(200px) scale(.5);opacity:1}45%{transform:translateY(100px) scale(.7)}60%{transform:translateY(20px) scale(.9) rotate(-8deg)}75%{transform:translateY(-100px) scale(1.2) rotate(-18deg)}100%{transform:translateY(-1000px) scale(3.2) rotate(-28deg);opacity:0}}
+.jet-viewport{position:relative;width:260px;height:260px;z-index:5}.f7-takeoff-wrapper{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;animation:takeoffSequence 8s cubic-bezier(.25,.1,.25,1) forwards}
+.f7-svg-jet{width:200px;filter:drop-shadow(0 0 25px #d6f07a99);transform:rotate(0deg);z-index:2}
+
+.afterburner-container{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);width:120px;height:100px;display:flex;justify-content:space-between;pointer-events:none;z-index:1}
+.afterburner-flame-single{width:42px;height:95px;background:radial-gradient(ellipse at center,#ffffff 0%,#a5f3fc 20%,#38bdf8 45%,#ea580c 75%,transparent 100%);border-radius:50%;animation:afterburnerPulse .08s infinite alternate;filter:blur(2px);box-shadow:0 0 35px #38bdf8,0 0 65px #ea580c,0 0 95px #c2410c}
+@keyframes afterburnerPulse{from{height:80px;opacity:.85;width:38px;filter:blur(1.5px)}to{height:115px;opacity:1;width:46px;filter:blur(2.5px)}}
+
+@keyframes takeoffSequence{0%{transform:translateY(280px) scale(.35);opacity:0}15%{transform:translateY(200px) scale(.5);opacity:1}45%{transform:translateY(100px) scale(.7)}60%{transform:translateY(20px) scale(.9) rotate(-3deg)}75%{transform:translateY(-100px) scale(1.2) rotate(-8deg)}100%{transform:translateY(-1000px) scale(3.2) rotate(-12deg);opacity:0}}
 .intro-text-box{position:relative;z-index:10;text-align:center;margin-top:20px;padding:0 20px}.intro-title{font-size:22px;color:var(--lime);margin:0 0 6px;letter-spacing:1.5px;text-transform:uppercase;font-weight:900;text-shadow:0 0 12px #d6f07a99}.intro-subtitle{font-size:13px;color:#cbd8d0;margin:0;font-weight:700;letter-spacing:.5px}
 .intro-timer-bar{position:absolute;bottom:0;left:0;height:4px;background:var(--lime);box-shadow:0 0 10px var(--lime);width:0;animation:timerProgress 8s linear forwards}@keyframes timerProgress{to{width:100%}}
 .skip-btn{position:absolute;bottom:25px;z-index:20;background:#d4f07a40;border:1.5px solid var(--lime);color:var(--lime);padding:12px 24px;border-radius:25px;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:1px}
@@ -40,32 +43,32 @@ button{border:0;border-radius:6px;padding:8px 12px;font-weight:750;cursor:pointe
 
 #screenPreviewWrapper{background:#fff;border:2px solid var(--green);border-radius:8px;padding:10px;margin-top:10px;overflow-x:auto}
 
-/* A4 LANDSCAPE PRINT SHEET FORMAT (BOLD & CLEAR GRID) */
-.print-top-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:4px;font-weight:900;font-size:10px;border-bottom:2px solid #000;padding-bottom:2px}
-.print-top-header .unit-title{font-size:11px;text-transform:uppercase;font-weight:900}
-.print-top-header .doc-title{font-size:12px;text-transform:uppercase;text-decoration:underline;font-weight:900}
-.print-top-header .date-str{font-size:10px;font-weight:900}
+/* A4 LANDSCAPE PRINT SHEET FORMAT (NO BOX AROUND LISTS, CLEAR BOLD GRID) */
+.print-top-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:4px;font-size:10px;border-bottom:2px solid #000;padding-bottom:2px}
+.print-top-header .unit-title{font-size:11px;text-transform:uppercase}
+.print-top-header .doc-title{font-size:12px;text-transform:uppercase;text-decoration:underline}
+.print-top-header .date-str{font-size:10px}
 
-.print-grid{width:100%;border-collapse:collapse;table-layout:fixed;font-size:7.5px;font-weight:900}
-.print-grid th,.print-grid td{border:1.5px solid #000;padding:2px 1px;text-align:center;white-space:normal;overflow-wrap:anywhere;font-weight:900;height:16px}
-.print-grid th{font-weight:900;background:#eaeaea!important;color:#000}
-.print-grid th.vertical{height:75px;vertical-align:bottom;writing-mode:vertical-rl;transform:rotate(180deg);padding:2px 1px;font-size:7.5px;font-weight:900;line-height:1}
-.print-grid .rankcol{text-align:center;width:5.5%;font-weight:900;writing-mode:horizontal-tb;transform:none;height:auto;font-size:7.5px;background:#eaeaea!important}
-.print-grid .totalrow{font-weight:900;background:#dedede!important}
+.print-grid{width:100%;border-collapse:collapse;table-layout:fixed;font-size:7.5px}
+.print-grid th,.print-grid td{border:1.5px solid #000;padding:2px 1px;text-align:center;white-space:normal;overflow-wrap:anywhere;height:16px}
+.print-grid th{background:#eaeaea!important;color:#000}
+.print-grid th.vertical{height:75px;vertical-align:bottom;writing-mode:vertical-rl;transform:rotate(180deg);padding:2px 1px;font-size:7.5px;line-height:1}
+.print-grid .rankcol{text-align:center;width:5.5%;writing-mode:horizontal-tb;transform:none;height:auto;font-size:7.5px;background:#eaeaea!important}
+.print-grid .totalrow{background:#dedede!important}
 
 .print-layout-container{display:grid;grid-template-columns:1.1fr 1.1fr 1.8fr 1.1fr;gap:6px;margin-top:6px;align-items:start}
 .print-col{display:flex;flex-direction:column;gap:6px}
-.print-block{break-inside:avoid;border:1px solid #000;padding:3px;background:#fff}
-.print-block h3{font-size:8.5px;text-decoration:underline;margin:0 0 2px;font-weight:900;text-transform:uppercase;text-align:center;background:#f0f0f0;padding:1px}
+.print-block{break-inside:avoid;border:none!important;padding:2px;background:#fff}
+.print-block h3{font-size:8.5px;text-decoration:underline;margin:0 0 2px;text-transform:uppercase;text-align:center;background:#f0f0f0;padding:1px;border:0.5px solid #000}
 .print-block ol{margin:0;padding-left:0;list-style:none}
-.print-block li{margin:0 0 1px;line-height:1.05;font-size:7.5px;display:flex;gap:3px;font-weight:900;border-bottom:0.5px dotted #ccc}
-.print-block li .item-num{width:12px;text-align:right;flex-shrink:0;font-weight:900}
-.print-block li .item-text{flex:1;font-weight:900}
+.print-block li{margin:0 0 1px;line-height:1.05;font-size:7.5px;display:flex;gap:3px;border-bottom:0.5px dotted #ccc}
+.print-block li .item-num{width:12px;text-align:right;flex-shrink:0}
+.print-block li .item-text{flex:1}
 .on-parade-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 6px}
 
-.signatures-bottom{display:grid;grid-template-columns:1.2fr 1.8fr 1.2fr;margin-top:12px;align-items:end;font-weight:900}
-.signatures-bottom div{text-align:center;font-size:8.5px;font-weight:900}
-.signatures-bottom b{display:block;text-decoration:underline;margin-bottom:12px;font-weight:900}
+.signatures-bottom{display:grid;grid-template-columns:1.2fr 1.8fr 1.2fr;margin-top:12px;align-items:end}
+.signatures-bottom div{text-align:center;font-size:8.5px}
+.signatures-bottom b{display:block;text-decoration:underline;margin-bottom:12px}
 
 .red-date-filter{background:#a33232;color:#fff;border:1.5px solid #782222;font-weight:800;border-radius:6px;padding:6px 10px;font-size:12px;cursor:pointer}
 .red-date-filter option{background:#fff;color:#182521;font-weight:600}
@@ -74,16 +77,15 @@ button{border:0;border-radius:6px;padding:8px 12px;font-weight:750;cursor:pointe
 @media(min-width:780px){main{grid-template-columns:1fr 1fr;align-items:start}.wide{grid-column:1/-1}}
 @media print{
   @page{size:A4 landscape;margin:2mm}
-  html,body{width:297mm;height:210mm;background:#fff;font-size:7.5px;color:#000;margin:0;padding:0;overflow:hidden;font-weight:900}
+  html,body{width:297mm;height:210mm;background:#fff;font-size:7.5px;color:#000;margin:0;padding:0;overflow:hidden}
   header,.no-print,.tabs,.foot,#reportArea,#editorArea,.screen-only,.hint,.statusnote,#togglePreviewBtn,.modal-overlay,#introOverlay{display:none!important}
   main{display:block;max-width:none;padding:0;margin:0}
   .card{box-shadow:none;border:0;padding:0;margin:0}
   #printState{display:block!important;width:100%;height:100%}
   #screenPreviewWrapper{border:0;padding:0;margin:0}
-  .print-grid th{background:#eee!important;font-weight:900;color:#000!important}
-  .print-grid td{font-weight:900;color:#000!important}
-  .print-block{border:1px solid #000!important}
-  .print-block li{font-weight:900;color:#000!important}
+  .print-grid th{background:#eee!important;color:#000!important}
+  .print-grid td{color:#000!important}
+  .print-block{border:none!important}
   .print-layout-container{grid-template-columns:1.1fr 1.1fr 1.8fr 1.1fr;gap:6px}
   .signatures-bottom{margin-top:10px}
   .signatures-bottom b{margin-bottom:10px}
@@ -133,7 +135,23 @@ input, select, button { max-width: 100%; }
 </head>
 <body>
 <div id="introOverlay"><div class="runway-stage"><div class="runway-track"><div class="runway-lines"></div></div></div>
-<div class="jet-viewport"><div class="f7-takeoff-wrapper"><svg class="f7-svg-jet" viewBox="0 0 300 500" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M150 10 L165 140 L190 280 L200 420 L180 440 L120 440 L100 420 L110 280 L135 140 Z" fill="#93a59e" stroke="#52635c" stroke-width="3"/><path d="M110 240 L10 380 L100 400 L110 320 Z" fill="#81948c" stroke="#52635c" stroke-width="3"/><path d="M190 240 L290 380 L200 400 L190 320 Z" fill="#81948c" stroke="#52635c" stroke-width="3"/><path d="M150 330 L150 440 L160 445 L160 350 Z" fill="#60736b"/><path d="M150 0 L150 20" stroke="#d6f07a" stroke-width="4"/><path d="M148 10 L152 10 L150 35 Z" fill="#2d4037"/><path d="M145 80 Q150 60 155 80 L157 150 Q150 160 143 150 Z" fill="#48b2c9" opacity=".8" stroke="#1c5561" stroke-width="2"/><rect x="135" y="440" width="30" height="15" fill="#333" rx="2"/></svg><div class="afterburner-flame"></div></div></div>
+<div class="jet-viewport"><div class="f7-takeoff-wrapper">
+<svg class="f7-svg-jet" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M185 20 L215 20 L225 120 L235 280 L220 340 L180 340 L165 280 L175 120 Z" fill="#94a3b8" stroke="#334155" stroke-width="4"/>
+  <path d="M188 60 Q200 45 212 60 L210 95 Q200 85 190 95 Z" fill="#38bdf8" stroke="#0284c7" stroke-width="2"/>
+  <path d="M190 140 L30 200 L45 230 L185 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
+  <path d="M210 140 L370 200 L355 230 L215 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
+  <rect x="95" y="185" width="30" height="55" rx="10" fill="#64748b" stroke="#1e293b" stroke-width="3"/>
+  <rect x="275" y="185" width="30" height="55" rx="10" fill="#64748b" stroke="#1e293b" stroke-width="3"/>
+  <path d="M190 305 L110 335 L120 350 L190 325 Z" fill="#cbd5e1" stroke="#334155" stroke-width="2"/>
+  <path d="M210 305 L290 335 L280 350 L210 325 Z" fill="#cbd5e1" stroke="#334155" stroke-width="2"/>
+  <path d="M195 280 L200 360 L220 375 L205 280 Z" fill="#64748b" stroke="#334155" stroke-width="2"/>
+</svg>
+<div class="afterburner-container">
+  <div class="afterburner-flame-single" style="transform: translateX(-15px);"></div>
+  <div class="afterburner-flame-single" style="transform: translateX(15px);"></div>
+</div>
+</div></div>
 <div class="intro-text-box"><h1 class="intro-title">Welcome to 106 Hangar</h1><p class="intro-subtitle">This Application Developed By Cpl Saiful</p></div><div class="intro-timer-bar"></div><button class="skip-btn" id="skipIntroBtn">START ENGINE & ENTER</button></div>
 <header class="no-print"><div class="eyebrow">Personnel & Daily State <span id="cloudStatus" class="cloud-badge">Cloud Syncing…</span></div><h1>State Office Manpower</h1><p>Rank-wise roster · Daily disposal · Final available strength</p></header>
 <main>
@@ -177,14 +195,21 @@ input, select, button { max-width: 100%; }
       </div>
       <div>
         <label for="fontSizeSelect" style="margin:0;font-size:10px">Font Size:</label>
-        <select id="fontSizeSelect" style="width:85px;padding:3px;font-size:11px">
+        <select id="fontSizeSelect" style="width:80px;padding:3px;font-size:11px">
           <option value="5px">5 px (Tiny)</option>
           <option value="6px">6 px (Compact)</option>
           <option value="7px" selected>7 px (Standard)</option>
           <option value="8px">8 px (Large)</option>
           <option value="9px">9 px (X-Large)</option>
-          <option value="10px">10 px (14pt equiv)</option>
-          <option value="12px">12 px (Max)</option>
+          <option value="10px">10 px</option>
+        </select>
+      </div>
+      <div>
+        <label for="fontWeightSelect" style="margin:0;font-size:10px">Font Weight:</label>
+        <select id="fontWeightSelect" style="width:85px;padding:3px;font-size:11px">
+          <option value="normal">Normal</option>
+          <option value="bold" selected>Bold (100%)</option>
+          <option value="900">Black (Max)</option>
         </select>
       </div>
       <button class="secondary small" id="editNotesBtn" type="button">Edit Custom Note</button>
@@ -194,13 +219,13 @@ input, select, button { max-width: 100%; }
     <label for="customNoteInput" style="font-size:10px">Custom Subtitle / Note (Optional):</label>
     <input type="text" id="customNoteInput" placeholder="Type any special note or adjustment here before printing...">
   </div>
-  <div id="screenPreviewWrapper"><div class="print-top-header"><div class="unit-title">AC Taking & Handing over Flt</div><div class="doc-title">Parade/ PT/FOD state</div><div class="date-str">DATE : <span id="previewDate"></span></div></div><div id="customNoteDisplay" class="hidden" style="font-size:8px;font-weight:900;text-align:center;margin-bottom:2px"></div><table class="print-grid" id="previewGrid"></table><div class="print-layout-container" id="previewListsContainer"></div><div class="signatures-bottom"><div><b>PREPARED BY</b><br><span id="previewPreparedBy">PARVEZ<br>SGT</span></div><div><b>JCOIC</b></div><div><b>OIC</b></div></div></div></section>
+  <div id="screenPreviewWrapper"><div class="print-top-header"><div class="unit-title">AC Taking & Handing over Flt</div><div class="doc-title">Parade/ PT/FOD state</div><div class="date-str">DATE : <span id="previewDate"></span></div></div><div id="customNoteDisplay" class="hidden" style="font-size:8px;text-align:center;margin-bottom:2px"></div><table class="print-grid" id="previewGrid"></table><div class="print-layout-container" id="previewListsContainer"></div><div class="signatures-bottom"><div><b>PREPARED BY</b><br><span id="previewPreparedBy">PARVEZ<br>SGT</span></div><div><b>JCOIC</b></div><div><b>OIC</b></div></div></div></section>
 <section class="card wide no-print"><h2>Manpower overview</h2><div class="metrics" id="metrics"></div><div class="statusnote">Counting rule: each person has one current status only. Total counts are strictly distinct.</div></section>
 <section class="card no-print" id="editorArea"><h2>Assign & Manage Personnel</h2><div class="tabs" id="statusTabs"></div><div class="row" style="margin-top:10px"><div><label for="rankFilter">FILTER BY RANK</label><select id="rankFilter"><option>All ranks</option></select></div><div><label for="search">SEARCH NAME</label><input id="search" type="search" placeholder="Type a name or rank"></div></div>
 <div class="card" style="margin:10px 0;background:#f8faf8;box-shadow:none"><h2 style="margin-bottom:8px">Add Manpower (All Ranks, Civilian & Attachment)</h2><div class="row"><div><label for="addRank">RANK / CATEGORY</label><select id="addRank"></select></div><div><label for="newRank">NEW RANK (OPTIONAL)</label><input id="newRank" type="text" placeholder="Select New rank first, then type rank"></div><div><label for="newName">PERSONNEL NAME</label><input id="newName" type="text" placeholder="Enter full name"></div></div><div style="margin-top:8px"><button id="addPersonBtn" type="button">Add Person</button></div></div>
 <div class="card" style="margin:10px 0;background:#f8faf8;box-shadow:none"><h2 style="margin-bottom:8px">Edit "PREPARED BY" Signature</h2><div class="row"><div><label for="prepName">NAME</label><input id="prepName" type="text" value="PARVEZ"></div><div><label for="prepRank">RANK</label><input id="prepRank" type="text" value="SGT"></div></div></div><div id="roster"></div><div class="row" style="margin-top:10px"><button class="secondary" id="assignAllBtn" type="button">Set filtered people to selected status</button><button class="secondary" id="clearFilterBtn" type="button">Clear filters</button></div></section>
 <section class="card no-print" id="reportArea"><h2>Final state report & PC Backup</h2><div id="reportSummary"></div><div class="row" style="margin:10px 0"><button class="secondary" id="exportBackup" type="button">Backup to PC File (.JSON)</button><button class="secondary" id="exportHtmlBtn" type="button">Export Updated index.html File</button><button class="secondary" id="importBtn" type="button">Restore from PC File</button><input id="importFile" type="file" accept="application/json" class="hidden"></div><h2 style="margin-top:14px">Rank-wise status count</h2><div class="tablewrap" id="rankTable"></div><h2 style="margin-top:14px">Personnel by status</h2><div id="statusDetails"></div></section>
-<section id="printState" class="hidden"><div class="print-top-header"><div class="unit-title">AC Taking & Handing over Flt</div><div class="doc-title">Parade/ PT/FOD state</div><div class="date-str">DATE : <span id="printDate"></span></div></div><div id="printCustomNoteDisplay" class="hidden" style="font-size:8px;font-weight:900;text-align:center;margin-bottom:2px"></div><table class="print-grid" id="printGrid"></table><div class="print-layout-container" id="printListsContainer"></div><div class="signatures-bottom"><div><b>PREPARED BY</b><br><span id="printPreparedBy">PARVEZ<br>SGT</span></div><div><b>JCOIC</b></div><div><b>OIC</b></div></div></section>
+<section id="printState" class="hidden"><div class="print-top-header"><div class="unit-title">AC Taking & Handing over Flt</div><div class="doc-title">Parade/ PT/FOD state</div><div class="date-str">DATE : <span id="printDate"></span></div></div><div id="printCustomNoteDisplay" class="hidden" style="font-size:8px;text-align:center;margin-bottom:2px"></div><table class="print-grid" id="printGrid"></table><div class="print-layout-container" id="printListsContainer"></div><div class="signatures-bottom"><div><b>PREPARED BY</b><br><span id="printPreparedBy">PARVEZ<br>SGT</span></div><div><b>JCOIC</b></div><div><b>OIC</b></div></div></section>
 
 <!-- LEAVE MODAL (REPORT DATE ONLY) -->
 <div id="leaveModal" class="modal-overlay hidden"><div class="modal-card"><h3 id="modalPersonName">Leave Details</h3><p>Specify leave type and report date for this person.</p><div class="modal-form"><div><label for="modalLeaveType">TYPE OF LEAVE</label><select id="modalLeaveType"><option value="A/L">A/L (Annual Leave)</option><option value="S/L">S/L (Sick Leave)</option><option value="R/L">R/L (Recreation Leave)</option><option value="C/L">C/L (Casual Leave)</option></select></div><div><label for="modalReportDate">REPORT DATE / TO DATE</label><input type="date" id="modalReportDate"></div></div><div class="modal-actions"><button class="secondary" type="button" id="closeModalBtn">Cancel</button><button type="button" id="saveLeaveBtn">Save Leave</button></div></div></div>
@@ -221,7 +246,7 @@ function playJetSound(){
   if(!AudioContext) return;
   const ctx = new AudioContext();
 
-  const bufferSize = ctx.sampleRate * 7;
+  const bufferSize = ctx.sampleRate * 7.5;
   const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
   const data = buffer.getChannelData(0);
   for(let i=0; i<bufferSize; i++){
@@ -233,23 +258,30 @@ function playJetSound(){
 
   const filter = ctx.createBiquadFilter();
   filter.type = 'bandpass';
-  filter.frequency.setValueAtTime(120, ctx.currentTime);
-  filter.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 6);
-  filter.Q.setValueAtTime(1.5, ctx.currentTime);
+  filter.frequency.setValueAtTime(90, ctx.currentTime);
+  filter.frequency.exponentialRampToValueAtTime(700, ctx.currentTime + 6.5);
+  filter.Q.setValueAtTime(2.0, ctx.currentTime);
 
   const gain = ctx.createGain();
   gain.gain.setValueAtTime(0.01, ctx.currentTime);
-  gain.gain.linearRampToValueAtTime(0.35, ctx.currentTime + 1.5);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 7);
+  gain.gain.linearRampToValueAtTime(0.4, ctx.currentTime + 1.2);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 7.5);
 
   noise.connect(filter);
   filter.connect(gain);
   gain.connect(ctx.destination);
 
   noise.start();
-  noise.stop(ctx.currentTime + 7.2);
+  noise.stop(ctx.currentTime + 7.6);
  } catch(e){}
 }
+
+window.addEventListener("DOMContentLoaded", () => {
+ playJetSound();
+});
+document.addEventListener("click", () => {
+ playJetSound();
+}, { once: true });
 
 const firebaseConfig = {
   databaseURL: "https://hangar-2f228-default-rtdb.firebaseio.com/"
@@ -284,10 +316,6 @@ document.getElementById("skipIntroBtn").addEventListener("click",()=>{
  playJetSound();
  removeIntroOverlay();
 });
-
-setTimeout(()=>{
- playJetSound();
-}, 200);
 
 setTimeout(removeIntroOverlay,7500);
 if(location.href.indexOf("content://")!==-1)setTimeout(removeIntroOverlay,1000);
@@ -845,14 +873,16 @@ function renderPrintState(){
 
  const chosenSize = $("fontSizeSelect").value;
  const chosenFont = $("fontFamilySelect").value;
- applyTypography(chosenSize, chosenFont);
+ const chosenWeight = $("fontWeightSelect").value;
+ applyTypography(chosenSize, chosenFont, chosenWeight);
 }
 
-function applyTypography(sz, fontFamily){
+function applyTypography(sz, fontFamily, fontWeight){
  const wrapper = document.getElementById("screenPreviewWrapper");
  if(wrapper){
   wrapper.style.fontSize = sz;
   wrapper.style.fontFamily = fontFamily;
+  wrapper.style.fontWeight = fontWeight;
  }
  
  const printGridEl = document.getElementById("printGrid");
@@ -860,7 +890,6 @@ function applyTypography(sz, fontFamily){
  if(printGridEl) printGridEl.style.fontSize = sz;
  if(previewGridEl) previewGridEl.style.fontSize = sz;
 
- // Inject dynamic print style tag for font size and font family
  let styleTag = document.getElementById("dynamicPrintTypography");
  if(!styleTag){
   styleTag = document.createElement("style");
@@ -868,21 +897,22 @@ function applyTypography(sz, fontFamily){
   document.head.appendChild(styleTag);
  }
  styleTag.innerHTML = `
-  #screenPreviewWrapper, #screenPreviewWrapper * { font-family: ${fontFamily} !important; font-weight: 900 !important; }
+  #screenPreviewWrapper, #screenPreviewWrapper * { font-family: ${fontFamily} !important; font-weight: ${fontWeight} !important; }
   #screenPreviewWrapper .print-grid { font-size: ${sz} !important; }
   #screenPreviewWrapper .print-block li { font-size: calc(${sz} - 0.5px) !important; }
   @media print { 
-    #printState, #printState * { font-family: ${fontFamily} !important; font-weight: 900 !important; color: #000 !important; } 
+    #printState, #printState * { font-family: ${fontFamily} !important; font-weight: ${fontWeight} !important; color: #000 !important; } 
     .print-grid { font-size: ${sz} !important; border: 1.5px solid #000 !important; } 
-    .print-grid th, .print-grid td { border: 1.5px solid #000 !important; font-weight: 900 !important; }
-    .print-block { border: 1.5px solid #000 !important; }
-    .print-block li { font-size: calc(${sz} - 0.5px) !important; font-weight: 900 !important; } 
+    .print-grid th, .print-grid td { border: 1.5px solid #000 !important; }
+    .print-block { border: none !important; }
+    .print-block li { font-size: calc(${sz} - 0.5px) !important; } 
   }
  `;
 }
 
 $("fontSizeSelect").onchange = function(){ renderPrintState(); };
 $("fontFamilySelect").onchange = function(){ renderPrintState(); };
+$("fontWeightSelect").onchange = function(){ renderPrintState(); };
 $("customNoteInput").oninput = renderPrintState;
 $("editNotesBtn").onclick = function(){ $("customNoteInput").parentNode.classList.toggle("hidden"); };
 
@@ -970,13 +1000,11 @@ function save(){
  setTimeout(()=>$("saveBtn").textContent="Save daily state & Excel", 1500);
 }
 
-// Guaranteed Save Event Listener
 $("saveBtn").addEventListener("click", function(e){
  e.preventDefault();
  save();
 });
 
-// Clear All to On Parade Functionality
 function clearAllToParade(){
  pushUndo();
  if(!confirm("Are you sure you want to reset all personnel status to 'On Parade' for today?")) return;
