@@ -169,8 +169,8 @@ input, select, button { max-width: 100%; }
 <!-- LEAVE MODAL (REPORT DATE ONLY) -->
 <div id="leaveModal" class="modal-overlay hidden"><div class="modal-card"><h3 id="modalPersonName">Leave Details</h3><p>Specify leave type and report date for this person.</p><div class="modal-form"><div><label for="modalLeaveType">TYPE OF LEAVE</label><select id="modalLeaveType"><option value="A/L">A/L (Annual Leave)</option><option value="S/L">S/L (Sick Leave)</option><option value="R/L">R/L (Recreation Leave)</option><option value="C/L">C/L (Casual Leave)</option></select></div><div><label for="modalReportDate">REPORT DATE / TO DATE</label><input type="date" id="modalReportDate"></div></div><div class="modal-actions"><button class="secondary" type="button" id="closeModalBtn">Cancel</button><button type="button" id="saveLeaveBtn">Save Leave</button></div></div></div>
 
-<!-- DUTY TYPE MODAL -->
-<div id="dutyModal" class="modal-overlay hidden"><div class="modal-card"><h3 id="modalDutyPersonName">Select Duty Type</h3><p>Choose the specific duty type for this person.</p><div class="modal-form"><div><label for="modalDutyType">DUTY TYPE</label><select id="modalDutyType"></select></div></div><div class="modal-actions"><button class="secondary" type="button" id="closeDutyModalBtn">Cancel</button><button type="button" id="saveDutyBtn">Save Duty</button></div></div></div>
+<!-- DUTY TYPE & SHIFT MODAL -->
+<div id="dutyModal" class="modal-overlay hidden"><div class="modal-card"><h3 id="modalDutyPersonName">Select Duty Type & Shift</h3><p>Choose duty type and shift for this person.</p><div class="modal-form"><div><label for="modalDutyType">DUTY TYPE</label><select id="modalDutyType"></select></div><div><label for="modalDutyShift">DUTY SHIFT</label><select id="modalDutyShift"><option value="A Shift">A Shift</option><option value="B Shift">B Shift</option><option value="C Shift">C Shift</option></select></div></div><div class="modal-actions"><button class="secondary" type="button" id="closeDutyModalBtn">Cancel</button><button type="button" id="saveDutyBtn">Save Duty</button></div></div></div>
 
 <!-- ED COURSE MODAL -->
 <div id="edModal" class="modal-overlay hidden"><div class="modal-card"><h3 id="modalEdPersonName">ED / Course Details</h3><p>Specify course start date and finish date.</p><div class="modal-form"><div><label for="modalEdStartDate">START DATE / WEF</label><input type="date" id="modalEdStartDate"></div><div><label for="modalEdReportDate">FINISH DATE / TO DATE</label><input type="date" id="modalEdReportDate"></div></div><div class="modal-actions"><button class="secondary" type="button" id="closeEdModalBtn">Cancel</button><button type="button" id="saveEdBtn">Save ED/Course</button></div></div></div>
@@ -186,7 +186,6 @@ function playJetSound(){
   if(!AudioContext) return;
   const ctx = new AudioContext();
 
-  // White noise generator for jet roar
   const bufferSize = ctx.sampleRate * 7;
   const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
   const data = buffer.getChannelData(0);
@@ -422,6 +421,14 @@ function renderTabs(){
  $("statusTabs").querySelectorAll("button").forEach(b=>b.onclick=()=>{activeStatus=b.dataset.status;renderTabs();renderRoster()});
 }
 
+function formatDutyText(dutyStr){
+ if(!dutyStr) return "";
+ if(dutyStr.startsWith("T/F")){
+  return dutyStr.replace("T/F (Task Force)", "TF Duty").replace("T/F", "TF Duty");
+ }
+ return dutyStr;
+}
+
 function renderRoster(){
  const rf=$("rankFilter").value||"All ranks",q=$("search").value.trim().toLowerCase();
  let html="";
@@ -435,7 +442,7 @@ function renderRoster(){
    if(current[p.id]==="Leave"&&leave.to){
     noteText=` · (${esc(leave.type)} to ${esc(displayDate(leave.to))})`;
    } else if(current[p.id]==="All Duty On"&&currentDuty[p.id]){
-    noteText=` · (${esc(currentDuty[p.id])})`;
+    noteText=` · (${esc(formatDutyText(currentDuty[p.id]))})`;
    } else if(current[p.id]==="EDP/PG/ITD C"&&currentEd[p.id]&&currentEd[p.id].from){
     noteText=` · (wef ${esc(displayDate(currentEd[p.id].from))} to ${esc(displayDate(currentEd[p.id].to))})`;
    } else if(current[p.id]==="TD/Courier"){
@@ -497,14 +504,17 @@ function openDutyModal(id){
  } else {
   dutySel.innerHTML='<option value="T/F (Task Force)">T/F (Task Force)</option><option value="Sy Duty">Sy Duty</option><option value="DO">DO</option><option value="Form 108">Form 108</option>';
  }
- dutySel.value = currentDuty[id] || (isCiv ? "Section Night" : "T/F (Task Force)");
+ const rawDuty = currentDuty[id] || (isCiv ? "Section Night" : "T/F (Task Force)");
+ dutySel.value = rawDuty.split(" - ")[0] || rawDuty;
  $("dutyModal").classList.remove("hidden");
 }
 function closeDutyModal(restoreStatus=true){if(restoreStatus&&activeDutyPersonId){current[activeDutyPersonId]=pendingPreviousStatus;renderAll(false)}$("dutyModal").classList.add("hidden");activeDutyPersonId=null}
 $("closeDutyModalBtn").onclick=closeDutyModal;
 $("saveDutyBtn").onclick=()=>{
  if(!activeDutyPersonId) return;
- currentDuty[activeDutyPersonId] = $("modalDutyType").value;
+ const dutyType = $("modalDutyType").value;
+ const shift = $("modalDutyShift").value;
+ currentDuty[activeDutyPersonId] = `${dutyType} ${shift}`;
  closeDutyModal(false);
  renderAll();
  autoSaveBuffer();
@@ -586,7 +596,7 @@ function renderDetails(){
   return `<div class="rank-block"><div class="rank-head"><span>${esc(s)}</span><span>${list.length} personnel</span></div><div style="padding:6px 8px">${list.length?list.map(p=>{
    let tag = "";
    if(s==="Leave"&&currentLeave[p.id]) tag=` (${esc(currentLeave[p.id].type||"A/L")} to ${esc(displayDate(currentLeave[p.id].to))})`;
-   else if(s==="All Duty On"&&currentDuty[p.id]) tag=` (${esc(currentDuty[p.id])})`;
+   else if(s==="All Duty On"&&currentDuty[p.id]) tag=` (${esc(formatDutyText(currentDuty[p.id]))})`;
    else if(s==="EDP/PG/ITD C"&&currentEd[p.id]) tag=` (wef ${esc(displayDate(currentEd[p.id].from))} to ${esc(displayDate(currentEd[p.id].to))})`;
    else if(s==="TD/Courier") tag=` (TD)`;
    return `<span style="display:inline-block;margin:2px 4px 2px 0;padding:3px 6px;border:1px solid var(--line);border-radius:6px">${esc(p.rank)} ${esc(p.name)}${tag}</span>`;
@@ -600,7 +610,11 @@ function actualRank(p){
  return m ? m[1].toUpperCase() : "WO";
 }
 
-function generateGridHTML(){
+/* DYNAMIC PRINT GRID & EXCEL COLUMNS */
+function getActiveColumns(){
+ const hasPt = countStatus("ON PT") > 0;
+ const hasFod = countStatus("ON FOD") > 0;
+
  const cols=[
   ["OFFICE STRG",p=>p.rank!=="Attachment"&&p.rank!=="Civilian"&&current[p.id]!=="TD/Courier"],
   ["TD/COUR/UN",p=>current[p.id]==="TD/Courier"],
@@ -621,12 +635,24 @@ function generateGridHTML(){
   ["GST / GH",p=>current[p.id]==="GST/GH"&&p.rank!=="Civilian"],
   ["AFTERNOON",p=>current[p.id]==="Afternoon"&&p.rank!=="Civilian"],
   ["PARADE",p=>current[p.id]==="Parade"&&p.rank!=="Civilian"],
-  ["OUT OF PARADE",p=>current[p.id]==="Out of Parade"&&p.rank!=="Civilian"],
-  ["ON PARADE",p=>current[p.id]==="On Parade"&&p.rank!=="Civilian"],
-  ["ON PT",p=>current[p.id]==="ON PT"&&p.rank!=="Civilian"],
-  ["ON FOD",p=>current[p.id]==="ON FOD"&&p.rank!=="Civilian"]
+  ["OUT OF PARADE",p=>current[p.id]==="Out of Parade"&&p.rank!=="Civilian"]
  ];
 
+ if(!hasPt && !hasFod){
+  cols.push(["ON PARADE",p=>current[p.id]==="On Parade"&&p.rank!=="Civilian"]);
+ }
+ if(hasPt){
+  cols.push(["ON PT",p=>current[p.id]==="ON PT"&&p.rank!=="Civilian"]);
+ }
+ if(hasFod){
+  cols.push(["ON FOD",p=>current[p.id]==="ON FOD"&&p.rank!=="Civilian"]);
+ }
+
+ return cols;
+}
+
+function generateGridHTML(){
+ const cols = getActiveColumns();
  let h="<thead><tr><th class='vertical rankcol'>RANK</th>"+cols.map(c=>`<th class='vertical'>${esc(c[0])}</th>`).join("")+"</tr></thead><tbody>";
 
  militaryOrder.forEach(r=>{
@@ -700,9 +726,9 @@ function generateListsHTML(){
    if(k==="TD/Courier"){
     t += " - TD";
    } else if(k==="All Duty On" && currentDuty[p.id]){
-    t += ` - ${currentDuty[p.id]}`;
+    t += ` - ${formatDutyText(currentDuty[p.id])}`;
    } else if(k==="Civil Tech" && currentDuty[p.id]){
-    t += ` - ${currentDuty[p.id]}`;
+    t += ` - ${formatDutyText(currentDuty[p.id])}`;
    } else if(k==="EDP/PG/ITD C" && currentEd[p.id]){
     const ed = currentEd[p.id];
     if(ed.from||ed.to) t += ` (wef ${displayDate(ed.from)} to ${displayDate(ed.to)})`;
@@ -716,10 +742,21 @@ function generateListsHTML(){
   return `<div class="print-block"><h3>${esc(title)}</h3><ol ${["On Parade","ON PT","ON FOD"].includes(k)?'class="on-parade-grid"':""}>${items}</ol></div>`;
  }
 
+ const paradeBlocks = [];
+ if(countStatus("ON PT") === 0 && countStatus("ON FOD") === 0){
+  paradeBlocks.push(["On Parade","ON PARADE"]);
+ }
+ if(countStatus("ON PT") > 0){
+  paradeBlocks.push(["ON PT","ON PT"]);
+ }
+ if(countStatus("ON FOD") > 0){
+  paradeBlocks.push(["ON FOD","ON FOD"]);
+ }
+
  const columnLayout = [
   [["Leave","LEAVE"], ["QRF Duty","QRF DUTY"], ["CMH","CMH"], ["CMH / M Room Admit","CMH / MI ROOM ADMIT"]],
   [["All Duty On","ALL DUTY ON"], ["All Duty Off","ALL DUTY OFF"], ["Form 295","F-295 / AIR MOVEMENT"], ["Mess/Canteen","MESS / CANTEEN"], ["TD/Courier","TD / COURIER"], ["EDP/PG/ITD C","ED / PPGF / ATTD C"]],
-  [["On Parade","ON PARADE"], ["ON PT","ON PT"], ["ON FOD","ON FOD"]],
+  paradeBlocks,
   [["ATTACHMENT","ATTACHMENT"], ["Civil Tech","CIVIL TECH"]]
  ];
 
@@ -752,7 +789,9 @@ function exportToExcelSheet(){
  data.push(["AC TAKING & HANDING OVER FLT", "", "", "PARADE/ PT/FOD STATE", "", "", "DATE: " + date().split("-").reverse().join("/")]);
  data.push([]);
  
- data.push(["RANK", "OFFICE STRG", "TD/COUR/UN", "ATTACH", "EFFECTIVE STRG", "LEAVE", "F-295", "QRT DUTY", "ALL DUTY ON", "ALL DUTY OFF", "MESS/CANTEEN", "CMH S/R", "CMH ADMIT", "MILK DUTY", "ED/COURSE", "BASAE OJT", "UNDER CLEAR", "GST/GH", "AFTERNOON", "PARADE", "OUT OF PARADE", "ON PARADE", "ON PT", "ON FOD"]);
+ const cols = getActiveColumns();
+ const headerRow = ["RANK", ...cols.map(c=>c[0])];
+ data.push(headerRow);
 
  militaryOrder.forEach(r => {
   const officeList = people.filter(p=>p.rank===r && p.rank!=="Attachment");
@@ -761,28 +800,19 @@ function exportToExcelSheet(){
   const attachStrg = attachList.length;
   const effectiveStrg = officeStrg + attachStrg;
 
-  data.push([
-   r, officeStrg, officeList.filter(p=>current[p.id]==="TD/Courier").length, attachStrg, effectiveStrg,
-   officeList.filter(p=>current[p.id]==="Leave").length + attachList.filter(p=>current[p.id]==="Leave").length,
-   officeList.filter(p=>current[p.id]==="Form 295").length + attachList.filter(p=>current[p.id]==="Form 295").length,
-   officeList.filter(p=>current[p.id]==="QRF Duty").length + attachList.filter(p=>current[p.id]==="QRF Duty").length,
-   officeList.filter(p=>current[p.id]==="All Duty On").length + attachList.filter(p=>current[p.id]==="All Duty On").length,
-   officeList.filter(p=>current[p.id]==="All Duty Off").length + attachList.filter(p=>current[p.id]==="All Duty Off").length,
-   officeList.filter(p=>current[p.id]==="Mess/Canteen").length + attachList.filter(p=>current[p.id]==="Mess/Canteen").length,
-   officeList.filter(p=>current[p.id]==="CMH SR/FMLY SR").length + attachList.filter(p=>current[p.id]==="CMH SR/FMLY SR").length,
-   officeList.filter(p=>current[p.id]==="CMH / M Room Admit"||current[p.id]==="CMH").length + attachList.filter(p=>current[p.id]==="CMH / M Room Admit"||current[p.id]==="CMH").length,
-   officeList.filter(p=>current[p.id]==="Milk Duty").length + attachList.filter(p=>current[p.id]==="Milk Duty").length,
-   officeList.filter(p=>current[p.id]==="EDP/PG/ITD C").length + attachList.filter(p=>current[p.id]==="EDP/PG/ITD C").length,
-   officeList.filter(p=>current[p.id]==="BASAE Out/Exam").length + attachList.filter(p=>current[p.id]==="BASAE Out/Exam").length,
-   officeList.filter(p=>current[p.id]==="Under Clearance").length + attachList.filter(p=>current[p.id]==="Under Clearance").length,
-   officeList.filter(p=>current[p.id]==="GST/GH").length + attachList.filter(p=>current[p.id]==="GST/GH").length,
-   officeList.filter(p=>current[p.id]==="Afternoon").length + attachList.filter(p=>current[p.id]==="Afternoon").length,
-   officeList.filter(p=>current[p.id]==="Parade").length + attachList.filter(p=>current[p.id]==="Parade").length,
-   officeList.filter(p=>current[p.id]==="Out of Parade").length + attachList.filter(p=>current[p.id]==="Out of Parade").length,
-   officeList.filter(p=>current[p.id]==="On Parade").length + attachList.filter(p=>current[p.id]==="On Parade").length,
-   officeList.filter(p=>current[p.id]==="ON PT").length + attachList.filter(p=>current[p.id]==="ON PT").length,
-   officeList.filter(p=>current[p.id]==="ON FOD").length + attachList.filter(p=>current[p.id]==="ON FOD").length
-  ]);
+  const row = [r];
+  cols.forEach((c, i) => {
+   let n=0;
+   if(i===0) n=officeStrg;
+   else if(i===1) n=officeList.filter(p=>current[p.id]==="TD/Courier").length;
+   else if(i===2) n=attachStrg;
+   else if(i===3) n=effectiveStrg;
+   else {
+     n = officeList.filter(c[1]).length + attachList.filter(c[1]).length;
+   }
+   row.push(n||0);
+  });
+  data.push(row);
  });
 
  data.push([]);
@@ -794,7 +824,7 @@ function exportToExcelSheet(){
    list.forEach((p, i) => {
     let note = "";
     if(s==="Leave"&&currentLeave[p.id]) note = ` (to ${displayDate(currentLeave[p.id].to)})`;
-    else if(s==="All Duty On"&&currentDuty[p.id]) note = ` (${currentDuty[p.id]})`;
+    else if(s==="All Duty On"&&currentDuty[p.id]) note = ` (${formatDutyText(currentDuty[p.id])})`;
     data.push(["", i+1, `${p.rank} ${p.name}${note}`]);
    });
   }
