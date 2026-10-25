@@ -16,52 +16,6 @@
 :root{--green:#123b32;--lime:#d6f07a;--bg:#f3f6f4;--card:#fff;--ink:#182521;--muted:#687771;--line:#dce5df;--red:#a33232}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);font:13px/1.3 system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden}
 
-#introOverlay{position:fixed;inset:0;background:#030807;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;overflow:hidden;transition:opacity .4s;touch-action:manipulation}
-.runway-stage{position:absolute;inset:0;background:linear-gradient(to bottom,#030807 0%,#091a15 60%,#15221c 100%);perspective:800px}
-.runway-track{position:absolute;bottom:-20%;left:50%;width:400px;height:140vh;margin-left:-200px;background:#111916;transform:rotateX(75deg);transform-origin:bottom center;border-left:6px solid #3d594e;border-right:6px solid #3d594e}
-.runway-lines{position:absolute;width:12px;height:100%;left:50%;margin-left:-6px;background:repeating-linear-gradient(to bottom,#d6f07a 0 40px,transparent 40px 90px);animation:runwaySpeed 8s linear infinite}
-@keyframes runwaySpeed{from{background-position:0 -1000px}to{background-position:0 2000px}}
-
-.formation-viewport{position:relative;width:340px;height:260px;z-index:5;opacity:0;animation:fadeInJets 1s ease-in-out 2.5s forwards}
-@keyframes fadeInJets{from{opacity:0}to{opacity:1}}
-
-.f7-formation-wrapper{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;animation:formationTakeoffSequence 5.5s cubic-bezier(.25,.1,.25,1) 2.5s forwards}
-.jet-unit{position:absolute;display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 0 25px #d6f07a99)}
-.f7-svg-jet{width:130px;z-index:2}
-.tail-label{font-size:10px;font-weight:900;color:var(--lime);background:rgba(0,0,0,0.85);padding:2px 5px;border-radius:3px;border:1px solid var(--lime);margin-bottom:2px;letter-spacing:1px}
-
-.afterburner-container{position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);width:80px;height:70px;display:flex;justify-content:space-between;pointer-events:none;z-index:1}
-.afterburner-flame-single{width:30px;height:75px;background:radial-gradient(ellipse at center,#ffffff 0%,#a5f3fc 20%,#38bdf8 45%,#ea580c 75%,transparent 100%);border-radius:50%;animation:afterburnerPulse .06s infinite alternate;filter:blur(2px);box-shadow:0 0 35px #38bdf8,0 0 65px #ea580c}
-@keyframes afterburnerPulse{from{height:65px;opacity:.9;width:28px}to{height:90px;opacity:1;width:34px}}
-
-.lead-jet{transform:translate(0px, 0px) scale(1)}
-.wing-left-1{transform:translate(-55px, 35px) scale(.9)}
-.wing-right-1{transform:translate(55px, 35px) scale(.9)}
-.wing-left-2{transform:translate(-105px, 75px) scale(.8)}
-.wing-right-2{transform:translate(105px, 75px) scale(.8)}
-.rear-guard{transform:translate(0px, 125px) scale(.7)}
-
-@keyframes formationTakeoffSequence{
-  0%{transform:translate3d(0, 260px, 0) scale(.35)}
-  40%{transform:translate3d(0, 80px, 0) scale(.7)}
-  70%{transform:translate3d(0, -20px, 0) scale(1) rotate(-2deg)}
-  100%{transform:translate3d(0, -900px, 0) scale(3.0) rotate(-8deg);opacity:0}
-}
-
-.intro-text-box{position:relative;z-index:10;text-align:center;margin-bottom:15px;padding:0 20px;animation:textShowAndVanish 8s ease-in-out forwards}
-@keyframes textShowAndVanish{
-  0%{opacity:0;transform:translateY(10px)}
-  20%{opacity:1;transform:translateY(0)}
-  65%{opacity:1;transform:translateY(0)}
-  85%,100%{opacity:0;transform:translateY(-15px);pointer-events:none}
-}
-
-.intro-title{font-size:22px;color:var(--lime);margin:0 0 6px;letter-spacing:1.5px;text-transform:uppercase;font-weight:900;text-shadow:0 0 12px #d6f07a99}
-.intro-subtitle{font-size:13px;color:#cbd8d0;margin:0;font-weight:700;letter-spacing:.5px}
-.intro-timer-bar{position:absolute;bottom:0;left:0;height:4px;background:var(--lime);box-shadow:0 0 10px var(--lime);width:0;animation:timerProgress 8s linear forwards}
-@keyframes timerProgress{to{width:100%}}
-.skip-btn{position:absolute;bottom:25px;z-index:20;background:#d4f07a40;border:1.5px solid var(--lime);color:var(--lime);padding:12px 24px;border-radius:25px;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:1px}
-
 header{background:var(--green);color:#fff;padding:14px}header .eyebrow{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--lime);font-weight:800}h1{font-size:20px;line-height:1.15;margin:4px 0}header p{margin:0;color:#d8e5df;font-size:12px}
 main{max-width:1100px;margin:auto;padding:10px;display:grid;gap:10px;position:relative;z-index:1}.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;box-shadow:0 2px 8px #123b3208}.card h2{font-size:15px;margin:0 0 8px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.row>*{flex:1;min-width:130px}
 label{display:block;font-size:11px;color:var(--muted);font-weight:700;margin-bottom:3px}input,select,button{font:inherit;touch-action:manipulation}input[type=date],input[type=search],input[type=text],select{width:100%;padding:8px 10px;border:1px solid #cbd8d0;border-radius:6px;background:#fff;color:var(--ink);font-size:13px;position:relative;z-index:2}
@@ -111,7 +65,7 @@ button{border:0;border-radius:6px;padding:8px 12px;font-weight:750;cursor:pointe
 @media print{
   @page{size:A4 landscape;margin:2mm}
   html,body{width:297mm;height:210mm;background:#fff;font-size:7.5px;color:#000;margin:0;padding:0;overflow:hidden}
-  header,.no-print,.tabs,.foot,#reportArea,#editorArea,.screen-only,.hint,.statusnote,#togglePreviewBtn,.modal-overlay,#introOverlay{display:none!important}
+  header,.no-print,.tabs,.foot,#reportArea,#editorArea,.screen-only,.hint,.statusnote,#togglePreviewBtn,.modal-overlay{display:none!important}
   main{display:block;max-width:none;padding:0;margin:0}
   .card{box-shadow:none;border:0;padding:0;margin:0}
   #printState{display:block!important;width:100%;height:100%}
@@ -153,7 +107,6 @@ input, select, button { max-width: 100%; }
   .person-actions { justify-content: flex-end; }
   .modal-overlay { padding: 8px; }
   .modal-card { max-height: 90dvh; overflow-y: auto; padding: 12px; }
-  .intro-title { font-size: 16px; }
 }
 @media print {
   main { width: auto; padding: 0; }
@@ -166,92 +119,6 @@ input, select, button { max-width: 100%; }
 </style>
 </head>
 <body>
-<div id="introOverlay">
-  <div class="runway-stage"><div class="runway-track"><div class="runway-lines"></div></div></div>
-  
-  <div class="intro-text-box">
-    <h1 class="intro-title">Welcome to 106 Hangar</h1>
-    <p class="intro-subtitle">6x F-7 Formation Takeoff (936 · 946 · 942 · 941 · 940 · 702)<br>Developed By Cpl Saiful</p>
-  </div>
-
-  <div class="formation-viewport">
-    <div class="f7-formation-wrapper">
-      
-      <!-- LEAD JET: 936 -->
-      <div class="jet-unit lead-jet">
-        <div class="tail-label">936</div>
-        <svg class="f7-svg-jet" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M185 20 L215 20 L225 120 L235 280 L220 340 L180 340 L165 280 L175 120 Z" fill="#94a3b8" stroke="#334155" stroke-width="4"/>
-          <path d="M188 60 Q200 45 212 60 L210 95 Q200 85 190 95 Z" fill="#38bdf8" stroke="#0284c7" stroke-width="2"/>
-          <path d="M190 140 L30 200 L45 230 L185 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
-          <path d="M210 140 L370 200 L355 230 L215 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
-          <rect x="95" y="185" width="30" height="55" rx="10" fill="#64748b" stroke="#1e293b" stroke-width="3"/>
-          <rect x="275" y="185" width="30" height="55" rx="10" fill="#64748b" stroke="#1e293b" stroke-width="3"/>
-        </svg>
-        <div class="afterburner-container"><div class="afterburner-flame-single" style="transform: translateX(-10px);"></div><div class="afterburner-flame-single" style="transform: translateX(10px);"></div></div>
-      </div>
-
-      <!-- WING LEFT 1: 946 -->
-      <div class="jet-unit wing-left-1">
-        <div class="tail-label">946</div>
-        <svg class="f7-svg-jet" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M185 20 L215 20 L225 120 L235 280 L220 340 L180 340 L165 280 L175 120 Z" fill="#94a3b8" stroke="#334155" stroke-width="4"/>
-          <path d="M190 140 L30 200 L45 230 L185 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
-          <path d="M210 140 L370 200 L355 230 L215 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
-        </svg>
-        <div class="afterburner-container"><div class="afterburner-flame-single"></div></div>
-      </div>
-
-      <!-- WING RIGHT 1: 942 -->
-      <div class="jet-unit wing-right-1">
-        <div class="tail-label">942</div>
-        <svg class="f7-svg-jet" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M185 20 L215 20 L225 120 L235 280 L220 340 L180 340 L165 280 L175 120 Z" fill="#94a3b8" stroke="#334155" stroke-width="4"/>
-          <path d="M190 140 L30 200 L45 230 L185 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
-          <path d="M210 140 L370 200 L355 230 L215 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
-        </svg>
-        <div class="afterburner-container"><div class="afterburner-flame-single"></div></div>
-      </div>
-
-      <!-- WING LEFT 2: 941 -->
-      <div class="jet-unit wing-left-2">
-        <div class="tail-label">941</div>
-        <svg class="f7-svg-jet" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M185 20 L215 20 L225 120 L235 280 L220 340 L180 340 L165 280 L175 120 Z" fill="#94a3b8" stroke="#334155" stroke-width="4"/>
-          <path d="M190 140 L30 200 L45 230 L185 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
-          <path d="M210 140 L370 200 L355 230 L215 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
-        </svg>
-        <div class="afterburner-container"><div class="afterburner-flame-single"></div></div>
-      </div>
-
-      <!-- WING RIGHT 2: 940 -->
-      <div class="jet-unit wing-right-2">
-        <div class="tail-label">940</div>
-        <svg class="f7-svg-jet" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M185 20 L215 20 L225 120 L235 280 L220 340 L180 340 L165 280 L175 120 Z" fill="#94a3b8" stroke="#334155" stroke-width="4"/>
-          <path d="M190 140 L30 200 L45 230 L185 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
-          <path d="M210 140 L370 200 L355 230 L215 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
-        </svg>
-        <div class="afterburner-container"><div class="afterburner-flame-single"></div></div>
-      </div>
-
-      <!-- REAR GUARD: 702 -->
-      <div class="jet-unit rear-guard">
-        <div class="tail-label">702</div>
-        <svg class="f7-svg-jet" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M185 20 L215 20 L225 120 L235 280 L220 340 L180 340 L165 280 L175 120 Z" fill="#94a3b8" stroke="#334155" stroke-width="4"/>
-          <path d="M190 140 L30 200 L45 230 L185 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
-          <path d="M210 140 L370 200 L355 230 L215 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
-        </svg>
-        <div class="afterburner-container"><div class="afterburner-flame-single"></div></div>
-      </div>
-
-    </div>
-  </div>
-
-  <div class="intro-timer-bar"></div>
-  <button class="skip-btn" id="skipIntroBtn">START ENGINES & ENTER</button>
-</div>
 
 <header class="no-print"><div class="eyebrow">Personnel & Daily State <span id="cloudStatus" class="cloud-badge">Cloud Syncing…</span></div><h1>State Office Manpower</h1><p>Rank-wise roster · Daily disposal · Final available strength</p></header>
 <main>
@@ -340,57 +207,6 @@ input, select, button { max-width: 100%; }
 </main><div class="foot no-print">State Office Manpower · Cloud Sync Edition</div>
 
 <script>
-let soundHasPlayed = false;
-
-function playJetSound(){
- if(soundHasPlayed) return;
- soundHasPlayed = true;
-
- try {
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
-  if(!AudioContext) return;
-  const ctx = new AudioContext();
-  if(ctx.state === 'suspended'){ ctx.resume(); }
-
-  // 8-second heavy fighter jet formation roar synthesis
-  const bufferSize = ctx.sampleRate * 8;
-  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-  const data = buffer.getChannelData(0);
-  for(let i=0; i<bufferSize; i++){
-   data[i] = (Math.random() * 2 - 1) * 2.0;
-  }
-
-  const noise = ctx.createBufferSource();
-  noise.buffer = buffer;
-
-  const filter = ctx.createBiquadFilter();
-  filter.type = 'bandpass';
-  filter.frequency.setValueAtTime(40, ctx.currentTime);
-  filter.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 7.5);
-  filter.Q.setValueAtTime(3.0, ctx.currentTime);
-
-  const gain = ctx.createGain();
-  gain.gain.setValueAtTime(0.01, ctx.currentTime);
-  gain.gain.linearRampToValueAtTime(1.0, ctx.currentTime + 2.0);
-  gain.gain.setValueAtTime(1.0, ctx.currentTime + 6.5);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 7.9);
-
-  noise.connect(filter);
-  filter.connect(gain);
-  gain.connect(ctx.destination);
-
-  noise.start();
-  noise.stop(ctx.currentTime + 8.0);
- } catch(e){}
-}
-
-// Sound triggers automatically once on initial load / interaction
-window.addEventListener("load", playJetSound);
-document.addEventListener("DOMContentLoaded", playJetSound);
-const triggerOnce = () => { playJetSound(); };
-window.addEventListener("click", triggerOnce, { once: true });
-window.addEventListener("touchstart", triggerOnce, { once: true });
-
 const firebaseConfig = {
   databaseURL: "https://hangar-2f228-default-rtdb.firebaseio.com/"
 };
@@ -410,22 +226,6 @@ try {
 } catch(e) {
   document.getElementById("cloudStatus").textContent = "Local Mode";
 }
-
-const removeIntroOverlay=()=>{
- const o=document.getElementById("introOverlay");
- if(o&&o.parentNode){
-  o.style.opacity="0";
-  o.style.pointerEvents="none";
-  setTimeout(()=>{if(o&&o.parentNode)o.parentNode.removeChild(o)},300);
- }
-};
-
-document.getElementById("skipIntroBtn").addEventListener("click",()=>{
- removeIntroOverlay();
-});
-
-setTimeout(removeIntroOverlay, 8000);
-if(location.href.indexOf("content://")!==-1)setTimeout(removeIntroOverlay,1000);
 
 let ranks=[{rank:"MWO",names:["Shaheen","Nazrul"]},{rank:"SWO",names:["M. Ali","Kusru"]},{rank:"WO",names:["Jahangir","Khairul","Hasan","Salam","Hasim","Kalam","Josim","Kamrul","Enam","Raisul"]},{rank:"SGT",names:["Akash","Alek","Habib","Ashik","Shimul","Shaheen","M. Ali","Parvez","Kaisar","Anis","Imran","Abdullah","Jafor","Adam","Rakib"]},{rank:"CPL",names:["Saiful","Chunnu","Imran","Arif","Jahid","Razzak","Milon","Bokul","Nasim","Shawon","Al Amin","Rejaul","Sajed","Sujon","Jomir","Tofazzol"]},{rank:"LAC",names:["Rakib","Tanvir","Sento","Mohit","Hossain"]},{rank:"AC",names:[]},{rank:"Attachment",names:["WO Khalek","SGT Sourav","CPL Akbar"]}];
 
@@ -1053,8 +853,6 @@ function exportToExcelSheet(){
    .header-title { font-size: 14px; font-weight: bold; text-align: left; border: none; }
    .header-doc { font-size: 13px; font-weight: bold; text-align: center; text-decoration: underline; border: none; }
    .header-date { font-size: 11px; font-weight: bold; text-align: right; border: none; }
-   .section-header { background: #eaeaea; font-weight: bold; }
-   .list-table td { border: none; text-align: left; padding: 2px; font-size: 9px; }
    .sig { font-weight: bold; text-align: center; border: none; padding-top: 20px; }
   </style>
   </head>
@@ -1094,7 +892,7 @@ function exportToExcelSheet(){
    </table>
   </body>
   </html>
- `;<br>
+ `;
  const blob = new Blob(['\ufeff' + htmlContent], { type: 'application/vnd.ms-excel' });
  const a = document.createElement("a");
  a.href = URL.createObjectURL(blob);
