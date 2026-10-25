@@ -9,7 +9,7 @@
 <!-- Firebase SDK Scripts -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<!-- XLSX Library with Style Support -->
+<!-- XLSX Library -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
 <style>
@@ -34,7 +34,6 @@
 .afterburner-flame-single{width:30px;height:75px;background:radial-gradient(ellipse at center,#ffffff 0%,#a5f3fc 20%,#38bdf8 45%,#ea580c 75%,transparent 100%);border-radius:50%;animation:afterburnerPulse .06s infinite alternate;filter:blur(2px);box-shadow:0 0 35px #38bdf8,0 0 65px #ea580c}
 @keyframes afterburnerPulse{from{height:65px;opacity:.9;width:28px}to{height:90px;opacity:1;width:34px}}
 
-/* SQUADRON WEDGE FORMATION */
 .lead-jet{transform:translate(0px, 0px) scale(1)}
 .wing-left-1{transform:translate(-55px, 35px) scale(.9)}
 .wing-right-1{transform:translate(55px, 35px) scale(.9)}
@@ -1037,86 +1036,102 @@ function renderAll(reRoster=true){
 
 function refreshRankSelectors(){const rf=$("rankFilter"),old=rf.value||"All ranks";rf.innerHTML='<option>All ranks</option>'+ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("");rf.value=["All ranks",...ranks.map(g=>g.rank)].includes(old)?old:"All ranks";const ar=$("addRank"),prev=ar.value;ar.innerHTML=ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("")+'<option value="__new__">New rank…</option>';ar.value=ranks.some(g=>g.rank===prev)?prev:(ranks[0]?.rank||"__new__")}
 
+// 100% PREVIEW-MATCHING EXCEL EXPORT (EXCEL-COMPATIBLE HTML FORMAT)
 function exportToExcelSheet(){
- const wb = XLSX.utils.book_new();
- const data = [];
+ const d = date().split("-").reverse().join("/");
+ const preparedName = $("prepName").value.trim() || "PARVEZ";
+ const preparedRank = $("prepRank").value.trim() || "SGT";
+ const noteText = $("customNoteInput").value.trim();
 
- data.push(["AC TAKING & HANDING OVER FLT", "", "", "PARADE/ PT/FOD STATE", "", "", "DATE: " + date().split("-").reverse().join("/")]);
- data.push([]);
- 
- const cols = getActiveColumns();
- const headerRow = ["RANK", ...cols.map(c=>c[0])];
- data.push(headerRow);
+ const htmlContent = `
+  <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+  <head>
+  <meta charset="utf-8">
+  <style>
+   table { border-collapse: collapse; font-family: Arial, sans-serif; font-size: 10px; }
+   th, td { border: 1.5px solid #000; padding: 4px; text-align: center; vertical-align: middle; }
+   .header-title { font-size: 14px; font-weight: bold; text-align: left; border: none; }
+   .header-doc { font-size: 13px; font-weight: bold; text-align: center; text-decoration: underline; border: none; }
+   .header-date { font-size: 11px; font-weight: bold; text-align: right; border: none; }
+   .section-header { background: #eaeaea; font-weight: bold; }
+   .list-table td { border: none; text-align: left; padding: 2px; font-size: 9px; }
+   .sig { font-weight: bold; text-align: center; border: none; padding-top: 20px; }
+  </style>
+  </head>
+  <body>
+   <table>
+    <tr>
+     <td colspan="4" class="header-title">AC TAKING & HANDING OVER FLT</td>
+     <td colspan="10" class="header-doc">PARADE / PT / FOD STATE</td>
+     <td colspan="6" class="header-date">DATE : ${d}</td>
+    </tr>
+    ${noteText ? `<tr><td colspan="20" style="text-align:center;font-weight:bold;border:none;">${esc(noteText)}</td></tr>` : ''}
+    <tr><td colspan="20" style="border:none;height:10px;"></td></tr>
+   </table>
 
- militaryOrder.forEach(r => {
-  const officeList = people.filter(p=>p.rank===r && p.rank!=="Attachment");
-  const attachList = people.filter(p=>(p.rank==="Attachment"||current[p.id]==="Attachment") && actualRank(p)===r);
-  const officeStrg = officeList.filter(p=>current[p.id]!=="TD/Courier").length;
-  const attachStrg = attachList.length;
-  const effectiveStrg = officeStrg + attachStrg;
+   <table>
+    ${document.getElementById("printGrid").innerHTML}
+   </table>
 
-  const row = [r];
-  cols.forEach((c, i) => {
-   let n=0;
-   if(i===0) n=officeStrg;
-   else if(i===1) n=officeList.filter(p=>current[p.id]==="TD/Courier").length;
-   else if(i===2) n=attachStrg;
-   else if(i===3) n=effectiveStrg;
-   else {
-     n = officeList.filter(c[1]).length + attachList.filter(c[1]).length;
-   }
-   row.push(n!==0?n:"");
-  });
-  data.push(row);
- });
+   <br>
+   <table style="width:100%;">
+    <tr>
+     <td style="width:50%; vertical-align:top; border:none;">
+      <table>
+       ${generateExcelListsHtml()}
+      </table>
+     </td>
+    </tr>
+   </table>
 
- const milPeople = people.filter(p=>militaryOrder.includes(p.rank)&&p.rank!=="Attachment");
- const allAttach = people.filter(p=>p.rank==="Attachment"||(current[p.id]==="Attachment"&&p.rank!=="Civilian"));
- const totalOffice = milPeople.filter(p=>current[p.id]!=="TD/Courier").length;
+   <br><br>
+   <table style="width:100%; border:none;">
+    <tr>
+     <td class="sig" style="width:30%;"><u>PREPARED BY</u><br>${preparedName}<br>${preparedRank}</td>
+     <td class="sig" style="width:40%;"><u>JCOIC</u></td>
+     <td class="sig" style="width:30%;"><u>OIC</u></td>
+    </tr>
+   </table>
+  </body>
+  </html>
+ `;<br>
+ const blob = new Blob(['\ufeff' + htmlContent], { type: 'application/vnd.ms-excel' });
+ const a = document.createElement("a");
+ a.href = URL.createObjectURL(blob);
+ a.download = `State_Office_${date()}.xls`;
+ document.body.appendChild(a);
+ a.click();
+ a.remove();
+}
 
- const totalRow = ["TOTAL"];
- cols.forEach((c, i) => {
-  let n=0;
-  if(i===0) n=totalOffice;
-  else if(i===1) n=milPeople.filter(p=>current[p.id]==="TD/Courier").length;
-  else if(i===2) n=allAttach.length;
-  else if(i===3) n=totalOffice + allAttach.length;
-  else {
-    n = milPeople.filter(c[1]).length + allAttach.filter(c[1]).length;
-  }
-  totalRow.push(n!==0?n:"");
- });
- data.push(totalRow);
+function generateExcelListsHtml(){
+ const columnLayout = [
+  [["Leave","LEAVE"], ["QRF Duty","QRF DUTY"], ["CMH","CMH"]],
+  [["All Duty On","ALL DUTY ON"], ["All Duty Off","ALL DUTY OFF"], ["Form 295","F-295"]],
+  [["On Parade","ON PARADE"]],
+  [["ATTACHMENT","ATTACHMENT"], ["Civil Tech","Civil Tech"]]
+ ];
 
- data.push([]);
- data.push(["PERSONNEL DISPOSAL DETAILS"]);
- statuses.forEach(s => {
-  const list = people.filter(p=>current[p.id]===s);
-  if(list.length){
-   data.push([s + " (" + list.length + ")"]);
-   list.forEach((p, i) => {
-    let note = "";
-    if(s==="Leave"&&currentLeave[p.id]) note = ` (to ${displayDate(currentLeave[p.id].to)})`;
-    else if(s==="All Duty On"&&currentDuty[p.id]) note = ` (${formatDutyText(currentDuty[p.id])})`;
-    data.push(["", i+1, `${p.rank} ${p.name}${note}`]);
+ let html = "<tr>";
+ columnLayout.forEach(colGroup => {
+  html += "<td style='vertical-align:top; border:none; padding-right:15px;'>";
+  colGroup.forEach(([k, t]) => {
+   let list = k==="ATTACHMENT" ? people.filter(p=>p.rank==="Attachment"||current[p.id]==="Attachment") : people.filter(p=>p.rank!=="Civilian"&&p.rank!=="Attachment"&&current[p.id]===k);
+   if(k==="Civil Tech") list = people.filter(p=>p.rank==="Civilian");
+   if(!list.length) return;
+   
+   html += `<div style="font-weight:bold; text-decoration:underline; font-size:9px; margin-bottom:2px;">${t}</div>`;
+   list.forEach((p, idx) => {
+    let txt = `${p.rank} ${p.name}`;
+    if(k==="Leave" && currentLeave[p.id]?.to) txt += ` (${currentLeave[p.id].type||'A/L'} to ${displayDate(currentLeave[p.id].to)})`;
+    html += `<div style="font-size:8.5px; margin-bottom:1px;">${idx+1}. ${esc(txt)}</div>`;
    });
-  }
+   html += "<br>";
+  });
+  html += "</td>";
  });
-
- data.push([]);
- const prepNameVal = $("prepName").value.trim() || "PARVEZ";
- const prepRankVal = $("prepRank").value.trim() || "SGT";
- data.push(["PREPARED BY:", prepNameVal + " " + prepRankVal, "", "JCOIC:", "", "", "OIC:"]);
-
- const ws = XLSX.utils.aoa_to_sheet(data);
- 
- // Professional Column Widths to prevent formatting breaks
- const colWidths = [{wch: 15}];
- for(let i=0; i<cols.length; i++) colWidths.push({wch: 12});
- ws['!cols'] = colWidths;
-
- XLSX.utils.book_append_sheet(wb, ws, "Daily State");
- XLSX.writeFile(wb, `State_Office_${date()}.xlsx`);
+ html += "</tr>";
+ return html;
 }
 
 $("saveBtn").addEventListener("click", function(e){
