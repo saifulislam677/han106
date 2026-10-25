@@ -163,13 +163,17 @@ input, select, button { max-width: 100%; }
       </div>
       <div>
         <label for="fontSizeSelect" style="margin:0;font-size:10px">Font Size:</label>
-        <select id="fontSizeSelect" style="width:80px;padding:3px;font-size:11px">
-          <option value="5px">5 px (Tiny)</option>
-          <option value="6px">6 px (Compact)</option>
-          <option value="7px" selected>7 px (Standard)</option>
-          <option value="8px">8 px (Large)</option>
-          <option value="9px">9 px (X-Large)</option>
+        <select id="fontSizeSelect" style="width:90px;padding:3px;font-size:11px">
+          <option value="5px">5 px</option>
+          <option value="6px">6 px</option>
+          <option value="7px" selected>7 px (Std)</option>
+          <option value="8px">8 px</option>
+          <option value="9px">9 px</option>
           <option value="10px">10 px</option>
+          <option value="12px">12 px</option>
+          <option value="14px">14 px</option>
+          <option value="16px">16 px</option>
+          <option value="20px">20 px</option>
         </select>
       </div>
       <div>
@@ -598,7 +602,7 @@ function getActiveColumns(){
  const hasFod = countStatus("ON FOD") > 0;
 
  const cols=[
-  ["OFFICE STRG",p=>p.rank!=="Attachment"&&p.rank!=="Civilian"&&current[p.id]!=="TD/Courier"],
+  ["OFFICE STRG",p=>p.rank!=="Attachment"&&p.rank!=="Civilian"],
   ["TD/COUR/UN",p=>current[p.id]==="TD/Courier"],
   ["ATTACH",p=>p.rank==="Attachment"||current[p.id]==="Attachment"],
   ["EFFECTIVE STRG",p=>p.rank!=="Civilian"],
@@ -645,16 +649,15 @@ function generateGridHTML(){
   const officeList = people.filter(p=>p.rank===r && p.rank!=="Attachment");
   const attachList = people.filter(p=>(p.rank==="Attachment"||current[p.id]==="Attachment") && actualRank(p)===r);
 
-  // OFFICE STRG excludes TD/Courier personnel (deducted from office strength)
-  const officeStrg = officeList.filter(p=>current[p.id]!=="TD/Courier").length;
+  const officeStrg = officeList.length;
   const attachStrg = attachList.length;
-  // EFFECTIVE STRG = Office Strength (excluding TD) + Attachment
-  const effectiveStrg = officeStrg + attachStrg;
+  const tdCount = officeList.filter(p=>current[p.id]==="TD/Courier").length;
+  const effectiveStrg = (officeStrg - tdCount) + attachStrg;
 
   h+=`<tr><th class="rankcol">${r}</th>`+cols.map((c,i)=>{
    let n=0;
    if(i===0) n=officeStrg;
-   else if(i===1) n=officeList.filter(p=>current[p.id]==="TD/Courier").length;
+   else if(i===1) n=tdCount;
    else if(i===2) n=attachStrg;
    else if(i===3) n=effectiveStrg;
    else {
@@ -666,14 +669,15 @@ function generateGridHTML(){
 
  const milPeople = people.filter(p=>militaryOrder.includes(p.rank)&&p.rank!=="Attachment");
  const allAttach = people.filter(p=>p.rank==="Attachment"||(current[p.id]==="Attachment"&&p.rank!=="Civilian"));
- const totalOffice = milPeople.filter(p=>current[p.id]!=="TD/Courier").length;
+ const totalOffice = milPeople.length;
+ const totalTd = milPeople.filter(p=>current[p.id]==="TD/Courier").length;
 
  h+=`<tr class="totalrow"><th class="rankcol">TOTAL</th>`+cols.map((c,i)=>{
   let n=0;
   if(i===0) n=totalOffice;
-  else if(i===1) n=milPeople.filter(p=>current[p.id]==="TD/Courier").length;
+  else if(i===1) n=totalTd;
   else if(i===2) n=allAttach.length;
-  else if(i===3) n=totalOffice + allAttach.length;
+  else if(i===3) n=(totalOffice - totalTd) + allAttach.length;
   else {
     n = milPeople.filter(c[1]).length + allAttach.filter(c[1]).length;
   }
