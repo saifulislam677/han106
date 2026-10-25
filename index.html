@@ -179,6 +179,44 @@ input, select, button { max-width: 100%; }
 </main><div class="foot no-print">State Office Manpower · Cloud Sync Edition</div>
 
 <script>
+// --- AUTO-PLAY JET TAKE-OFF AUDIO SYNTHESIZER ---
+function playJetSound(){
+ try {
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if(!AudioContext) return;
+  const ctx = new AudioContext();
+
+  // White noise generator for jet roar
+  const bufferSize = ctx.sampleRate * 7;
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for(let i=0; i<bufferSize; i++){
+   data[i] = Math.random() * 2 - 1;
+  }
+
+  const noise = ctx.createBufferSource();
+  noise.buffer = buffer;
+
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.frequency.setValueAtTime(120, ctx.currentTime);
+  filter.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 6);
+  filter.Q.setValueAtTime(1.5, ctx.currentTime);
+
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.01, ctx.currentTime);
+  gain.gain.linearRampToValueAtTime(0.35, ctx.currentTime + 1.5);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 7);
+
+  noise.connect(filter);
+  filter.connect(gain);
+  gain.connect(ctx.destination);
+
+  noise.start();
+  noise.stop(ctx.currentTime + 7.2);
+ } catch(e){}
+}
+
 const firebaseConfig = {
   databaseURL: "https://hangar-2f228-default-rtdb.firebaseio.com/"
 };
@@ -199,8 +237,26 @@ try {
   document.getElementById("cloudStatus").textContent = "Local Mode";
 }
 
-const removeIntroOverlay=()=>{const o=document.getElementById("introOverlay");if(o&&o.parentNode){o.style.opacity="0";o.style.pointerEvents="none";setTimeout(()=>{if(o&&o.parentNode)o.parentNode.removeChild(o)},300)}};
-document.getElementById("skipIntroBtn").addEventListener("click",removeIntroOverlay);setTimeout(removeIntroOverlay,7500);if(location.href.indexOf("content://")!==-1)setTimeout(removeIntroOverlay,1000);
+const removeIntroOverlay=()=>{
+ const o=document.getElementById("introOverlay");
+ if(o&&o.parentNode){
+  o.style.opacity="0";
+  o.style.pointerEvents="none";
+  setTimeout(()=>{if(o&&o.parentNode)o.parentNode.removeChild(o)},300);
+ }
+};
+
+document.getElementById("skipIntroBtn").addEventListener("click",()=>{
+ playJetSound();
+ removeIntroOverlay();
+});
+
+setTimeout(()=>{
+ playJetSound();
+}, 200);
+
+setTimeout(removeIntroOverlay,7500);
+if(location.href.indexOf("content://")!==-1)setTimeout(removeIntroOverlay,1000);
 
 let ranks=[{rank:"MWO",names:["Shaheen","Nazrul"]},{rank:"SWO",names:["M. Ali","Kusru"]},{rank:"WO",names:["Jahangir","Khairul","Hasan","Salam","Hasim","Kalam","Josim","Kamrul","Enam","Raisul"]},{rank:"SGT",names:["Akash","Alek","Habib","Ashik","Shimul","Shaheen","M. Ali","Parvez","Kaisar","Anis","Imran","Abdullah","Jafor","Adam","Rakib"]},{rank:"CPL",names:["Saiful","Chunnu","Imran","Arif","Jahid","Razzak","Milon","Bokul","Nasim","Shawon","Al Amin","Rejaul","Sajed","Sujon","Jomir","Tofazzol"]},{rank:"LAC",names:["Rakib","Tanvir","Sento","Mohit","Hossain"]},{rank:"AC",names:[]},{rank:"Civilian",names:["MSG Sajon","MSG Khairul","MC1 Hafiz","MC1 Hero","MC2 Masum","TM Ismail","TM Imam"]},{rank:"Attachment",names:["WO Khalek","SGT Sourav","CPL Akbar"]}];
 
@@ -323,7 +379,6 @@ function applyRecord(record){
  checkActiveDateRanges(date());
 }
 
-/* PERSISTENT LEAVE ENGINE: KEEPS PEOPLE ON LEAVE UNTIL THEIR REPORT DATE HAS FINISHED */
 function checkActiveDateRanges(selectedIsoDate){
  if(!selectedIsoDate) return;
  Object.values(saved).forEach(rec=>{
@@ -567,7 +622,9 @@ function generateGridHTML(){
   ["AFTERNOON",p=>current[p.id]==="Afternoon"&&p.rank!=="Civilian"],
   ["PARADE",p=>current[p.id]==="Parade"&&p.rank!=="Civilian"],
   ["OUT OF PARADE",p=>current[p.id]==="Out of Parade"&&p.rank!=="Civilian"],
-  ["ON PARADE",p=>(current[p.id]==="On Parade"||current[p.id]==="ON PT"||current[p.id]==="ON FOD")&&p.rank!=="Civilian"]
+  ["ON PARADE",p=>current[p.id]==="On Parade"&&p.rank!=="Civilian"],
+  ["ON PT",p=>current[p.id]==="ON PT"&&p.rank!=="Civilian"],
+  ["ON FOD",p=>current[p.id]==="ON FOD"&&p.rank!=="Civilian"]
  ];
 
  let h="<thead><tr><th class='vertical rankcol'>RANK</th>"+cols.map(c=>`<th class='vertical'>${esc(c[0])}</th>`).join("")+"</tr></thead><tbody>";
@@ -617,14 +674,17 @@ function generateGridHTML(){
 function generateListsHTML(){
  function getList(k){
   if(k==="Civil Tech") return people.filter(p=>p.rank==="Civilian");
-  if(k==="On Parade") return people.filter(p=>p.rank!=="Civilian"&&p.rank!=="Attachment"&&["On Parade","ON PT","ON FOD"].includes(current[p.id]));
+  if(k==="On Parade") return people.filter(p=>p.rank!=="Civilian"&&p.rank!=="Attachment"&&current[p.id]==="On Parade");
+  if(k==="ON PT") return people.filter(p=>p.rank!=="Civilian"&&p.rank!=="Attachment"&&current[p.id]==="ON PT");
+  if(k==="ON FOD") return people.filter(p=>p.rank!=="Civilian"&&p.rank!=="Attachment"&&current[p.id]==="ON FOD");
+  if(k==="TD/Courier") return people.filter(p=>p.rank!=="Civilian"&&p.rank!=="Attachment"&&current[p.id]==="TD/Courier");
   return people.filter(p=>p.rank!=="Civilian"&&p.rank!=="Attachment"&&current[p.id]===k);
  }
 
  function block(k,title){
   let list = k==="ATTACHMENT" ? people.filter(p=>p.rank==="Attachment"||current[p.id]==="Attachment") : getList(k);
   if(!list.length) return "";
-  if(k==="On Parade") list = list.slice().sort((a,b)=>militaryOrder.indexOf(a.rank)-militaryOrder.indexOf(b.rank));
+  if(k==="On Parade"||k==="ON PT"||k==="ON FOD") list = list.slice().sort((a,b)=>militaryOrder.indexOf(a.rank)-militaryOrder.indexOf(b.rank));
 
   const items = list.map((p,i)=>{
    let t = "";
@@ -637,11 +697,7 @@ function generateListsHTML(){
      t = `${p.rank} ${p.name}`;
    }
 
-   if(current[p.id]==="ON PT"){
-    t += " - ON PT";
-   } else if(current[p.id]==="ON FOD"){
-    t += " - ON FOD";
-   } else if(current[p.id]==="TD/Courier"){
+   if(k==="TD/Courier"){
     t += " - TD";
    } else if(k==="All Duty On" && currentDuty[p.id]){
     t += ` - ${currentDuty[p.id]}`;
@@ -657,13 +713,13 @@ function generateListsHTML(){
    return `<li><span class="item-num">${i+1}</span><span class="item-text">${esc(t)}</span></li>`;
   }).join("");
 
-  return `<div class="print-block"><h3>${esc(title)}</h3><ol ${k==="On Parade"?'class="on-parade-grid"':""}>${items}</ol></div>`;
+  return `<div class="print-block"><h3>${esc(title)}</h3><ol ${["On Parade","ON PT","ON FOD"].includes(k)?'class="on-parade-grid"':""}>${items}</ol></div>`;
  }
 
  const columnLayout = [
   [["Leave","LEAVE"], ["QRF Duty","QRF DUTY"], ["CMH","CMH"], ["CMH / M Room Admit","CMH / MI ROOM ADMIT"]],
   [["All Duty On","ALL DUTY ON"], ["All Duty Off","ALL DUTY OFF"], ["Form 295","F-295 / AIR MOVEMENT"], ["Mess/Canteen","MESS / CANTEEN"], ["TD/Courier","TD / COURIER"], ["EDP/PG/ITD C","ED / PPGF / ATTD C"]],
-  [["On Parade","ON PARADE"]],
+  [["On Parade","ON PARADE"], ["ON PT","ON PT"], ["ON FOD","ON FOD"]],
   [["ATTACHMENT","ATTACHMENT"], ["Civil Tech","CIVIL TECH"]]
  ];
 
@@ -689,7 +745,6 @@ function renderAll(reRoster=true){
 
 function refreshRankSelectors(){const rf=$("rankFilter"),old=rf.value||"All ranks";rf.innerHTML='<option>All ranks</option>'+ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("");rf.value=["All ranks",...ranks.map(g=>g.rank)].includes(old)?old:"All ranks";const ar=$("addRank"),prev=ar.value;ar.innerHTML=ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("")+'<option value="__new__">New rank…</option>';ar.value=ranks.some(g=>g.rank===prev)?prev:(ranks[0]?.rank||"__new__")}
 
-/* EDITABLE EXCEL (.XLSX) GENERATOR FUNCTION */
 function exportToExcelSheet(){
  const wb = XLSX.utils.book_new();
  const data = [];
@@ -697,7 +752,7 @@ function exportToExcelSheet(){
  data.push(["AC TAKING & HANDING OVER FLT", "", "", "PARADE/ PT/FOD STATE", "", "", "DATE: " + date().split("-").reverse().join("/")]);
  data.push([]);
  
- data.push(["RANK", "OFFICE STRG", "TD/COUR/UN", "ATTACH", "EFFECTIVE STRG", "LEAVE", "F-295", "QRT DUTY", "ALL DUTY ON", "ALL DUTY OFF", "MESS/CANTEEN", "CMH S/R", "CMH ADMIT", "MILK DUTY", "ED/COURSE", "BASAE OJT", "UNDER CLEAR", "GST/GH", "AFTERNOON", "PARADE", "OUT OF PARADE", "ON PARADE"]);
+ data.push(["RANK", "OFFICE STRG", "TD/COUR/UN", "ATTACH", "EFFECTIVE STRG", "LEAVE", "F-295", "QRT DUTY", "ALL DUTY ON", "ALL DUTY OFF", "MESS/CANTEEN", "CMH S/R", "CMH ADMIT", "MILK DUTY", "ED/COURSE", "BASAE OJT", "UNDER CLEAR", "GST/GH", "AFTERNOON", "PARADE", "OUT OF PARADE", "ON PARADE", "ON PT", "ON FOD"]);
 
  militaryOrder.forEach(r => {
   const officeList = people.filter(p=>p.rank===r && p.rank!=="Attachment");
@@ -724,7 +779,9 @@ function exportToExcelSheet(){
    officeList.filter(p=>current[p.id]==="Afternoon").length + attachList.filter(p=>current[p.id]==="Afternoon").length,
    officeList.filter(p=>current[p.id]==="Parade").length + attachList.filter(p=>current[p.id]==="Parade").length,
    officeList.filter(p=>current[p.id]==="Out of Parade").length + attachList.filter(p=>current[p.id]==="Out of Parade").length,
-   officeList.filter(p=>["On Parade","ON PT","ON FOD"].includes(current[p.id])).length + attachList.filter(p=>["On Parade","ON PT","ON FOD"].includes(current[p.id])).length
+   officeList.filter(p=>current[p.id]==="On Parade").length + attachList.filter(p=>current[p.id]==="On Parade").length,
+   officeList.filter(p=>current[p.id]==="ON PT").length + attachList.filter(p=>current[p.id]==="ON PT").length,
+   officeList.filter(p=>current[p.id]==="ON FOD").length + attachList.filter(p=>current[p.id]==="ON FOD").length
   ]);
  });
 
