@@ -149,7 +149,7 @@ input, select, button { max-width: 100%; }
       </select>
     </div>
     <div style="display:flex;gap:6px;align-items:end;flex-wrap:wrap;flex:2">
-      <button id="saveBtn">Save daily state & Excel</button>
+      <button id="saveBtn" type="button">Save daily state & Excel</button>
       <button class="secondary" id="undoBtn">Undo Last State</button>
       <button class="secondary" id="togglePreviewBtn">Toggle Sheet Preview</button>
       <button class="secondary" id="printBtn">Print state (1 Page)</button>
@@ -313,7 +313,7 @@ function key(){return "state-office-manpower-v1"}function rosterKey(){return "st
 
 function syncToCloud(){
  if(!isCloudEnabled || !dbRef) return;
- dbRef.set({
+ dbRef.update({
   ranks: ranks,
   saved: saved
  });
@@ -324,7 +324,9 @@ function initCloudListener(){
  dbRef.on('value', (snapshot) => {
   const data = snapshot.val();
   if(data){
-   if(data.ranks && Array.isArray(data.ranks)){
+   // Only accept remote ranks if local custom roster is empty
+   const localRoster = localStorage.getItem(rosterKey());
+   if(!localRoster && data.ranks && Array.isArray(data.ranks)){
     ranks = data.ranks;
     rebuildPeople();
    }
@@ -341,7 +343,13 @@ function initCloudListener(){
 
 function loadStore(){
  try{const x=JSON.parse(localStorage.getItem(key())||"{}");saved=x&&typeof x==="object"&&!Array.isArray(x)?x:{}}catch(e){saved={}}
- try{const custom=JSON.parse(localStorage.getItem(rosterKey())||"null");if(Array.isArray(custom)&&custom.length&&custom.every(g=>g&&typeof g.rank==="string"&&Array.isArray(g.names))){ranks=custom;rebuildPeople()}}catch(e){}
+ try{
+  const custom=JSON.parse(localStorage.getItem(rosterKey())||"null");
+  if(Array.isArray(custom)&&custom.length&&custom.every(g=>g&&typeof g.rank==="string"&&Array.isArray(g.names))){
+   ranks=custom;
+   rebuildPeople();
+  }
+ }catch(e){}
  Object.keys(saved).forEach(d=>{if(saved[d]&&typeof saved[d]==="object")saved[d]=normalizeRecord(saved[d])});
 }
 
@@ -349,7 +357,11 @@ function persistStore(){
  try{localStorage.setItem(key(),JSON.stringify(saved)); syncToCloud(); return true}catch(e){return false}
 }
 function persistRoster(){
- try{localStorage.setItem(rosterKey(),JSON.stringify(ranks)); syncToCloud(); return true}catch(e){return false}
+ try{
+  localStorage.setItem(rosterKey(),JSON.stringify(ranks)); 
+  syncToCloud(); 
+  return true;
+ }catch(e){return false}
 }
 
 function normalizeRecord(record){
@@ -571,13 +583,13 @@ function editPerson(id){
  let ng=ranks.find(x=>x.rank.toLowerCase()===rank.trim().toLowerCase());
  if(!ng){ng={rank:rank.trim(),names:[]};ranks.push(ng)}
  ng.names.push(name.trim());
- delete current[id];delete currentLeave[id];delete currentDuty[id];delete currentEd[id];
  rebuildPeople();
  const matches=people.filter(x=>x.rank.toLowerCase()===rank.trim().toLowerCase()&&x.name===name.trim()),np=matches[matches.length-1];
  if(np){current[np.id]=status;if(leave)currentLeave[np.id]=leave;if(duty)currentDuty[np.id]=duty;if(ed)currentEd[np.id]=ed}
- persistRoster();persistStore();renderAll();
- autoSaveBuffer();
- alert("Name updated permanently!");
+ persistRoster();
+ persistStore();
+ renderAll();
+ alert("Name updated and saved permanently to cloud!");
 }
 
 function renderRankTable(){
@@ -843,6 +855,12 @@ function save(){
  setTimeout(()=>$("saveBtn").textContent="Save daily state & Excel",1300);
 }
 
+// Robust direct click listener for Save button
+$("saveBtn").onclick = function(e){
+ e.preventDefault();
+ save();
+};
+
 function autoSaveBuffer(){
  saved[date()]={statuses:{...current},leaveDetails:{...currentLeave},dutyDetails:{...currentDuty},edDetails:{...currentEd},savedAt:new Date().toISOString()};
  persistStore();
@@ -920,7 +938,6 @@ $("stateDate").onchange=()=>{
 };
 
 $("rankFilter").onchange=renderRoster; $("search").oninput=renderRoster;
-$("saveBtn").onclick=save;
 $("printBtn").onclick=()=>{renderPrintState();window.print()};
 $("togglePreviewBtn").onclick=()=>$("screenPreviewSection").classList.toggle("hidden");
 
