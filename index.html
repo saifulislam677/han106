@@ -274,6 +274,7 @@ input, select, button { max-width: 100%; }
  const cx=cv.getContext('2d');
  const hint=document.getElementById('soundHint');
  const DURATION=10;
+ const G=46; // distance from jet centre line down to the ground (wheel contact)
  let W=0,H=0,start=null,last=0,done=false,scroll=0;
 
  function sm(a,b,x){x=Math.min(1,Math.max(0,(x-a)/(b-a)));return x*x*(3-2*x)}
@@ -283,6 +284,11 @@ input, select, button { max-width: 100%; }
   cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0);
  }
  resize();window.addEventListener('resize',resize);
+
+ // OPTIONAL: put a transparent side-view PNG named jet.png (nose pointing RIGHT) next to index.html
+ const jetImg=new Image();let jetImgOK=false;
+ jetImg.onload=()=>{jetImgOK=jetImg.naturalWidth>0};
+ jetImg.src='jet.png';
 
  // ---------- SOUND ----------
  let ac=null,N=null;
@@ -344,7 +350,7 @@ input, select, button { max-width: 100%; }
 
  // ---------- JETS ----------
  const jets=[];
- for(let i=0;i<6;i++)jets.push({i,x0:0.05+0.08*(i%3),ts:2.3+i*0.28,rot:2.0+(i%2)*0.25,sc:0.6+0.09*i});
+ for(let i=0;i<6;i++)jets.push({i,x0:0.05+0.08*(i%3),ts:2.3+i*0.28,rot:2.0+(i%2)*0.25,sc:0.55+0.08*i});
  const stars=[];for(let i=0;i<70;i++)stars.push([Math.random(),Math.random()*0.5,Math.random()*1.5+0.4]);
 
  function flame(ab,thr){
@@ -371,46 +377,140 @@ input, select, button { max-width: 100%; }
   cx.globalCompositeOperation='source-over';
  }
 
- function body(){
-  let g=cx.createLinearGradient(0,-52,0,26);
-  g.addColorStop(0,'#6c7a84');g.addColorStop(0.5,'#4a565e');g.addColorStop(1,'#272f35');
-  cx.fillStyle='#3a444b';cx.beginPath(); // tail fin
-  cx.moveTo(-70,-12);cx.lineTo(-100,-54);cx.lineTo(-113,-54);cx.lineTo(-104,-12);cx.closePath();cx.fill();
-  cx.beginPath(); // stabilizer
-  cx.moveTo(-96,8);cx.lineTo(-126,21);cx.lineTo(-132,21);cx.lineTo(-112,6);cx.closePath();cx.fill();
-  cx.fillStyle=g;cx.beginPath(); // fuselage
-  cx.moveTo(120,4);cx.lineTo(70,-6);cx.lineTo(30,-12);cx.lineTo(-60,-12);cx.lineTo(-105,-10);
-  cx.lineTo(-112,-4);cx.lineTo(-112,10);cx.lineTo(-100,12);cx.lineTo(-40,12);cx.lineTo(30,10);cx.lineTo(80,10);cx.closePath();cx.fill();
-  cx.fillStyle='#2b343a';cx.beginPath(); // wing
-  cx.moveTo(24,6);cx.lineTo(-42,28);cx.lineTo(-66,28);cx.lineTo(-40,6);cx.closePath();cx.fill();
-  cx.fillStyle='rgba(120,190,230,.85)';cx.beginPath(); // canopy
-  cx.moveTo(54,-8);cx.quadraticCurveTo(40,-26,14,-13);cx.lineTo(42,-11);cx.closePath();cx.fill();
-  cx.fillStyle='#14191c';cx.fillRect(-114,-8,12,16); // nozzle
-  cx.fillStyle='#14191c';cx.fillRect(0,-2,26,8);     // intake
+ // F-7 / MiG-21 style fighter, nose pointing RIGHT (+x), centre line at y=0
+ function body(gear){
+  const dark='#5b6770',mid='#929ea8',lite='#c9d1d7';
+  let g;
+
+  // ----- landing gear (retracts after rotation) -----
+  if(gear>0.02){
+   const my=14+(G-14-6)*gear;       // main wheel centre
+   const ny=11+(G-11-4.5)*gear;     // nose wheel centre
+   cx.strokeStyle='#2a3238';cx.lineWidth=3;cx.lineCap='round';
+   cx.beginPath();cx.moveTo(-14,13);cx.lineTo(-14,my);cx.stroke();
+   cx.beginPath();cx.moveTo(78,12);cx.lineTo(78,ny);cx.stroke();
+   cx.fillStyle='#14191c';
+   cx.beginPath();cx.arc(-14,my,6,0,6.3);cx.fill();
+   cx.beginPath();cx.arc(78,ny,4.5,0,6.3);cx.fill();
+   cx.fillStyle='#8c969d';
+   cx.beginPath();cx.arc(-14,my,2.2,0,6.3);cx.fill();
+   cx.beginPath();cx.arc(78,ny,1.8,0,6.3);cx.fill();
+  }
+
+  // ----- optional real photo sprite (jet.png) -----
+  if(jetImgOK){
+   const iw=270,ih=iw*jetImg.naturalHeight/jetImg.naturalWidth;
+   cx.drawImage(jetImg,-135,-ih/2,iw,ih);
+   return;
+  }
+
+  // ----- tail fin + rudder -----
+  cx.fillStyle=mid;cx.beginPath();
+  cx.moveTo(-56,-14);cx.lineTo(-95,-54);cx.lineTo(-111,-54);cx.lineTo(-108,-10);cx.closePath();cx.fill();
+  cx.strokeStyle='rgba(20,28,34,.6)';cx.lineWidth=0.8;
+  cx.beginPath();cx.moveTo(-100,-52);cx.lineTo(-103,-11);cx.stroke();
+  // fin tip antenna light
+  cx.fillStyle='#d9e0e5';cx.fillRect(-112,-57,16,3);
+
+  // ----- ventral fin -----
+  cx.fillStyle=dark;cx.beginPath();
+  cx.moveTo(-76,11);cx.lineTo(-94,27);cx.lineTo(-106,27);cx.lineTo(-104,10);cx.closePath();cx.fill();
+
+  // ----- all-moving stabilator -----
+  cx.fillStyle=dark;cx.beginPath();
+  cx.moveTo(-90,7);cx.lineTo(-122,19);cx.lineTo(-133,19);cx.lineTo(-112,5);cx.closePath();cx.fill();
+
+  // ----- fuselage -----
+  g=cx.createLinearGradient(0,-22,0,16);
+  g.addColorStop(0,lite);g.addColorStop(0.5,mid);g.addColorStop(1,dark);
+  cx.fillStyle=g;cx.beginPath();
+  cx.moveTo(104,-9);cx.lineTo(70,-13);cx.lineTo(30,-15);cx.lineTo(-60,-15);cx.lineTo(-104,-11);
+  cx.lineTo(-114,-7);cx.lineTo(-114,8);cx.lineTo(-100,11);cx.lineTo(-40,14);cx.lineTo(30,15);
+  cx.lineTo(80,13);cx.lineTo(104,10);cx.closePath();cx.fill();
+
+  // ----- dorsal spine -----
+  cx.fillStyle='#b1bbc3';cx.beginPath();
+  cx.moveTo(14,-15);cx.quadraticCurveTo(-4,-24,-50,-21);cx.lineTo(-100,-13);cx.lineTo(-100,-11);
+  cx.lineTo(-60,-15);cx.closePath();cx.fill();
+
+  // ----- panel lines -----
+  cx.strokeStyle='rgba(20,28,34,.35)';cx.lineWidth=0.7;
+  [[44,-13,44,13],[-8,-15,-8,14],[-36,-15,-36,13],[-82,-13,-82,11]].forEach(l=>{
+   cx.beginPath();cx.moveTo(l[0],l[1]);cx.lineTo(l[2],l[3]);cx.stroke();
+  });
+  cx.beginPath();cx.moveTo(100,-1);cx.lineTo(-100,2);cx.stroke();
+
+  // ----- delta wing -----
+  g=cx.createLinearGradient(0,8,0,30);
+  g.addColorStop(0,'#a2adb6');g.addColorStop(1,'#6c7882');
+  cx.fillStyle=g;cx.beginPath();
+  cx.moveTo(34,10);cx.lineTo(-30,29);cx.lineTo(-72,29);cx.lineTo(-62,10);cx.closePath();cx.fill();
+  cx.strokeStyle='rgba(15,22,28,.55)';cx.lineWidth=0.8;cx.stroke();
+
+  // ----- under-wing drop tank -----
+  cx.fillStyle='#4a555d';cx.fillRect(-18,29,4,4);
+  g=cx.createLinearGradient(0,30,0,41);
+  g.addColorStop(0,'#c0c9cf');g.addColorStop(1,'#68737c');
+  cx.fillStyle=g;cx.beginPath();cx.ellipse(-16,36,34,5.5,0,0,6.3);cx.fill();
+  cx.fillStyle='#4a555d';cx.beginPath();
+  cx.moveTo(-46,36);cx.lineTo(-52,31);cx.lineTo(-44,34);cx.closePath();cx.fill();
+
+  // ----- canopy -----
+  g=cx.createLinearGradient(0,-31,0,-12);
+  g.addColorStop(0,'rgba(200,236,255,.95)');g.addColorStop(1,'rgba(40,90,130,.92)');
+  cx.fillStyle=g;cx.beginPath();
+  cx.moveTo(66,-13);cx.quadraticCurveTo(58,-31,36,-29);cx.quadraticCurveTo(20,-27,14,-15);cx.closePath();cx.fill();
+  cx.strokeStyle='#323c43';cx.lineWidth=1.2;cx.stroke();
+  cx.beginPath();cx.moveTo(40,-29);cx.lineTo(43,-14);cx.stroke();
+  cx.fillStyle='rgba(255,255,255,.55)';
+  cx.beginPath();cx.ellipse(52,-21,6,2,-0.5,0,6.3);cx.fill();
+
+  // ----- nose intake + shock cone + pitot -----
+  cx.fillStyle='#0e1317';cx.beginPath();cx.ellipse(103,0.5,4.5,10.5,0,0,6.3);cx.fill();
+  g=cx.createLinearGradient(0,-8,0,9);
+  g.addColorStop(0,'#dde3e8');g.addColorStop(1,'#7c8892');
+  cx.fillStyle=g;cx.beginPath();cx.moveTo(103,-6);cx.lineTo(136,1.5);cx.lineTo(103,8);cx.closePath();cx.fill();
+  cx.fillStyle='#2f7d5d';cx.beginPath();cx.arc(133,1.6,2.3,0,6.3);cx.fill();
+  cx.strokeStyle='#4b565e';cx.lineWidth=1.2;
+  cx.beginPath();cx.moveTo(136,1.5);cx.lineTo(154,1);cx.stroke();
+
+  // ----- engine nozzle -----
+  cx.fillStyle='#2b2522';cx.fillRect(-119,-8,13,17);
+  cx.strokeStyle='rgba(255,255,255,.18)';cx.lineWidth=0.8;
+  for(let i=0;i<4;i++){cx.beginPath();cx.moveTo(-117+i*3.4,-8);cx.lineTo(-117+i*3.4,9);cx.stroke();}
+
+  // ----- national roundels -----
+  cx.fillStyle='#00694c';cx.beginPath();cx.arc(-58,-2,6.2,0,6.3);cx.fill();
+  cx.fillStyle='#e03c31';cx.beginPath();cx.arc(-59,-2,3.3,0,6.3);cx.fill();
+  cx.fillStyle='#00694c';cx.beginPath();cx.arc(-93,-36,3.6,0,6.3);cx.fill();
+  cx.fillStyle='#e03c31';cx.beginPath();cx.arc(-93.6,-36,2,0,6.3);cx.fill();
  }
 
  function drawJet(j,t,k){
   const p=t-j.ts,q=p-j.rot;
-  let x=j.x0*W,alt=0,pitch=0;
+  let x=j.x0*W,alt=0,pitch=0,gear=1;
   if(p>0)x+=0.5*0.095*W*p*p;
-  if(q>0){alt=(26*q*q+26*q)*k;pitch=Math.min(0.42,q*0.32);}
+  if(q>0){alt=(26*q*q+26*q)*k;pitch=Math.min(0.42,q*0.32);gear=1-sm(0.25,1.0,q);}
   const sc=j.sc*k,base=H*(0.655+0.05*j.i);
-  if(x-150*sc>W)return;
+  if(x-170*sc>W)return;
   const thr=0.12+0.88*sm(j.ts-0.3,j.ts+0.7,t),ab=sm(j.ts-0.1,j.ts+1.4,t);
-  let y=base-14*sc-alt;
+  let y=base-G*sc-alt;
   if(p>0&&alt===0)y+=(Math.random()-.5)*1.6;
   // shadow
   cx.fillStyle='rgba(0,0,0,'+(0.35*Math.max(0,1-alt/(260*k)))+')';
-  cx.beginPath();cx.ellipse(x,base+4*sc,110*sc,7*sc,0,0,6.3);cx.fill();
-  // ground glow
+  cx.beginPath();cx.ellipse(x,base+3*sc,120*sc,7*sc,0,0,6.3);cx.fill();
+  // ground glow from afterburner
   if(ab>0.05&&alt<150*k){
-   const g=cx.createRadialGradient(x-130*sc,base,0,x-130*sc,base,150*sc*ab+10);
-   g.addColorStop(0,'rgba(255,170,80,'+(0.3*ab)+')');g.addColorStop(1,'rgba(255,120,40,0)');
-   cx.globalCompositeOperation='lighter';cx.fillStyle=g;cx.fillRect(x-300*sc,base-60*sc,340*sc,120*sc);
+   const gl=cx.createRadialGradient(x-130*sc,base,0,x-130*sc,base,150*sc*ab+10);
+   gl.addColorStop(0,'rgba(255,170,80,'+(0.3*ab)+')');gl.addColorStop(1,'rgba(255,120,40,0)');
+   cx.globalCompositeOperation='lighter';cx.fillStyle=gl;cx.fillRect(x-300*sc,base-60*sc,340*sc,120*sc);
    cx.globalCompositeOperation='source-over';
   }
-  cx.save();cx.translate(x,y);cx.rotate(-pitch);cx.scale(sc,sc);
-  flame(ab,thr);body();
+  cx.save();
+  cx.translate(x,y);cx.scale(sc,sc);
+  // rotate nose-up around the main wheels
+  cx.translate(-14,G);cx.rotate(-pitch);cx.translate(14,-G);
+  flame(ab,thr);body(gear);
   cx.restore();
  }
 
