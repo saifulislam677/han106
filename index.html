@@ -26,7 +26,7 @@ button{border:0;border-radius:6px;padding:8px 12px;font-weight:750;cursor:pointe
 .tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:11px}th,td{padding:6px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}th{background:#f3f7f4;color:#3e5148}.empty{color:var(--muted);padding:8px 0}.foot{font-size:11px;color:var(--muted);text-align:center;padding:8px}.statusnote{padding:6px 8px;border-radius:6px;background:#fff8df;color:#66531c;font-size:11px;margin-top:6px}.hidden{display:none!important}
 .modal-overlay{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;z-index:9999;padding:12px;backdrop-filter:blur(2px)}.modal-card{background:#fff;border-radius:12px;width:100%;max-width:400px;padding:16px;box-shadow:0 10px 25px #0003;animation:popIn .2s ease-out}@keyframes popIn{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}.modal-card h3{margin:0 0 3px;font-size:16px;color:var(--green)}.modal-card p{margin:0 0 10px;font-size:11px;color:var(--muted)}.modal-form{display:flex;flex-direction:column;gap:10px}.modal-actions{display:flex;gap:6px;margin-top:12px;justify-content:flex-end}
 
-#screenPreviewWrapper{background:#fff;border:2px solid var(--green);border-radius:8px;padding:10px;margin-top:10px;overflow-x:auto;width:100%}
+#screenPreviewWrapper{background:#fff;border:2px solid var(--green);border-radius:8px;padding:10px;margin-top:10px;overflow-x:auto}
 
 /* A4 LANDSCAPE EXACT PHOTO MATCH FORMAT */
 .print-top-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:4px;font-size:10px;border-bottom:2px solid #000;padding-bottom:2px}
@@ -34,12 +34,12 @@ button{border:0;border-radius:6px;padding:8px 12px;font-weight:750;cursor:pointe
 .print-top-header .doc-title{font-size:12px;text-transform:uppercase;text-decoration:underline}
 .print-top-header .date-str{font-size:10px}
 
-/* DYNAMIC PRINT GRID FOR 20+ COLUMNS */
-.print-grid{width:100%;border-collapse:collapse;table-layout:auto;font-size:7.5px;empty-cells:show!important}
-.print-grid th,.print-grid td{border:1.5px solid #000!important;padding:2px 1px;text-align:center;white-space:normal;overflow-wrap:anywhere}
+/* FORCED SOLID BORDERS FOR ALL BLANK CELLS */
+.print-grid{width:100%;border-collapse:collapse;table-layout:fixed;font-size:7.5px;empty-cells:show!important}
+.print-grid th,.print-grid td{border:1.5px solid #000!important;padding:2px 1px;text-align:center;white-space:normal;overflow-wrap:anywhere;height:16px}
 .print-grid th{background:#eaeaea!important;color:#000}
-.print-grid th.vertical{vertical-align:bottom;writing-mode:vertical-rl;transform:rotate(180deg);padding:2px 1px;line-height:1}
-.print-grid .rankcol{text-align:center;writing-mode:horizontal-tb;transform:none;background:#eaeaea!important;font-weight:bold}
+.print-grid th.vertical{height:75px;vertical-align:bottom;writing-mode:vertical-rl;transform:rotate(180deg);padding:2px 1px;font-size:7.5px;line-height:1}
+.print-grid .rankcol{text-align:center;width:5.5%;writing-mode:horizontal-tb;transform:none;height:auto;font-size:7.5px;background:#eaeaea!important}
 .print-grid .totalrow{background:#dedede!important}
 
 /* EXACT 4-COLUMN MATCHING PHOTO LAYOUT */
@@ -61,11 +61,20 @@ button{border:0;border-radius:6px;padding:8px 12px;font-weight:750;cursor:pointe
 .red-date-filter option{background:#fff;color:#182521;font-weight:600}
 .cloud-badge{font-size:10px;font-weight:800;color:#2e7d32;background:#e8f5e9;padding:3px 6px;border-radius:5px;display:inline-block;margin-left:6px}
 
+/* WELCOME ANIMATION OVERLAY */
+#introOverlay{position:fixed;inset:0;background:var(--green);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;text-align:center;padding:20px;transition:opacity 0.6s ease, visibility 0.6s ease}
+#introOverlay.fade-out{opacity:0;visibility:hidden}
+.intro-content{max-width:600px;animation:introFloat 1.2s ease-out}
+.intro-content h2{font-size:24px;color:var(--lime);margin:0 0 10px;letter-spacing:1px;font-weight:800}
+.intro-content p{font-size:15px;color:#d8e5df;margin:0 0 20px;font-style:italic;line-height:1.4}
+.intro-content .dev-tag{font-size:12px;text-transform:uppercase;letter-spacing:2px;color:#fff;opacity:0.85;border-top:1px solid rgba(214,240,122,0.3);padding-top:12px;display:inline-block}
+@keyframes introFloat{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+
 @media(min-width:780px){main{grid-template-columns:1fr 1fr;align-items:start}.wide{grid-column:1/-1}}
 @media print{
-  @page{size:A4 landscape;margin:4mm}
-  html,body{width:297mm;height:210mm;background:#fff;color:#000;margin:0;padding:0}
-  header,.no-print,.tabs,.foot,#reportArea,#editorArea,.screen-only,.hint,.statusnote,#togglePreviewBtn,.modal-overlay{display:none!important}
+  @page{size:A4 landscape;margin:2mm}
+  html,body{width:297mm;height:210mm;background:#fff;font-size:7.5px;color:#000;margin:0;padding:0;overflow:hidden}
+  header,.no-print,.tabs,.foot,#reportArea,#editorArea,.screen-only,.hint,.statusnote,#togglePreviewBtn,.modal-overlay,#introOverlay{display:none!important}
   main{display:block;max-width:none;padding:0;margin:0}
   .card{box-shadow:none;border:0;padding:0;margin:0}
   #printState{display:block!important;width:100%;height:100%}
@@ -77,9 +86,57 @@ button{border:0;border-radius:6px;padding:8px 12px;font-weight:750;cursor:pointe
   .signatures-bottom{margin-top:10px}
   .signatures-bottom b{margin-bottom:10px}
 }
+
+body, main, .card, .row, .row > *, .person, .person .name { min-width: 0; }
+main { width: 100%; padding: 8px; gap: 8px; }
+.card { padding: 10px; }
+.row { gap: 6px; }
+.row > * { flex: 1 1 140px; min-width: 0; }
+.metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+#screenPreviewWrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+#screenPreviewWrapper > .print-top-header,
+#screenPreviewWrapper > .print-grid,
+#screenPreviewWrapper > .print-layout-container,
+#screenPreviewWrapper > .signatures-bottom { min-width: 740px; }
+input, select, button { max-width: 100%; }
+.person { align-items: flex-start; }
+.person select { min-width: 0; }
+.tablewrap { max-width: 100%; overflow-x: auto; }
+@media (max-width: 600px) {
+  header { padding: 10px; }
+  h1 { font-size: 18px; }
+  main { padding: 6px; }
+  .card { padding: 8px; }
+  .row > * { flex: 1 1 100%; width: 100%; }
+  .row button { width: 100%; }
+  .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .metric strong { font-size: 16px; }
+  .person { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .person .name, .person select { width: 100%; }
+  .person-actions { justify-content: flex-end; }
+  .modal-overlay { padding: 8px; }
+  .modal-card { max-height: 90dvh; overflow-y: auto; padding: 12px; }
+}
+@media print {
+  main { width: auto; padding: 0; }
+  .metrics { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+  #screenPreviewWrapper > .print-top-header,
+  #screenPreviewWrapper > .print-grid,
+  #screenPreviewWrapper > .print-layout-container,
+  #screenPreviewWrapper > .signatures-bottom { min-width: 0; }
+}
 </style>
 </head>
 <body>
+
+<!-- WELCOME ANIMATION INTRO SCREEN -->
+<div id="introOverlay">
+  <div class="intro-content">
+    <h2>Welcome to Ac Taking and Handing Over Flt</h2>
+    <p>“Where aircraft are given a new lease of life.”</p>
+    <div class="dev-tag">Developed By Cpl Saiful</div>
+  </div>
+</div>
 
 <header class="no-print"><div class="eyebrow">Personnel & Daily State <span id="cloudStatus" class="cloud-badge">Cloud Syncing…</span></div><h1>State Office Manpower</h1><p>Rank-wise roster · Daily disposal · Final available strength</p></header>
 <main>
@@ -133,6 +190,8 @@ button{border:0;border-radius:6px;padding:8px 12px;font-weight:750;cursor:pointe
           <option value="10px">10 px</option>
           <option value="12px">12 px</option>
           <option value="14px">14 px</option>
+          <option value="16px">16 px</option>
+          <option value="20px">20 px</option>
         </select>
       </div>
       <div>
@@ -171,6 +230,17 @@ button{border:0;border-radius:6px;padding:8px 12px;font-weight:750;cursor:pointe
 </main><div class="foot no-print">State Office Manpower · Cloud Sync Edition</div>
 
 <script>
+// Auto-hide intro animation after 2.2 seconds
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const overlay = document.getElementById('introOverlay');
+    if(overlay) {
+      overlay.classList.add('fade-out');
+      setTimeout(() => overlay.remove(), 600);
+    }
+  }, 2200);
+});
+
 const firebaseConfig = {
   databaseURL: "https://hangar-2f228-default-rtdb.firebaseio.com/"
 };
@@ -751,12 +821,15 @@ function renderPrintState(){
 function applyTypography(sz, fontFamily, fontWeight){
  const wrapper = document.getElementById("screenPreviewWrapper");
  if(wrapper){
+  wrapper.style.fontSize = sz;
   wrapper.style.fontFamily = fontFamily;
   wrapper.style.fontWeight = fontWeight;
  }
-
- const pxValue = parseInt(sz) || 7;
- const headerHeight = Math.max(75, pxValue * 9.5);
+ 
+ const printGridEl = document.getElementById("printGrid");
+ const previewGridEl = document.getElementById("previewGrid");
+ if(printGridEl) printGridEl.style.fontSize = sz;
+ if(previewGridEl) previewGridEl.style.fontSize = sz;
 
  let styleTag = document.getElementById("dynamicPrintTypography");
  if(!styleTag){
@@ -765,21 +838,15 @@ function applyTypography(sz, fontFamily, fontWeight){
   document.head.appendChild(styleTag);
  }
  styleTag.innerHTML = `
-  #screenPreviewWrapper, #screenPreviewWrapper *, #printState, #printState * { 
-    font-family: ${fontFamily} !important; 
-    font-weight: ${fontWeight} !important; 
-  }
-  .print-grid { font-size: ${sz} !important; table-layout: auto !important; }
-  .print-grid th.vertical { height: ${headerHeight}px !important; font-size: ${sz} !important; }
-  .print-grid th, .print-grid td { padding: 2px 2px !important; }
-  .print-block li { font-size: ${sz} !important; }
+  #screenPreviewWrapper, #screenPreviewWrapper * { font-family: ${fontFamily} !important; font-weight: ${fontWeight} !important; }
+  #screenPreviewWrapper .print-grid { font-size: ${sz} !important; }
+  #screenPreviewWrapper .print-block li { font-size: calc(${sz} - 0.5px) !important; }
   @media print { 
-    @page { size: A4 landscape; margin: 4mm; }
-    body { width: 297mm; height: 210mm; }
-    #printState, #printState * { color: #000 !important; } 
-    .print-grid { border: 1.5px solid #000 !important; empty-cells: show !important; } 
+    #printState, #printState * { font-family: ${fontFamily} !important; font-weight: ${fontWeight} !important; color: #000 !important; } 
+    .print-grid { font-size: ${sz} !important; border: 1.5px solid #000 !important; empty-cells: show !important; } 
     .print-grid th, .print-grid td { border: 1.5px solid #000 !important; }
     .print-block { border: none !important; }
+    .print-block li { font-size: calc(${sz} - 0.5px) !important; } 
   }
  `;
 }
@@ -810,16 +877,25 @@ $("savePdfBtn").addEventListener("click", function(e){
  e.preventDefault();
  autoSaveBuffer();
  
- const element = document.getElementById("screenPreviewWrapper");
+ const printEl = document.getElementById("printState");
+ printEl.classList.remove("hidden");
+ printEl.style.width = "1050px";
+ printEl.style.padding = "10px";
+ printEl.style.background = "#fff";
+ 
  const opt = {
   margin:       [4, 4, 4, 4],
   filename:     `State_Office_${date()}.pdf`,
   image:        { type: 'jpeg', quality: 0.98 },
-  html2canvas:  { scale: 2, useCORS: true, logging: false },
+  html2canvas:  { scale: 2, useCORS: true, logging: false, width: 1050 },
   jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
  };
 
- html2pdf().from(element).set(opt).save().then(() => {
+ html2pdf().from(printEl).set(opt).save().then(() => {
+  printEl.classList.add("hidden");
+  printEl.style.width = "";
+  printEl.style.padding = "";
+  printEl.style.background = "";
   alert("PDF downloaded successfully in A4 Landscape!");
  });
 });
@@ -834,44 +910,62 @@ $("saveWordBtn").addEventListener("click", function(e){
   <head>
   <meta charset="utf-8">
   <title>State Office Manpower</title>
+  <!--[if gte mso 9]>
+  <xml>
+   <w:WordDocument>
+    <w:View>Print</w:View>
+    <w:Zoom>100</w:Zoom>
+    <w:DoNotOptimizeForBrowser/>
+   </w:WordDocument>
+  </xml>
+  <![endif]-->
   <style>
-   @page { size: 297mm 210mm; margin: 10mm; mso-page-orientation: landscape; }
-   body { font-family: Arial, sans-serif; font-size: 8pt; color: #000; }
-   table { border-collapse: collapse; width: 100%; table-layout: auto; }
-   th, td { border: 1.5px solid #000; padding: 3px; text-align: center; vertical-align: middle; }
-   th { background-color: #eaeaea; }
+   @page Section1 { size: 841.9pt 595.3pt; margin: 0.3in 0.3in 0.3in 0.3in; mso-page-orientation: landscape; }
+   div.Section1 { page: Section1; }
+   body { font-family: Arial, sans-serif; font-size: 7.5pt; color: #000; }
+   table.print-grid { border-collapse: collapse; width: 100%; table-layout: fixed; }
+   table.print-grid th, table.print-grid td { border: 1.5pt solid #000; padding: 2px; text-align: center; vertical-align: middle; height: 16px; font-size: 7.5pt; }
+   table.print-grid th { background-color: #eaeaea; }
+   table.print-grid th.vertical { height: 75px; vertical-align: bottom; }
+   .print-top-header { width: 100%; border-bottom: 2px solid #000; margin-bottom: 5px; }
+   .print-layout-container { width: 100%; margin-top: 6px; }
+   .signatures-bottom { width: 100%; margin-top: 15px; }
   </style>
   </head>
   <body>
-   <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:10px;">
-    <span>AC TAKING & HANDING OVER FLT</span>
-    <span style="text-decoration:underline;">PARADE / PT / FOD STATE</span>
-    <span>DATE : ${date().split("-").reverse().join("/")}</span>
+   <div class="Section1">
+    <table class="print-top-header" style="border:none;">
+     <tr>
+      <td style="border:none; text-align:left; font-weight:bold; font-size:10pt;">AC TAKING & HANDING OVER FLT</td>
+      <td style="border:none; text-align:center; font-weight:bold; font-size:11pt; text-decoration:underline;">PARADE/ PT/FOD STATE</td>
+      <td style="border:none; text-align:right; font-weight:bold; font-size:9pt;">DATE : ${date().split("-").reverse().join("/")}</td>
+     </tr>
+    </table>
+    <br>
+    <table class="print-grid">
+     ${document.getElementById("previewGrid").innerHTML}
+    </table>
+    <br>
+    <table style="border:none; width:100%;">
+     <tr>
+      <td style="border:none; vertical-align:top;">
+       <table style="border:none; width:100%;">
+        <tr>
+         ${document.getElementById("previewListsContainer").innerHTML}
+        </tr>
+       </table>
+      </td>
+     </tr>
+    </table>
+    <br><br>
+    <table style="border:none; width:100%;">
+     <tr>
+      <td style="border:none; text-align:center; font-weight:bold;"><u>PREPARED BY</u><br>${esc($("prepName").value.trim()||"PARVEZ")}<br>${esc($("prepRank").value.trim()||"SGT")}</td>
+      <td style="border:none; text-align:center; font-weight:bold;"><u>JCOIC</u></td>
+      <td style="border:none; text-align:center; font-weight:bold;"><u>OIC</u></td>
+     </tr>
+    </table>
    </div>
-   <br>
-   <table>
-    ${document.getElementById("previewGrid").innerHTML}
-   </table>
-   <br>
-   <table style="border:none;">
-    <tr>
-     <td style="border:none; vertical-align:top;">
-      <table style="border:none;">
-       <tr>
-        ${document.getElementById("previewListsContainer").innerHTML}
-       </tr>
-      </table>
-     </td>
-    </tr>
-   </table>
-   <br><br>
-   <table style="border:none; width:100%;">
-    <tr>
-     <td style="border:none; text-align:center; font-weight:bold;"><u>PREPARED BY</u><br>${esc($("prepName").value.trim()||"PARVEZ")}<br>${esc($("prepRank").value.trim()||"SGT")}</td>
-     <td style="border:none; text-align:center; font-weight:bold;"><u>JCOIC</u></td>
-     <td style="border:none; text-align:center; font-weight:bold;"><u>OIC</u></td>
-    </tr>
-   </table>
   </body>
   </html>
  `;
