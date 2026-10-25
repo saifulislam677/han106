@@ -34,13 +34,14 @@ button{border:0;border-radius:6px;padding:8px 12px;font-weight:750;cursor:pointe
 .print-top-header .doc-title{font-size:12px;text-transform:uppercase;text-decoration:underline}
 .print-top-header .date-str{font-size:10px}
 
-/* FORCED SOLID BORDERS FOR ALL BLANK CELLS */
+/* FORCED SOLID BORDERS & CENTERED HEADINGS */
 .print-grid{width:100%;border-collapse:collapse;table-layout:fixed;font-size:7.5px;empty-cells:show!important}
-.print-grid th,.print-grid td{border:1.5px solid #000!important;padding:2px 1px;text-align:center;white-space:normal;overflow-wrap:anywhere;height:16px}
-.print-grid th{background:#eaeaea!important;color:#000}
-.print-grid th.vertical{height:75px;vertical-align:bottom;writing-mode:vertical-rl;transform:rotate(180deg);padding:2px 1px;font-size:7.5px;line-height:1}
-.print-grid .rankcol{text-align:center;width:5.5%;writing-mode:horizontal-tb;transform:none;height:auto;font-size:7.5px;background:#eaeaea!important}
-.print-grid .totalrow{background:#dedede!important}
+.print-grid th,.print-grid td{border:1.5px solid #000!important;padding:2px 1px;text-align:center;vertical-align:middle!important;white-space:normal;overflow-wrap:anywhere;height:16px}
+.print-grid th{background:#eaeaea!important;color:#000;text-align:center!important}
+.print-grid th.vertical{height:75px;vertical-align:middle!important;text-align:center!important;position:relative}
+.print-grid th.vertical .rot-text{display:block;transform:rotate(-90deg);white-space:nowrap;transform-origin:center center;font-size:7.5px;line-height:1}
+.print-grid .rankcol{text-align:center!important;vertical-align:middle!important;width:5.5%;transform:none;height:auto;font-size:7.5px;background:#eaeaea!important}
+.print-grid .totalrow{background:#dedede!important;font-weight:900}
 
 /* EXACT 4-COLUMN MATCHING PHOTO LAYOUT */
 .print-layout-container{display:grid;grid-template-columns:1.2fr 1.3fr 2fr 1.1fr;gap:6px;margin-top:6px;align-items:start}
@@ -672,7 +673,7 @@ function getActiveColumns(){
 
 function generateGridHTML(){
  const cols = getActiveColumns();
- let h="<thead><tr><th class='vertical rankcol'>RANK</th>"+cols.map(c=>`<th class='vertical'>${esc(c[0])}</th>`).join("")+"</tr></thead><tbody>";
+ let h="<thead><tr><th class='vertical rankcol'><span class='rot-text'>RANK</span></th>"+cols.map(c=>`<th class='vertical'><span class='rot-text'>${esc(c[0])}</span></th>`).join("")+"</tr></thead><tbody>";
 
  militaryOrder.forEach(r=>{
   const officeList = people.filter(p=>p.rank===r && p.rank!=="Attachment");
@@ -844,7 +845,7 @@ function applyTypography(sz, fontFamily, fontWeight){
   @media print { 
     #printState, #printState * { font-family: ${fontFamily} !important; font-weight: ${fontWeight} !important; color: #000 !important; } 
     .print-grid { font-size: ${sz} !important; border: 1.5px solid #000 !important; empty-cells: show !important; } 
-    .print-grid th, .print-grid td { border: 1.5px solid #000 !important; }
+    .print-grid th, .print-grid td { border: 1.5px solid #000 !important; vertical-align: middle !important; }
     .print-block { border: none !important; }
     .print-block li { font-size: calc(${sz} - 0.5px) !important; } 
   }
@@ -925,8 +926,8 @@ $("saveWordBtn").addEventListener("click", function(e){
    body { font-family: Arial, sans-serif; font-size: 7.5pt; color: #000; }
    table.print-grid { border-collapse: collapse; width: 100%; table-layout: fixed; }
    table.print-grid th, table.print-grid td { border: 1.5pt solid #000; padding: 2px; text-align: center; vertical-align: middle; height: 16px; font-size: 7.5pt; }
-   table.print-grid th { background-color: #eaeaea; }
-   table.print-grid th.vertical { height: 75px; vertical-align: bottom; mso-rotate: 90; }
+   table.print-grid th { background-color: #eaeaea; text-align: center; }
+   table.print-grid th.vertical { height: 75px; vertical-align: middle; text-align: center; mso-rotate: 90; }
    .print-top-header { width: 100%; border-bottom: 2px solid #000; margin-bottom: 5px; }
    .print-layout-container { width: 100%; margin-top: 6px; }
    .signatures-bottom { width: 100%; margin-top: 15px; }
