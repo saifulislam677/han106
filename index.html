@@ -150,9 +150,10 @@ input, select, button { max-width: 100%; }
     </div>
     <div style="display:flex;gap:6px;align-items:end;flex-wrap:wrap;flex:2">
       <button id="saveBtn" type="button">Save daily state & Excel</button>
-      <button class="secondary" id="undoBtn">Undo Last State</button>
-      <button class="secondary" id="togglePreviewBtn">Toggle Sheet Preview</button>
-      <button class="secondary" id="printBtn">Print state (1 Page)</button>
+      <button class="secondary" id="clearAllParadeBtn" type="button" style="background:#fff0f0;color:#a33232;border:1px solid #f0cccc">Clear All to On Parade</button>
+      <button class="secondary" id="undoBtn" type="button">Undo Last State</button>
+      <button class="secondary" id="togglePreviewBtn" type="button">Toggle Sheet Preview</button>
+      <button class="secondary" id="printBtn" type="button">Print state (1 Page)</button>
     </div>
   </div>
   <p class="hint">Edits save permanently in Cloud Realtime Database & local browser memory.</p>
@@ -162,8 +163,8 @@ input, select, button { max-width: 100%; }
 <section class="card wide no-print"><h2>Manpower overview</h2><div class="metrics" id="metrics"></div><div class="statusnote">Counting rule: each person has one current status only. Total counts are strictly distinct.</div></section>
 <section class="card no-print" id="editorArea"><h2>Assign & Manage Personnel</h2><div class="tabs" id="statusTabs"></div><div class="row" style="margin-top:10px"><div><label for="rankFilter">FILTER BY RANK</label><select id="rankFilter"><option>All ranks</option></select></div><div><label for="search">SEARCH NAME</label><input id="search" type="search" placeholder="Type a name or rank"></div></div>
 <div class="card" style="margin:10px 0;background:#f8faf8;box-shadow:none"><h2 style="margin-bottom:8px">Add Manpower (All Ranks, Civilian & Attachment)</h2><div class="row"><div><label for="addRank">RANK / CATEGORY</label><select id="addRank"></select></div><div><label for="newRank">NEW RANK (OPTIONAL)</label><input id="newRank" type="text" placeholder="Select New rank first, then type rank"></div><div><label for="newName">PERSONNEL NAME</label><input id="newName" type="text" placeholder="Enter full name"></div></div><div style="margin-top:8px"><button id="addPersonBtn" type="button">Add Person</button></div></div>
-<div class="card" style="margin:10px 0;background:#f8faf8;box-shadow:none"><h2 style="margin-bottom:8px">Edit "PREPARED BY" Signature</h2><div class="row"><div><label for="prepName">NAME</label><input id="prepName" type="text" value="PARVEZ"></div><div><label for="prepRank">RANK</label><input id="prepRank" type="text" value="SGT"></div></div></div><div id="roster"></div><div class="row" style="margin-top:10px"><button class="secondary" id="assignAllBtn">Set filtered people to selected status</button><button class="secondary" id="clearFilterBtn">Clear filters</button></div></section>
-<section class="card no-print" id="reportArea"><h2>Final state report & PC Backup</h2><div id="reportSummary"></div><div class="row" style="margin:10px 0"><button class="secondary" id="exportBackup">Backup to PC File (.JSON)</button><button class="secondary" id="exportHtmlBtn">Export Updated index.html File</button><button class="secondary" id="importBtn">Restore from PC File</button><input id="importFile" type="file" accept="application/json" class="hidden"></div><h2 style="margin-top:14px">Rank-wise status count</h2><div class="tablewrap" id="rankTable"></div><h2 style="margin-top:14px">Personnel by status</h2><div id="statusDetails"></div></section>
+<div class="card" style="margin:10px 0;background:#f8faf8;box-shadow:none"><h2 style="margin-bottom:8px">Edit "PREPARED BY" Signature</h2><div class="row"><div><label for="prepName">NAME</label><input id="prepName" type="text" value="PARVEZ"></div><div><label for="prepRank">RANK</label><input id="prepRank" type="text" value="SGT"></div></div></div><div id="roster"></div><div class="row" style="margin-top:10px"><button class="secondary" id="assignAllBtn" type="button">Set filtered people to selected status</button><button class="secondary" id="clearFilterBtn" type="button">Clear filters</button></div></section>
+<section class="card no-print" id="reportArea"><h2>Final state report & PC Backup</h2><div id="reportSummary"></div><div class="row" style="margin:10px 0"><button class="secondary" id="exportBackup" type="button">Backup to PC File (.JSON)</button><button class="secondary" id="exportHtmlBtn" type="button">Export Updated index.html File</button><button class="secondary" id="importBtn" type="button">Restore from PC File</button><input id="importFile" type="file" accept="application/json" class="hidden"></div><h2 style="margin-top:14px">Rank-wise status count</h2><div class="tablewrap" id="rankTable"></div><h2 style="margin-top:14px">Personnel by status</h2><div id="statusDetails"></div></section>
 <section id="printState" class="hidden"><div class="print-top-header"><div class="unit-title">AC Taking & Handing over Flt</div><div class="doc-title">Parade/ PT/FOD state</div><div class="date-str">DATE : <span id="printDate"></span></div></div><table class="print-grid" id="printGrid"></table><div class="print-layout-container" id="printListsContainer"></div><div class="signatures-bottom"><div><b>PREPARED BY</b><br><span id="printPreparedBy">PARVEZ<br>SGT</span></div><div><b>JCOIC</b></div><div><b>OIC</b></div></div></section>
 
 <!-- LEAVE MODAL (REPORT DATE ONLY) -->
@@ -175,7 +176,7 @@ input, select, button { max-width: 100%; }
 <!-- ED COURSE MODAL -->
 <div id="edModal" class="modal-overlay hidden"><div class="modal-card"><h3 id="modalEdPersonName">ED / Course Details</h3><p>Specify course start date and finish date.</p><div class="modal-form"><div><label for="modalEdStartDate">START DATE / WEF</label><input type="date" id="modalEdStartDate"></div><div><label for="modalEdReportDate">FINISH DATE / TO DATE</label><input type="date" id="modalEdReportDate"></div></div><div class="modal-actions"><button class="secondary" type="button" id="closeEdModalBtn">Cancel</button><button type="button" id="saveEdBtn">Save ED/Course</button></div></div></div>
 
-<section class="card wide no-print"><h2>Saved daily records</h2><div class="row"><div><label for="savedSelect">OPEN A SAVED DATE</label><select id="savedSelect"><option value="">No saved records yet</option></select></div><button class="secondary" id="loadBtn">Load date</button><button class="danger" id="deleteBtn">Delete saved date</button></div></section>
+<section class="card wide no-print"><h2>Saved daily records</h2><div class="row"><div><label for="savedSelect">OPEN A SAVED DATE</label><select id="savedSelect"><option value="">No saved records yet</option></select></div><button class="secondary" id="loadBtn" type="button">Load date</button><button class="danger" id="deleteBtn" type="button">Delete saved date</button></div></section>
 </main><div class="foot no-print">State Office Manpower · Cloud Sync Edition</div>
 
 <script>
@@ -324,7 +325,6 @@ function initCloudListener(){
  dbRef.on('value', (snapshot) => {
   const data = snapshot.val();
   if(data){
-   // Only accept remote ranks if local custom roster is empty
    const localRoster = localStorage.getItem(rosterKey());
    if(!localRoster && data.ranks && Array.isArray(data.ranks)){
     ranks = data.ranks;
@@ -428,7 +428,7 @@ function renderMetrics(){
 }
 
 function renderTabs(){
- $("statusTabs").innerHTML=statuses.map(s=>`<button class="tab ${s===activeStatus?"active":""}" data-status="${esc(s)}">${esc(statusShort[s])} <span>(${countStatus(s)})</span></button>`).join("");
+ $("statusTabs").innerHTML=statuses.map(s=>`<button class="tab ${s===activeStatus?"active":""}" data-status="${esc(s)}" type="button">${esc(statusShort[s])} <span>(${countStatus(s)})</span></button>`).join("");
  $("statusTabs").querySelectorAll("button").forEach(b=>b.onclick=()=>{activeStatus=b.dataset.status;renderTabs();renderRoster()});
 }
 
@@ -459,7 +459,7 @@ function renderRoster(){
    } else if(current[p.id]==="TD/Courier"){
     noteText=` · (TD)`;
    }
-   html+=`<div class="person"><div class="name"><b>${esc(p.name)}</b><small>${esc(p.rank)} · Current: ${esc(current[p.id])}${noteText}</small></div><select aria-label="Status for ${esc(p.rank+" "+p.name)}" data-person="${esc(p.id)}" data-previous="${esc(current[p.id])}">${statusOptions(current[p.id])}</select><div class="person-actions"><button class="secondary small" data-edit="${esc(p.id)}">Edit</button><button class="danger small" data-delete="${esc(p.id)}">Delete</button></div></div>`;
+   html+=`<div class="person"><div class="name"><b>${esc(p.name)}</b><small>${esc(p.rank)} · Current: ${esc(current[p.id])}${noteText}</small></div><select aria-label="Status for ${esc(p.rank+" "+p.name)}" data-person="${esc(p.id)}" data-previous="${esc(current[p.id])}">${statusOptions(current[p.id])}</select><div class="person-actions"><button class="secondary small" data-edit="${esc(p.id)}" type="button">Edit</button><button class="danger small" data-delete="${esc(p.id)}" type="button">Delete</button></div></div>`;
   });
   html+="</div>";
  });
@@ -855,11 +855,29 @@ function save(){
  setTimeout(()=>$("saveBtn").textContent="Save daily state & Excel",1300);
 }
 
-// Robust direct click listener for Save button
-$("saveBtn").onclick = function(e){
+// Guaranteed Save Event Listener
+$("saveBtn").addEventListener("click", function(e){
  e.preventDefault();
  save();
-};
+});
+
+// Clear All to On Parade Functionality
+function clearAllToParade(){
+ pushUndo();
+ if(!confirm("Are you sure you want to reset all personnel status to 'On Parade' for today?")) return;
+ current = blank();
+ currentLeave = {};
+ currentDuty = {};
+ currentEd = {};
+ renderAll();
+ autoSaveBuffer();
+ alert("All personnel reset to On Parade!");
+}
+
+$("clearAllParadeBtn").addEventListener("click", function(e){
+ e.preventDefault();
+ clearAllToParade();
+});
 
 function autoSaveBuffer(){
  saved[date()]={statuses:{...current},leaveDetails:{...currentLeave},dutyDetails:{...currentDuty},edDetails:{...currentEd},savedAt:new Date().toISOString()};
