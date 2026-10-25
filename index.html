@@ -159,13 +159,31 @@ input, select, button { max-width: 100%; }
   <p class="hint">Edits save permanently in Cloud Realtime Database & local browser memory.</p>
 </section>
 
-<section class="card wide no-print" id="screenPreviewSection"><h2>Live Print Sheet Preview (100% Match)</h2><div id="screenPreviewWrapper"><div class="print-top-header"><div class="unit-title">AC Taking & Handing over Flt</div><div class="doc-title">Parade/ PT/FOD state</div><div class="date-str">DATE : <span id="previewDate"></span></div></div><table class="print-grid" id="previewGrid"></table><div class="print-layout-container" id="previewListsContainer"></div><div class="signatures-bottom"><div><b>PREPARED BY</b><br><span id="previewPreparedBy">PARVEZ<br>SGT</span></div><div><b>JCOIC</b></div><div><b>OIC</b></div></div></div></section>
+<section class="card wide no-print" id="screenPreviewSection">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px">
+    <h2 style="margin:0">Live Print Sheet Preview & Custom Font Adjuster</h2>
+    <div style="display:flex;gap:6px;align-items:center">
+      <label for="fontSizeSelect" style="margin:0;font-size:11px">Print Font Size:</label>
+      <select id="fontSizeSelect" style="width:90px;padding:4px">
+        <option value="6px">6 px (Compact)</option>
+        <option value="7px" selected>7 px (Standard)</option>
+        <option value="8px">8 px (Large)</option>
+        <option value="9px">9 px (Extra Large)</option>
+      </select>
+      <button class="secondary small" id="editNotesBtn" type="button">Edit Custom Title/Note</button>
+    </div>
+  </div>
+  <div id="customHeaderNote" class="hidden" style="margin-bottom:8px;padding:6px;background:#eef4f1;border-radius:6px">
+    <label for="customNoteInput" style="font-size:10px">Custom Subtitle / Note (Optional):</label>
+    <input type="text" id="customNoteInput" placeholder="Type any special note or adjustment here before printing...">
+  </div>
+  <div id="screenPreviewWrapper"><div class="print-top-header"><div class="unit-title">AC Taking & Handing over Flt</div><div class="doc-title">Parade/ PT/FOD state</div><div class="date-str">DATE : <span id="previewDate"></span></div></div><div id="customNoteDisplay" class="hidden" style="font-size:8px;font-weight:900;text-align:center;margin-bottom:2px"></div><table class="print-grid" id="previewGrid"></table><div class="print-layout-container" id="previewListsContainer"></div><div class="signatures-bottom"><div><b>PREPARED BY</b><br><span id="previewPreparedBy">PARVEZ<br>SGT</span></div><div><b>JCOIC</b></div><div><b>OIC</b></div></div></div></section>
 <section class="card wide no-print"><h2>Manpower overview</h2><div class="metrics" id="metrics"></div><div class="statusnote">Counting rule: each person has one current status only. Total counts are strictly distinct.</div></section>
 <section class="card no-print" id="editorArea"><h2>Assign & Manage Personnel</h2><div class="tabs" id="statusTabs"></div><div class="row" style="margin-top:10px"><div><label for="rankFilter">FILTER BY RANK</label><select id="rankFilter"><option>All ranks</option></select></div><div><label for="search">SEARCH NAME</label><input id="search" type="search" placeholder="Type a name or rank"></div></div>
 <div class="card" style="margin:10px 0;background:#f8faf8;box-shadow:none"><h2 style="margin-bottom:8px">Add Manpower (All Ranks, Civilian & Attachment)</h2><div class="row"><div><label for="addRank">RANK / CATEGORY</label><select id="addRank"></select></div><div><label for="newRank">NEW RANK (OPTIONAL)</label><input id="newRank" type="text" placeholder="Select New rank first, then type rank"></div><div><label for="newName">PERSONNEL NAME</label><input id="newName" type="text" placeholder="Enter full name"></div></div><div style="margin-top:8px"><button id="addPersonBtn" type="button">Add Person</button></div></div>
 <div class="card" style="margin:10px 0;background:#f8faf8;box-shadow:none"><h2 style="margin-bottom:8px">Edit "PREPARED BY" Signature</h2><div class="row"><div><label for="prepName">NAME</label><input id="prepName" type="text" value="PARVEZ"></div><div><label for="prepRank">RANK</label><input id="prepRank" type="text" value="SGT"></div></div></div><div id="roster"></div><div class="row" style="margin-top:10px"><button class="secondary" id="assignAllBtn" type="button">Set filtered people to selected status</button><button class="secondary" id="clearFilterBtn" type="button">Clear filters</button></div></section>
 <section class="card no-print" id="reportArea"><h2>Final state report & PC Backup</h2><div id="reportSummary"></div><div class="row" style="margin:10px 0"><button class="secondary" id="exportBackup" type="button">Backup to PC File (.JSON)</button><button class="secondary" id="exportHtmlBtn" type="button">Export Updated index.html File</button><button class="secondary" id="importBtn" type="button">Restore from PC File</button><input id="importFile" type="file" accept="application/json" class="hidden"></div><h2 style="margin-top:14px">Rank-wise status count</h2><div class="tablewrap" id="rankTable"></div><h2 style="margin-top:14px">Personnel by status</h2><div id="statusDetails"></div></section>
-<section id="printState" class="hidden"><div class="print-top-header"><div class="unit-title">AC Taking & Handing over Flt</div><div class="doc-title">Parade/ PT/FOD state</div><div class="date-str">DATE : <span id="printDate"></span></div></div><table class="print-grid" id="printGrid"></table><div class="print-layout-container" id="printListsContainer"></div><div class="signatures-bottom"><div><b>PREPARED BY</b><br><span id="printPreparedBy">PARVEZ<br>SGT</span></div><div><b>JCOIC</b></div><div><b>OIC</b></div></div></section>
+<section id="printState" class="hidden"><div class="print-top-header"><div class="unit-title">AC Taking & Handing over Flt</div><div class="doc-title">Parade/ PT/FOD state</div><div class="date-str">DATE : <span id="printDate"></span></div></div><div id="printCustomNoteDisplay" class="hidden" style="font-size:8px;font-weight:900;text-align:center;margin-bottom:2px"></div><table class="print-grid" id="printGrid"></table><div class="print-layout-container" id="printListsContainer"></div><div class="signatures-bottom"><div><b>PREPARED BY</b><br><span id="printPreparedBy">PARVEZ<br>SGT</span></div><div><b>JCOIC</b></div><div><b>OIC</b></div></div></section>
 
 <!-- LEAVE MODAL (REPORT DATE ONLY) -->
 <div id="leaveModal" class="modal-overlay hidden"><div class="modal-card"><h3 id="modalPersonName">Leave Details</h3><p>Specify leave type and report date for this person.</p><div class="modal-form"><div><label for="modalLeaveType">TYPE OF LEAVE</label><select id="modalLeaveType"><option value="A/L">A/L (Annual Leave)</option><option value="S/L">S/L (Sick Leave)</option><option value="R/L">R/L (Recreation Leave)</option><option value="C/L">C/L (Casual Leave)</option></select></div><div><label for="modalReportDate">REPORT DATE / TO DATE</label><input type="date" id="modalReportDate"></div></div><div class="modal-actions"><button class="secondary" type="button" id="closeModalBtn">Cancel</button><button type="button" id="saveLeaveBtn">Save Leave</button></div></div></div>
@@ -777,7 +795,58 @@ function generateListsHTML(){
  }).join("");
 }
 
-function renderPrintState(){const d=date().split("-").reverse().join("/"),grid=generateGridHTML(),lists=generateListsHTML(),prepared=`${esc($("prepName").value.trim()||"PARVEZ")}<br>${esc($("prepRank").value.trim()||"SGT")}`;$("printDate").textContent=d;$("printGrid").innerHTML=grid;$("printListsContainer").innerHTML=lists;$("printPreparedBy").innerHTML=prepared;$("previewDate").textContent=d;$("previewGrid").innerHTML=grid;$("previewListsContainer").innerHTML=lists;$("previewPreparedBy").innerHTML=prepared}
+function renderPrintState(){
+ const d=date().split("-").reverse().join("/");
+ const grid=generateGridHTML();
+ const lists=generateListsHTML();
+ const prepared=`${esc($("prepName").value.trim()||"PARVEZ")}<br>${esc($("prepRank").value.trim()||"SGT")}`;
+ const noteText = $("customNoteInput").value.trim();
+
+ $("printDate").textContent=d;
+ $("printGrid").innerHTML=grid;
+ $("printListsContainer").innerHTML=lists;
+ $("printPreparedBy").innerHTML=prepared;
+
+ $("previewDate").textContent=d;
+ $("previewGrid").innerHTML=grid;
+ $("previewListsContainer").innerHTML=lists;
+ $("previewPreparedBy").innerHTML=prepared;
+
+ if(noteText){
+  $("customNoteDisplay").textContent = noteText;
+  $("customNoteDisplay").classList.remove("hidden");
+  $("printCustomNoteDisplay").textContent = noteText;
+  $("printCustomNoteDisplay").classList.remove("hidden");
+ } else {
+  $("customNoteDisplay").classList.add("hidden");
+  $("printCustomNoteDisplay").classList.add("hidden");
+ }
+
+ const chosenSize = $("fontSizeSelect").value;
+ applyDynamicFontSize(chosenSize);
+}
+
+function applyDynamicFontSize(sz){
+ const wrapper = document.getElementById("screenPreviewWrapper");
+ if(wrapper) wrapper.style.fontSize = sz;
+ 
+ const printGridEl = document.getElementById("printGrid");
+ if(printGridEl) printGridEl.style.fontSize = sz;
+
+ // Inject dynamic print style tag for font size
+ let styleTag = document.getElementById("dynamicPrintFontSize");
+ if(!styleTag){
+  styleTag = document.createElement("style");
+  styleTag.id = "dynamicPrintFontSize";
+  document.head.appendChild(styleTag);
+ }
+ styleTag.innerHTML = `@media print { .print-grid { font-size: ${sz} !important; } .print-block li { font-size: calc(${sz} - 0.5px) !important; } }`;
+}
+
+$("fontSizeSelect").onchange = function(){ applyDynamicFontSize(this.value); };
+$("customNoteInput").oninput = renderPrintState;
+$("editNotesBtn").onclick = function(){ $("customNoteInput").parentNode.classList.toggle("hidden"); };
+
 $("prepName").oninput=renderPrintState;$("prepRank").oninput=renderPrintState;
 
 function renderAll(reRoster=true){
@@ -847,12 +916,19 @@ function exportToExcelSheet(){
 }
 
 function save(){
- saved[date()]={statuses:{...current},leaveDetails:{...currentLeave},dutyDetails:{...currentDuty},edDetails:{...currentEd},savedAt:new Date().toISOString()};
- if(!persistStore())return;
+ const currentSelectedDate = date();
+ saved[currentSelectedDate] = {
+  statuses:{...current},
+  leaveDetails:{...currentLeave},
+  dutyDetails:{...currentDuty},
+  edDetails:{...currentEd},
+  savedAt:new Date().toISOString()
+ };
+ if(!persistStore()) return;
  refreshSaved();
  exportToExcelSheet();
- $("saveBtn").textContent="Saved ✓";
- setTimeout(()=>$("saveBtn").textContent="Save daily state & Excel",1300);
+ $("saveBtn").textContent = "Saved (" + currentSelectedDate + ") ✓";
+ setTimeout(()=>$("saveBtn").textContent="Save daily state & Excel", 1500);
 }
 
 // Guaranteed Save Event Listener
