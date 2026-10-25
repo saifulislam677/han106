@@ -9,8 +9,8 @@
 <!-- Firebase SDK Scripts -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<!-- XLSX Library -->
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<!-- html2pdf Library for 100% Perfect PDF / Word Exports -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
 :root{--green:#123b32;--lime:#d6f07a;--bg:#f3f6f4;--card:#fff;--ink:#182521;--muted:#687771;--line:#dce5df;--red:#a33232}
@@ -135,7 +135,8 @@ input, select, button { max-width: 100%; }
       </select>
     </div>
     <div style="display:flex;gap:6px;align-items:end;flex-wrap:wrap;flex:2">
-      <button id="saveBtn" type="button">Save daily state & Excel</button>
+      <button id="savePdfBtn" type="button" style="background:#1b4d3e">Save & Download PDF (A4 Landscape)</button>
+      <button id="saveWordBtn" type="button" style="background:#2b579a">Save & Download Word (.doc)</button>
       <button class="secondary" id="clearAllParadeBtn" type="button" style="background:#fff0f0;color:#a33232;border:1px solid #f0cccc">Clear All to On Parade</button>
       <button class="secondary" id="undoBtn" type="button">Undo Last State</button>
       <button class="secondary" id="togglePreviewBtn" type="button">Toggle Sheet Preview</button>
@@ -836,107 +837,85 @@ function renderAll(reRoster=true){
 
 function refreshRankSelectors(){const rf=$("rankFilter"),old=rf.value||"All ranks";rf.innerHTML='<option>All ranks</option>'+ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("");rf.value=["All ranks",...ranks.map(g=>g.rank)].includes(old)?old:"All ranks";const ar=$("addRank"),prev=ar.value;ar.innerHTML=ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("")+'<option value="__new__">New rank…</option>';ar.value=ranks.some(g=>g.rank===prev)?prev:(ranks[0]?.rank||"__new__")}
 
-// 100% PREVIEW-MATCHING EXCEL EXPORT (EXCEL-COMPATIBLE HTML FORMAT)
-function exportToExcelSheet(){
- const d = date().split("-").reverse().join("/");
- const preparedName = $("prepName").value.trim() || "PARVEZ";
- const preparedRank = $("prepRank").value.trim() || "SGT";
- const noteText = $("customNoteInput").value.trim();
+// DIRECT A4 LANDSCAPE PDF EXPORT
+$("savePdfBtn").addEventListener("click", function(e){
+ e.preventDefault();
+ autoSaveBuffer();
+ 
+ const element = document.getElementById("screenPreviewWrapper");
+ const opt = {
+  margin:       [5, 5, 5, 5],
+  filename:     `State_Office_${date()}.pdf`,
+  image:        { type: 'jpeg', quality: 0.98 },
+  html2canvas:  { scale: 2, useCORS: true, logging: false },
+  jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+ };
+
+ html2pdf().from(element).set(opt).save().then(() => {
+  alert("PDF downloaded successfully in A4 Landscape!");
+ });
+});
+
+// DIRECT A4 LANDSCAPE WORD (.DOC) EXPORT
+$("saveWordBtn").addEventListener("click", function(e){
+ e.preventDefault();
+ autoSaveBuffer();
 
  const htmlContent = `
-  <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+  <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
   <head>
   <meta charset="utf-8">
+  <title>State Office Manpower</title>
   <style>
-   table { border-collapse: collapse; font-family: Arial, sans-serif; font-size: 10px; }
-   th, td { border: 1.5px solid #000; padding: 4px; text-align: center; vertical-align: middle; }
-   .header-title { font-size: 14px; font-weight: bold; text-align: left; border: none; }
-   .header-doc { font-size: 13px; font-weight: bold; text-align: center; text-decoration: underline; border: none; }
-   .header-date { font-size: 11px; font-weight: bold; text-align: right; border: none; }
-   .sig { font-weight: bold; text-align: center; border: none; padding-top: 20px; }
+   @page { size: 297mm 210mm; margin: 10mm; }
+   body { font-family: Arial, sans-serif; font-size: 8pt; color: #000; }
+   table { border-collapse: collapse; width: 100%; table-layout: fixed; }
+   th, td { border: 1.5px solid #000; padding: 3px; text-align: center; vertical-align: middle; }
+   th { background-color: #eaeaea; }
   </style>
   </head>
   <body>
-   <table>
-    <tr>
-     <td colspan="4" class="header-title">AC TAKING & HANDING OVER FLT</td>
-     <td colspan="10" class="header-doc">PARADE / PT / FOD STATE</td>
-     <td colspan="6" class="header-date">DATE : ${d}</td>
-    </tr>
-    ${noteText ? `<tr><td colspan="20" style="text-align:center;font-weight:bold;border:none;">${esc(noteText)}</td></tr>` : ''}
-    <tr><td colspan="20" style="border:none;height:10px;"></td></tr>
-   </table>
-
-   <table>
-    ${document.getElementById("printGrid").innerHTML}
-   </table>
-
+   <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:10px;">
+    <span>AC TAKING & HANDING OVER FLT</span>
+    <span style="text-decoration:underline;">PARADE / PT / FOD STATE</span>
+    <span>DATE : ${date().split("-").reverse().join("/")}</span>
+   </div>
    <br>
-   <table style="width:100%;">
+   <table>
+    ${document.getElementById("previewGrid").innerHTML}
+   </table>
+   <br>
+   <table style="border:none;">
     <tr>
-     <td style="width:50%; vertical-align:top; border:none;">
-      <table>
-       ${generateExcelListsHtml()}
+     <td style="border:none; vertical-align:top;">
+      <table style="border:none;">
+       <tr>
+        ${document.getElementById("previewListsContainer").innerHTML}
+       </tr>
       </table>
      </td>
     </tr>
    </table>
-
    <br><br>
-   <table style="width:100%; border:none;">
+   <table style="border:none; width:100%;">
     <tr>
-     <td class="sig" style="width:30%;"><u>PREPARED BY</u><br>${preparedName}<br>${preparedRank}</td>
-     <td class="sig" style="width:40%;"><u>JCOIC</u></td>
-     <td class="sig" style="width:30%;"><u>OIC</u></td>
+     <td style="border:none; text-align:center; font-weight:bold;"><u>PREPARED BY</u><br>${esc($("prepName").value.trim()||"PARVEZ")}<br>${esc($("prepRank").value.trim()||"SGT")}</td>
+     <td style="border:none; text-align:center; font-weight:bold;"><u>JCOIC</u></td>
+     <td style="border:none; text-align:center; font-weight:bold;"><u>OIC</u></td>
     </tr>
    </table>
   </body>
   </html>
  `;
- const blob = new Blob(['\ufeff' + htmlContent], { type: 'application/vnd.ms-excel' });
+
+ const blob = new Blob(['\ufeff' + htmlContent], { type: 'application/msword' });
  const a = document.createElement("a");
  a.href = URL.createObjectURL(blob);
- a.download = `State_Office_${date()}.xls`;
+ a.download = `State_Office_${date()}.doc`;
  document.body.appendChild(a);
  a.click();
  a.remove();
-}
-
-function generateExcelListsHtml(){
- const columnLayout = [
-  [["Leave","LEAVE"], ["QRF Duty","QRF DUTY"], ["CMH","CMH"]],
-  [["All Duty On","ALL DUTY ON"], ["All Duty Off","ALL DUTY OFF"], ["Form 295","F-295"]],
-  [["On Parade","ON PARADE"]],
-  [["ATTACHMENT","ATTACHMENT"], ["Civil Tech","Civil Tech"]]
- ];
-
- let html = "<tr>";
- columnLayout.forEach(colGroup => {
-  html += "<td style='vertical-align:top; border:none; padding-right:15px;'>";
-  colGroup.forEach(([k, t]) => {
-   let list = k==="ATTACHMENT" ? people.filter(p=>p.rank==="Attachment"||current[p.id]==="Attachment") : people.filter(p=>p.rank!=="Civilian"&&p.rank!=="Attachment"&&current[p.id]===k);
-   if(k==="Civil Tech") list = people.filter(p=>p.rank==="Civilian");
-   if(!list.length) return;
-   
-   html += `<div style="font-weight:bold; text-decoration:underline; font-size:9px; margin-bottom:2px;">${t}</div>`;
-   list.forEach((p, idx) => {
-    let txt = `${p.rank} ${p.name}`;
-    if(k==="Leave" && currentLeave[p.id]?.to) txt += ` (${currentLeave[p.id].type||'A/L'} to ${displayDate(currentLeave[p.id].to)})`;
-    html += `<div style="font-size:8.5px; margin-bottom:1px;">${idx+1}. ${esc(txt)}</div>`;
-   });
-   html += "<br>";
-  });
-  html += "</td>";
- });
- html += "</tr>";
- return html;
-}
-
-$("saveBtn").addEventListener("click", function(e){
- e.preventDefault();
- exportToExcelSheet();
- autoSaveBuffer();
- alert("Daily State saved and Excel sheet downloaded!");
+ alert("Word document downloaded successfully!");
 });
 
 function clearAllToParade(){
