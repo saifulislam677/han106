@@ -16,21 +16,45 @@
 :root{--green:#123b32;--lime:#d6f07a;--bg:#f3f6f4;--card:#fff;--ink:#182521;--muted:#687771;--line:#dce5df;--red:#a33232}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);font:13px/1.3 system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden}
 #introOverlay{position:fixed;inset:0;background:#030807;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;overflow:hidden;transition:opacity .4s;touch-action:manipulation}
-.runway-stage{position:absolute;inset:0;background:linear-gradient(to bottom,#030807 0%,#091a15 60%,#15221c 100%);perspective:600px}
-.runway-track{position:absolute;bottom:-20%;left:50%;width:300px;height:140vh;margin-left:-150px;background:#111916;transform:rotateX(75deg);transform-origin:bottom center;border-left:4px solid #3d594e;border-right:4px solid #3d594e}
-.runway-lines{position:absolute;width:10px;height:100%;left:50%;margin-left:-5px;background:repeating-linear-gradient(to bottom,#d6f07a 0 40px,transparent 40px 90px);animation:runwaySpeed 8s linear infinite}
-@keyframes runwaySpeed{from{background-position:0 -1000px}to{background-position:0 2000px}}
-.jet-viewport{position:relative;width:260px;height:260px;z-index:5}.f7-takeoff-wrapper{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;animation:takeoffSequence 8s cubic-bezier(.25,.1,.25,1) forwards}
-.f7-svg-jet{width:200px;filter:drop-shadow(0 0 25px #d6f07a99);transform:rotate(0deg);z-index:2}
+.runway-stage{position:absolute;inset:0;background:linear-gradient(to bottom,#030807 0%,#091a15 60%,#15221c 100%);perspective:800px}
+.runway-track{position:absolute;bottom:-20%;left:50%;width:400px;height:140vh;margin-left:-200px;background:#111916;transform:rotateX(75deg);transform-origin:bottom center;border-left:6px solid #3d594e;border-right:6px solid #3d594e}
+.runway-lines{position:absolute;width:12px;height:100%;left:50%;margin-left:-6px;background:repeating-linear-gradient(to bottom,#d6f07a 0 40px,transparent 40px 90px);animation:runwaySpeed 20s linear infinite}
+@keyframes runwaySpeed{from{background-position:0 -1000px}to{background-position:0 2500px}}
 
-.afterburner-container{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);width:120px;height:100px;display:flex;justify-content:space-between;pointer-events:none;z-index:1}
-.afterburner-flame-single{width:42px;height:95px;background:radial-gradient(ellipse at center,#ffffff 0%,#a5f3fc 20%,#38bdf8 45%,#ea580c 75%,transparent 100%);border-radius:50%;animation:afterburnerPulse .08s infinite alternate;filter:blur(2px);box-shadow:0 0 35px #38bdf8,0 0 65px #ea580c,0 0 95px #c2410c}
-@keyframes afterburnerPulse{from{height:80px;opacity:.85;width:38px;filter:blur(1.5px)}to{height:115px;opacity:1;width:46px;filter:blur(2.5px)}}
+.formation-viewport{position:relative;width:340px;height:340px;z-index:5}
+.f7-formation-wrapper{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;animation:formationTakeoffSequence 20s cubic-bezier(.25,.1,.25,1) forwards}
+.jet-unit{position:absolute;display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 0 30px #d6f07a99)}
+.f7-svg-jet{width:150px;z-index:2}
+.tail-label{font-size:11px;font-weight:900;color:var(--lime);background:rgba(0,0,0,0.8);padding:2px 6px;border-radius:4px;border:1px solid var(--lime);margin-bottom:4px;letter-spacing:1px;text-shadow:0 0 8px var(--lime)}
 
-@keyframes takeoffSequence{0%{transform:translateY(280px) scale(.35);opacity:0}15%{transform:translateY(200px) scale(.5);opacity:1}45%{transform:translateY(100px) scale(.7)}60%{transform:translateY(20px) scale(.9) rotate(-3deg)}75%{transform:translateY(-100px) scale(1.2) rotate(-8deg)}100%{transform:translateY(-1000px) scale(3.2) rotate(-12deg);opacity:0}}
-.intro-text-box{position:relative;z-index:10;text-align:center;margin-top:20px;padding:0 20px}.intro-title{font-size:22px;color:var(--lime);margin:0 0 6px;letter-spacing:1.5px;text-transform:uppercase;font-weight:900;text-shadow:0 0 12px #d6f07a99}.intro-subtitle{font-size:13px;color:#cbd8d0;margin:0;font-weight:700;letter-spacing:.5px}
-.intro-timer-bar{position:absolute;bottom:0;left:0;height:4px;background:var(--lime);box-shadow:0 0 10px var(--lime);width:0;animation:timerProgress 8s linear forwards}@keyframes timerProgress{to{width:100%}}
-.skip-btn{position:absolute;bottom:25px;z-index:20;background:#d4f07a40;border:1.5px solid var(--lime);color:var(--lime);padding:12px 24px;border-radius:25px;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:1px}
+.afterburner-container{position:absolute;bottom:-15px;left:50%;transform:translateX(-50%);width:90px;height:80px;display:flex;justify-content:space-between;pointer-events:none;z-index:1}
+.afterburner-flame-single{width:35px;height:85px;background:radial-gradient(ellipse at center,#ffffff 0%,#a5f3fc 20%,#38bdf8 45%,#ea580c 75%,transparent 100%);border-radius:50%;animation:afterburnerPulse .06s infinite alternate;filter:blur(2px);box-shadow:0 0 40px #38bdf8,0 0 75px #ea580c,0 0 110px #c2410c}
+@keyframes afterburnerPulse{from{height:75px;opacity:.9;width:32px}to{height:105px;opacity:1;width:40px}}
+
+/* WEDGE FORMATION LAYOUT */
+.lead-jet{transform:translate(0px, 0px) scale(1)}
+.wing-left-1{transform:translate(-70px, 40px) scale(.9)}
+.wing-right-1{transform:translate(70px, 40px) scale(.9)}
+.wing-left-2{transform:translate(-130px, 90px) scale(.8)}
+.wing-right-2{transform:translate(130px, 90px) scale(.8)}
+.rear-guard{transform:translate(0px, 150px) scale(.7)}
+
+@keyframes formationTakeoffSequence{
+  0%{transform:translateY(320px) scale(.3);opacity:0}
+  10%{transform:translateY(220px) scale(.45);opacity:1}
+  40%{transform:translateY(120px) scale(.7)}
+  70%{transform:translateY(0px) scale(1) rotate(-2deg)}
+  85%{transform:translateY(-200px) scale(1.4) rotate(-5deg)}
+  100%{transform:translateY(-1200px) scale(3.5) rotate(-10deg);opacity:0}
+}
+
+.intro-text-box{position:relative;z-index:10;text-align:center;margin-top:15px;padding:0 20px}
+.intro-title{font-size:20px;color:var(--lime);margin:0 0 4px;letter-spacing:1.5px;text-transform:uppercase;font-weight:900;text-shadow:0 0 12px #d6f07a99}
+.intro-subtitle{font-size:12px;color:#cbd8d0;margin:0;font-weight:700;letter-spacing:.5px}
+.intro-timer-bar{position:absolute;bottom:0;left:0;height:4px;background:var(--lime);box-shadow:0 0 10px var(--lime);width:0;animation:timerProgress 20s linear forwards}
+@keyframes timerProgress{to{width:100%}}
+.skip-btn{position:absolute;bottom:20px;z-index:20;background:#d4f07a40;border:1.5px solid var(--lime);color:var(--lime);padding:10px 22px;border-radius:25px;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:1px}
+
 header{background:var(--green);color:#fff;padding:14px}header .eyebrow{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--lime);font-weight:800}h1{font-size:20px;line-height:1.15;margin:4px 0}header p{margin:0;color:#d8e5df;font-size:12px}
 main{max-width:1100px;margin:auto;padding:10px;display:grid;gap:10px;position:relative;z-index:1}.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;box-shadow:0 2px 8px #123b3208}.card h2{font-size:15px;margin:0 0 8px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.row>*{flex:1;min-width:130px}
 label{display:block;font-size:11px;color:var(--muted);font-weight:700;margin-bottom:3px}input,select,button{font:inherit;touch-action:manipulation}input[type=date],input[type=search],input[type=text],select{width:100%;padding:8px 10px;border:1px solid #cbd8d0;border-radius:6px;background:#fff;color:var(--ink);font-size:13px;position:relative;z-index:2}
@@ -42,8 +66,6 @@ button{border:0;border-radius:6px;padding:8px 12px;font-weight:750;cursor:pointe
 .modal-overlay{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;z-index:9999;padding:12px;backdrop-filter:blur(2px)}.modal-card{background:#fff;border-radius:12px;width:100%;max-width:400px;padding:16px;box-shadow:0 10px 25px #0003;animation:popIn .2s ease-out}@keyframes popIn{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}.modal-card h3{margin:0 0 3px;font-size:16px;color:var(--green)}.modal-card p{margin:0 0 10px;font-size:11px;color:var(--muted)}.modal-form{display:flex;flex-direction:column;gap:10px}.modal-actions{display:flex;gap:6px;margin-top:12px;justify-content:flex-end}
 
 #screenPreviewWrapper{background:#fff;border:2px solid var(--green);border-radius:8px;padding:10px;margin-top:10px;overflow-x:auto}
-
-/* A4 LANDSCAPE EXACT PHOTO MATCH FORMAT */
 .print-top-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:4px;font-size:10px;border-bottom:2px solid #000;padding-bottom:2px}
 .print-top-header .unit-title{font-size:11px;text-transform:uppercase}
 .print-top-header .doc-title{font-size:12px;text-transform:uppercase;text-decoration:underline}
@@ -56,7 +78,6 @@ button{border:0;border-radius:6px;padding:8px 12px;font-weight:750;cursor:pointe
 .print-grid .rankcol{text-align:center;width:5.5%;writing-mode:horizontal-tb;transform:none;height:auto;font-size:7.5px;background:#eaeaea!important}
 .print-grid .totalrow{background:#dedede!important}
 
-/* EXACT 4-COLUMN MATCHING PHOTO LAYOUT */
 .print-layout-container{display:grid;grid-template-columns:1.2fr 1.3fr 2fr 1.1fr;gap:6px;margin-top:6px;align-items:start}
 .print-col{display:flex;flex-direction:column;gap:6px}
 .print-block{break-inside:avoid;border:none!important;padding:2px;background:#fff}
@@ -91,69 +112,93 @@ button{border:0;border-radius:6px;padding:8px 12px;font-weight:750;cursor:pointe
   .signatures-bottom{margin-top:10px}
   .signatures-bottom b{margin-bottom:10px}
 }
-
-body, main, .card, .row, .row > *, .person, .person .name { min-width: 0; }
-main { width: 100%; padding: 8px; gap: 8px; }
-.card { padding: 10px; }
-.row { gap: 6px; }
-.row > * { flex: 1 1 140px; min-width: 0; }
-.metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-#screenPreviewWrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-#screenPreviewWrapper > .print-top-header,
-#screenPreviewWrapper > .print-grid,
-#screenPreviewWrapper > .print-layout-container,
-#screenPreviewWrapper > .signatures-bottom { min-width: 740px; }
-input, select, button { max-width: 100%; }
-.person { align-items: flex-start; }
-.person select { min-width: 0; }
-.tablewrap { max-width: 100%; overflow-x: auto; }
-@media (max-width: 600px) {
-  header { padding: 10px; }
-  h1 { font-size: 18px; }
-  main { padding: 6px; }
-  .card { padding: 8px; }
-  .row > * { flex: 1 1 100%; width: 100%; }
-  .row button { width: 100%; }
-  .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .metric strong { font-size: 16px; }
-  .person { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }
-  .person .name, .person select { width: 100%; }
-  .person-actions { justify-content: flex-end; }
-  .modal-overlay { padding: 8px; }
-  .modal-card { max-height: 90dvh; overflow-y: auto; padding: 12px; }
-  .intro-title { font-size: 16px; }
-  .jet-viewport { transform: scale(.75); }
-}
-@media print {
-  main { width: auto; padding: 0; }
-  .metrics { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
-  #screenPreviewWrapper > .print-top-header,
-  #screenPreviewWrapper > .print-grid,
-  #screenPreviewWrapper > .print-layout-container,
-  #screenPreviewWrapper > .signatures-bottom { min-width: 0; }
-}
 </style>
 </head>
 <body>
-<div id="introOverlay"><div class="runway-stage"><div class="runway-track"><div class="runway-lines"></div></div></div>
-<div class="jet-viewport"><div class="f7-takeoff-wrapper">
-<svg class="f7-svg-jet" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M185 20 L215 20 L225 120 L235 280 L220 340 L180 340 L165 280 L175 120 Z" fill="#94a3b8" stroke="#334155" stroke-width="4"/>
-  <path d="M188 60 Q200 45 212 60 L210 95 Q200 85 190 95 Z" fill="#38bdf8" stroke="#0284c7" stroke-width="2"/>
-  <path d="M190 140 L30 200 L45 230 L185 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
-  <path d="M210 140 L370 200 L355 230 L215 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
-  <rect x="95" y="185" width="30" height="55" rx="10" fill="#64748b" stroke="#1e293b" stroke-width="3"/>
-  <rect x="275" y="185" width="30" height="55" rx="10" fill="#64748b" stroke="#1e293b" stroke-width="3"/>
-  <path d="M190 305 L110 335 L120 350 L190 325 Z" fill="#cbd5e1" stroke="#334155" stroke-width="2"/>
-  <path d="M210 305 L290 335 L280 350 L210 325 Z" fill="#cbd5e1" stroke="#334155" stroke-width="2"/>
-  <path d="M195 280 L200 360 L220 375 L205 280 Z" fill="#64748b" stroke="#334155" stroke-width="2"/>
-</svg>
-<div class="afterburner-container">
-  <div class="afterburner-flame-single" style="transform: translateX(-15px);"></div>
-  <div class="afterburner-flame-single" style="transform: translateX(15px);"></div>
+<div id="introOverlay">
+  <div class="runway-stage"><div class="runway-track"><div class="runway-lines"></div></div></div>
+  <div class="formation-viewport">
+    <div class="f7-formation-wrapper">
+      
+      <!-- LEAD JET: 936 -->
+      <div class="jet-unit lead-jet">
+        <div class="tail-label">F-7 #936</div>
+        <svg class="f7-svg-jet" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M185 20 L215 20 L225 120 L235 280 L220 340 L180 340 L165 280 L175 120 Z" fill="#94a3b8" stroke="#334155" stroke-width="4"/>
+          <path d="M188 60 Q200 45 212 60 L210 95 Q200 85 190 95 Z" fill="#38bdf8" stroke="#0284c7" stroke-width="2"/>
+          <path d="M190 140 L30 200 L45 230 L185 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
+          <path d="M210 140 L370 200 L355 230 L215 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
+          <rect x="95" y="185" width="30" height="55" rx="10" fill="#64748b" stroke="#1e293b" stroke-width="3"/>
+          <rect x="275" y="185" width="30" height="55" rx="10" fill="#64748b" stroke="#1e293b" stroke-width="3"/>
+        </svg>
+        <div class="afterburner-container"><div class="afterburner-flame-single" style="transform: translateX(-10px);"></div><div class="afterburner-flame-single" style="transform: translateX(10px);"></div></div>
+      </div>
+
+      <!-- WING LEFT 1: 946 -->
+      <div class="jet-unit wing-left-1">
+        <div class="tail-label">F-7 #946</div>
+        <svg class="f7-svg-jet" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M185 20 L215 20 L225 120 L235 280 L220 340 L180 340 L165 280 L175 120 Z" fill="#94a3b8" stroke="#334155" stroke-width="4"/>
+          <path d="M190 140 L30 200 L45 230 L185 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
+          <path d="M210 140 L370 200 L355 230 L215 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
+        </svg>
+        <div class="afterburner-container"><div class="afterburner-flame-single"></div></div>
+      </div>
+
+      <!-- WING RIGHT 1: 942 -->
+      <div class="jet-unit wing-right-1">
+        <div class="tail-label">F-7 #942</div>
+        <svg class="f7-svg-jet" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M185 20 L215 20 L225 120 L235 280 L220 340 L180 340 L165 280 L175 120 Z" fill="#94a3b8" stroke="#334155" stroke-width="4"/>
+          <path d="M190 140 L30 200 L45 230 L185 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
+          <path d="M210 140 L370 200 L355 230 L215 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
+        </svg>
+        <div class="afterburner-container"><div class="afterburner-flame-single"></div></div>
+      </div>
+
+      <!-- WING LEFT 2: 941 -->
+      <div class="jet-unit wing-left-2">
+        <div class="tail-label">F-7 #941</div>
+        <svg class="f7-svg-jet" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M185 20 L215 20 L225 120 L235 280 L220 340 L180 340 L165 280 L175 120 Z" fill="#94a3b8" stroke="#334155" stroke-width="4"/>
+          <path d="M190 140 L30 200 L45 230 L185 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
+          <path d="M210 140 L370 200 L355 230 L215 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
+        </svg>
+        <div class="afterburner-container"><div class="afterburner-flame-single"></div></div>
+      </div>
+
+      <!-- WING RIGHT 2: 940 -->
+      <div class="jet-unit wing-right-2">
+        <div class="tail-label">F-7 #940</div>
+        <svg class="f7-svg-jet" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M185 20 L215 20 L225 120 L235 280 L220 340 L180 340 L165 280 L175 120 Z" fill="#94a3b8" stroke="#334155" stroke-width="4"/>
+          <path d="M190 140 L30 200 L45 230 L185 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
+          <path d="M210 140 L370 200 L355 230 L215 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
+        </svg>
+        <div class="afterburner-container"><div class="afterburner-flame-single"></div></div>
+      </div>
+
+      <!-- REAR GUARD: 702 -->
+      <div class="jet-unit rear-guard">
+        <div class="tail-label">F-7 #702</div>
+        <svg class="f7-svg-jet" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M185 20 L215 20 L225 120 L235 280 L220 340 L180 340 L165 280 L175 120 Z" fill="#94a3b8" stroke="#334155" stroke-width="4"/>
+          <path d="M190 140 L30 200 L45 230 L185 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
+          <path d="M210 140 L370 200 L355 230 L215 190 Z" fill="#cbd5e1" stroke="#334155" stroke-width="3"/>
+        </svg>
+        <div class="afterburner-container"><div class="afterburner-flame-single"></div></div>
+      </div>
+
+    </div>
+  </div>
+  <div class="intro-text-box">
+    <h1 class="intro-title">106 Hangar · 6x F-7 Formation Takeoff</h1>
+    <p class="intro-subtitle">Tail Nos: 936 · 946 · 942 · 941 · 940 · 702 | Developed By Cpl Saiful</p>
+  </div>
+  <div class="intro-timer-bar"></div>
+  <button class="skip-btn" id="skipIntroBtn">START ENGINES & ENTER</button>
 </div>
-</div></div>
-<div class="intro-text-box"><h1 class="intro-title">Welcome to 106 Hangar</h1><p class="intro-subtitle">This Application Developed By Cpl Saiful</p></div><div class="intro-timer-bar"></div><button class="skip-btn" id="skipIntroBtn">START ENGINE & ENTER</button></div>
+
 <header class="no-print"><div class="eyebrow">Personnel & Daily State <span id="cloudStatus" class="cloud-badge">Cloud Syncing…</span></div><h1>State Office Manpower</h1><p>Rank-wise roster · Daily disposal · Final available strength</p></header>
 <main>
 <section class="card wide no-print">
@@ -228,10 +273,10 @@ input, select, button { max-width: 100%; }
 <section class="card no-print" id="reportArea"><h2>Final state report & PC Backup</h2><div id="reportSummary"></div><div class="row" style="margin:10px 0"><button class="secondary" id="exportBackup" type="button">Backup to PC File (.JSON)</button><button class="secondary" id="exportHtmlBtn" type="button">Export Updated index.html File</button><button class="secondary" id="importBtn" type="button">Restore from PC File</button><input id="importFile" type="file" accept="application/json" class="hidden"></div><h2 style="margin-top:14px">Rank-wise status count</h2><div class="tablewrap" id="rankTable"></div><h2 style="margin-top:14px">Personnel by status</h2><div id="statusDetails"></div></section>
 <section id="printState" class="hidden"><div class="print-top-header"><div class="unit-title">AC Taking & Handing over Flt</div><div class="doc-title">Parade/ PT/FOD state</div><div class="date-str">DATE : <span id="printDate"></span></div></div><div id="printCustomNoteDisplay" class="hidden" style="font-size:8px;text-align:center;margin-bottom:2px"></div><table class="print-grid" id="printGrid"></table><div class="print-layout-container" id="printListsContainer"></div><div class="signatures-bottom"><div><b>PREPARED BY</b><br><span id="printPreparedBy">PARVEZ<br>SGT</span></div><div><b>JCOIC</b></div><div><b>OIC</b></div></div></section>
 
-<!-- LEAVE MODAL (REPORT DATE ONLY) -->
+<!-- LEAVE MODAL -->
 <div id="leaveModal" class="modal-overlay hidden"><div class="modal-card"><h3 id="modalPersonName">Leave Details</h3><p>Specify leave type and report date for this person.</p><div class="modal-form"><div><label for="modalLeaveType">TYPE OF LEAVE</label><select id="modalLeaveType"><option value="A/L">A/L (Annual Leave)</option><option value="S/L">S/L (Sick Leave)</option><option value="R/L">R/L (Recreation Leave)</option><option value="C/L">C/L (Casual Leave)</option></select></div><div><label for="modalReportDate">REPORT DATE / TO DATE</label><input type="date" id="modalReportDate"></div></div><div class="modal-actions"><button class="secondary" type="button" id="closeModalBtn">Cancel</button><button type="button" id="saveLeaveBtn">Save Leave</button></div></div></div>
 
-<!-- DUTY TYPE & SHIFT MODAL -->
+<!-- DUTY TYPE MODAL -->
 <div id="dutyModal" class="modal-overlay hidden"><div class="modal-card"><h3 id="modalDutyPersonName">Select Duty Type & Shift</h3><p>Choose duty type and shift for this person.</p><div class="modal-form"><div><label for="modalDutyType">DUTY TYPE</label><select id="modalDutyType"></select></div><div><label for="modalDutyShift">DUTY SHIFT</label><select id="modalDutyShift"><option value="A Shift">A Shift</option><option value="B Shift">B Shift</option><option value="C Shift">C Shift</option></select></div></div><div class="modal-actions"><button class="secondary" type="button" id="closeDutyModalBtn">Cancel</button><button type="button" id="saveDutyBtn">Save Duty</button></div></div></div>
 
 <!-- ED COURSE MODAL -->
@@ -248,12 +293,13 @@ function playJetSound(){
   const ctx = new AudioContext();
   if(ctx.state === 'suspended'){ ctx.resume(); }
 
-  // High intensity multi-channel jet roar synthesis
-  const bufferSize = ctx.sampleRate * 8;
+  // 20-SECOND DEAFENING 6x JET FORMATION ROAR SYNTHESIS
+  const duration = 20.0;
+  const bufferSize = ctx.sampleRate * duration;
   const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
   const data = buffer.getChannelData(0);
   for(let i=0; i<bufferSize; i++){
-   data[i] = (Math.random() * 2 - 1) * 1.5;
+   data[i] = (Math.random() * 2 - 1) * 2.0; // Maximum amplitude noise
   }
 
   const noise = ctx.createBufferSource();
@@ -261,25 +307,26 @@ function playJetSound(){
 
   const filter = ctx.createBiquadFilter();
   filter.type = 'bandpass';
-  filter.frequency.setValueAtTime(60, ctx.currentTime);
-  filter.frequency.exponentialRampToValueAtTime(950, ctx.currentTime + 7);
-  filter.Q.setValueAtTime(2.5, ctx.currentTime);
+  filter.frequency.setValueAtTime(40, ctx.currentTime);
+  filter.frequency.exponentialRampToValueAtTime(1400, ctx.currentTime + 18);
+  filter.Q.setValueAtTime(3.5, ctx.currentTime);
 
   const gain = ctx.createGain();
   gain.gain.setValueAtTime(0.01, ctx.currentTime);
-  gain.gain.linearRampToValueAtTime(0.95, ctx.currentTime + 1.5); // 100% Full Volume Max
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 7.9);
+  gain.gain.linearRampToValueAtTime(1.0, ctx.currentTime + 4.0); // 100% Full volume deafening roar
+  gain.gain.setValueAtTime(1.0, ctx.currentTime + 17.0);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 19.9);
 
   noise.connect(filter);
   filter.connect(gain);
   gain.connect(ctx.destination);
 
   noise.start();
-  noise.stop(ctx.currentTime + 8.0);
+  noise.stop(ctx.currentTime + 20.0);
  } catch(e){}
 }
 
-// 100% AUTO PLAY TRIGGER ON ALL POSSIBLE PAGE LOAD EVENTS
+// 100% AUTO PLAY 20s FORMATION SOUND TRIGGERS
 window.addEventListener("load", playJetSound);
 document.addEventListener("DOMContentLoaded", playJetSound);
 ["click", "touchstart", "keydown", "mousemove", "scroll"].forEach(evt => {
@@ -320,7 +367,7 @@ document.getElementById("skipIntroBtn").addEventListener("click",()=>{
  removeIntroOverlay();
 });
 
-setTimeout(removeIntroOverlay,7800);
+setTimeout(removeIntroOverlay, 20200); // 20s full formation show duration
 if(location.href.indexOf("content://")!==-1)setTimeout(removeIntroOverlay,1000);
 
 let ranks=[{rank:"MWO",names:["Shaheen","Nazrul"]},{rank:"SWO",names:["M. Ali","Kusru"]},{rank:"WO",names:["Jahangir","Khairul","Hasan","Salam","Hasim","Kalam","Josim","Kamrul","Enam","Raisul"]},{rank:"SGT",names:["Akash","Alek","Habib","Ashik","Shimul","Shaheen","M. Ali","Parvez","Kaisar","Anis","Imran","Abdullah","Jafor","Adam","Rakib"]},{rank:"CPL",names:["Saiful","Chunnu","Imran","Arif","Jahid","Razzak","Milon","Bokul","Nasim","Shawon","Al Amin","Rejaul","Sajed","Sujon","Jomir","Tofazzol"]},{rank:"LAC",names:["Rakib","Tanvir","Sento","Mohit","Hossain"]},{rank:"AC",names:[]},{rank:"Civilian",names:["MSG Sajon","MSG Khairul","MC1 Hafiz","MC1 Hero","MC2 Masum","TM Ismail","TM Imam"]},{rank:"Attachment",names:["WO Khalek","SGT Sourav","CPL Akbar"]}];
@@ -933,59 +980,6 @@ function renderAll(reRoster=true){
 }
 
 function refreshRankSelectors(){const rf=$("rankFilter"),old=rf.value||"All ranks";rf.innerHTML='<option>All ranks</option>'+ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("");rf.value=["All ranks",...ranks.map(g=>g.rank)].includes(old)?old:"All ranks";const ar=$("addRank"),prev=ar.value;ar.innerHTML=ranks.map(g=>`<option value="${esc(g.rank)}">${esc(g.rank)}</option>`).join("")+'<option value="__new__">New rank…</option>';ar.value=ranks.some(g=>g.rank===prev)?prev:(ranks[0]?.rank||"__new__")}
-
-function exportToExcelSheet(){
- const wb = XLSX.utils.book_new();
- const data = [];
-
- data.push(["AC TAKING & HANDING OVER FLT", "", "", "PARADE/ PT/FOD STATE", "", "", "DATE: " + date().split("-").reverse().join("/")]);
- data.push([]);
- 
- const cols = getActiveColumns();
- const headerRow = ["RANK", ...cols.map(c=>c[0])];
- data.push(headerRow);
-
- militaryOrder.forEach(r => {
-  const officeList = people.filter(p=>p.rank===r && p.rank!=="Attachment");
-  const attachList = people.filter(p=>(p.rank==="Attachment"||current[p.id]==="Attachment") && actualRank(p)===r);
-  const officeStrg = officeList.filter(p=>current[p.id]!=="TD/Courier").length;
-  const attachStrg = attachList.length;
-  const effectiveStrg = officeStrg + attachStrg;
-
-  const row = [r];
-  cols.forEach((c, i) => {
-   let n=0;
-   if(i===0) n=officeStrg;
-   else if(i===1) n=officeList.filter(p=>current[p.id]==="TD/Courier").length;
-   else if(i===2) n=attachStrg;
-   else if(i===3) n=effectiveStrg;
-   else {
-     n = officeList.filter(c[1]).length + attachList.filter(c[1]).length;
-   }
-   row.push(n||0);
-  });
-  data.push(row);
- });
-
- data.push([]);
- data.push(["PERSONNEL DISPOSAL DETAILS"]);
- statuses.forEach(s => {
-  const list = people.filter(p=>current[p.id]===s);
-  if(list.length){
-   data.push([s + " (" + list.length + ")"]);
-   list.forEach((p, i) => {
-    let note = "";
-    if(s==="Leave"&&currentLeave[p.id]) note = ` (to ${displayDate(currentLeave[p.id].to)})`;
-    else if(s==="All Duty On"&&currentDuty[p.id]) note = ` (${formatDutyText(currentDuty[p.id])})`;
-    data.push(["", i+1, `${p.rank} ${p.name}${note}`]);
-   });
-  }
- });
-
- const ws = XLSX.utils.aoa_to_sheet(data);
- XLSX.utils.book_append_sheet(wb, ws, "Daily State");
- XLSX.writeFile(wb, `State_Office_${date()}.xlsx`);
-}
 
 $("saveBtn").addEventListener("click", function(e){
  e.preventDefault();
