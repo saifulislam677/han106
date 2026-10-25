@@ -877,7 +877,7 @@ function generateGridHTML(){
   return `<td>${n||""}</td>`;
  }).join("")+"</tr>";
 
- h+=`<tr class='totalrow'><th class='rankcol'>CIVILIAN</th><td colspan='${cols.length}'>`+people.filter(p=>p.rank==="Civilian").length+`</td></tr>`;
+ 
 
  return h+"</tbody>";
 }
