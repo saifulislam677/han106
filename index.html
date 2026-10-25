@@ -179,7 +179,6 @@ input, select, button { max-width: 100%; }
 </main><div class="foot no-print">State Office Manpower · Cloud Sync Edition</div>
 
 <script>
-// --- AUTO-PLAY JET TAKE-OFF AUDIO SYNTHESIZER ---
 function playJetSound(){
  try {
   const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -514,7 +513,7 @@ $("saveDutyBtn").onclick=()=>{
  if(!activeDutyPersonId) return;
  const dutyType = $("modalDutyType").value;
  const shift = $("modalDutyShift").value;
- currentDuty[activeDutyPersonId] = `${dutyType} ${shift}`;
+ currentDuty[activeDutyPersonId] = `${dutyType} - ${shift}`;
  closeDutyModal(false);
  renderAll();
  autoSaveBuffer();
