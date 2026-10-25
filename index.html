@@ -9,7 +9,7 @@
 <!-- Firebase SDK Scripts -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<!-- XLSX Library for 100% Editable Excel Downloads -->
+<!-- XLSX Library with Style Support -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
 <style>
@@ -1065,10 +1065,28 @@ function exportToExcelSheet(){
    else {
      n = officeList.filter(c[1]).length + attachList.filter(c[1]).length;
    }
-   row.push(n||"");
+   row.push(n!==0?n:"");
   });
   data.push(row);
  });
+
+ const milPeople = people.filter(p=>militaryOrder.includes(p.rank)&&p.rank!=="Attachment");
+ const allAttach = people.filter(p=>p.rank==="Attachment"||(current[p.id]==="Attachment"&&p.rank!=="Civilian"));
+ const totalOffice = milPeople.filter(p=>current[p.id]!=="TD/Courier").length;
+
+ const totalRow = ["TOTAL"];
+ cols.forEach((c, i) => {
+  let n=0;
+  if(i===0) n=totalOffice;
+  else if(i===1) n=milPeople.filter(p=>current[p.id]==="TD/Courier").length;
+  else if(i===2) n=allAttach.length;
+  else if(i===3) n=totalOffice + allAttach.length;
+  else {
+    n = milPeople.filter(c[1]).length + allAttach.filter(c[1]).length;
+  }
+  totalRow.push(n!==0?n:"");
+ });
+ data.push(totalRow);
 
  data.push([]);
  data.push(["PERSONNEL DISPOSAL DETAILS"]);
@@ -1085,7 +1103,18 @@ function exportToExcelSheet(){
   }
  });
 
+ data.push([]);
+ const prepNameVal = $("prepName").value.trim() || "PARVEZ";
+ const prepRankVal = $("prepRank").value.trim() || "SGT";
+ data.push(["PREPARED BY:", prepNameVal + " " + prepRankVal, "", "JCOIC:", "", "", "OIC:"]);
+
  const ws = XLSX.utils.aoa_to_sheet(data);
+ 
+ // Professional Column Widths to prevent formatting breaks
+ const colWidths = [{wch: 15}];
+ for(let i=0; i<cols.length; i++) colWidths.push({wch: 12});
+ ws['!cols'] = colWidths;
+
  XLSX.utils.book_append_sheet(wb, ws, "Daily State");
  XLSX.writeFile(wb, `State_Office_${date()}.xlsx`);
 }
