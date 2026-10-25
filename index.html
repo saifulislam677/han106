@@ -578,6 +578,7 @@ function editPerson(id){
  if(np){current[np.id]=status;if(leave)currentLeave[np.id]=leave;if(duty)currentDuty[np.id]=duty;if(ed)currentEd[np.id]=ed}
  persistRoster();persistStore();renderAll();
  autoSaveBuffer();
+ alert("Name updated permanently!");
 }
 
 function renderRankTable(){
@@ -610,7 +611,6 @@ function actualRank(p){
  return m ? m[1].toUpperCase() : "WO";
 }
 
-/* DYNAMIC PRINT GRID & EXCEL COLUMNS */
 function getActiveColumns(){
  const hasPt = countStatus("ON PT") > 0;
  const hasFod = countStatus("ON FOD") > 0;
