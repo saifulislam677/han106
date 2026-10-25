@@ -40,7 +40,7 @@ button{border:0;border-radius:6px;padding:8px 12px;font-weight:750;cursor:pointe
 
 #screenPreviewWrapper{background:#fff;border:2px solid var(--green);border-radius:8px;padding:10px;margin-top:10px;overflow-x:auto}
 
-/* PRINT SHEET FORMAT */
+/* A4 LANDSCAPE PRINT SHEET FORMAT */
 .print-top-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3px;font-weight:900;font-size:9.5px;border-bottom:1.5px solid #000;padding-bottom:2px}
 .print-top-header .unit-title{font-size:10.5px;text-transform:uppercase;font-weight:900}
 .print-top-header .doc-title{font-size:11px;text-transform:uppercase;text-decoration:underline;font-weight:900}
@@ -74,11 +74,11 @@ button{border:0;border-radius:6px;padding:8px 12px;font-weight:750;cursor:pointe
 @media(min-width:780px){main{grid-template-columns:1fr 1fr;align-items:start}.wide{grid-column:1/-1}}
 @media print{
   @page{size:A4 landscape;margin:2mm}
-  html,body{height:100%;background:#fff;font-size:7px;color:#000;margin:0;padding:0;overflow:hidden;font-weight:900}
+  html,body{width:297mm;height:210mm;background:#fff;font-size:7px;color:#000;margin:0;padding:0;overflow:hidden;font-weight:900}
   header,.no-print,.tabs,.foot,#reportArea,#editorArea,.screen-only,.hint,.statusnote,#togglePreviewBtn,.modal-overlay,#introOverlay{display:none!important}
   main{display:block;max-width:none;padding:0;margin:0}
   .card{box-shadow:none;border:0;padding:0;margin:0}
-  #printState{display:block!important}
+  #printState{display:block!important;width:100%;height:100%}
   #screenPreviewWrapper{border:0;padding:0;margin:0}
   .print-grid th{background:#fff!important;font-weight:900}
   .print-grid td{font-weight:900}
@@ -153,7 +153,7 @@ input, select, button { max-width: 100%; }
       <button class="secondary" id="clearAllParadeBtn" type="button" style="background:#fff0f0;color:#a33232;border:1px solid #f0cccc">Clear All to On Parade</button>
       <button class="secondary" id="undoBtn" type="button">Undo Last State</button>
       <button class="secondary" id="togglePreviewBtn" type="button">Toggle Sheet Preview</button>
-      <button class="secondary" id="printBtn" type="button">Print state (1 Page)</button>
+      <button class="secondary" id="printBtn" type="button">Print A4 Landscape (1 Page)</button>
     </div>
   </div>
   <p class="hint">Edits save permanently in Cloud Realtime Database & local browser memory.</p>
@@ -161,16 +161,32 @@ input, select, button { max-width: 100%; }
 
 <section class="card wide no-print" id="screenPreviewSection">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px">
-    <h2 style="margin:0">Live Print Sheet Preview & Custom Font Adjuster</h2>
-    <div style="display:flex;gap:6px;align-items:center">
-      <label for="fontSizeSelect" style="margin:0;font-size:11px">Print Font Size:</label>
-      <select id="fontSizeSelect" style="width:90px;padding:4px">
-        <option value="6px">6 px (Compact)</option>
-        <option value="7px" selected>7 px (Standard)</option>
-        <option value="8px">8 px (Large)</option>
-        <option value="9px">9 px (Extra Large)</option>
-      </select>
-      <button class="secondary small" id="editNotesBtn" type="button">Edit Custom Title/Note</button>
+    <h2 style="margin:0">Live Print Sheet Preview & Custom Typography</h2>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <div>
+        <label for="fontFamilySelect" style="margin:0;font-size:10px">Font Family:</label>
+        <select id="fontFamilySelect" style="width:110px;padding:3px;font-size:11px">
+          <option value="system-ui, sans-serif" selected>Standard (System)</option>
+          <option value="Arial, sans-serif">Arial</option>
+          <option value="Times New Roman, serif">Times New Roman</option>
+          <option value="Calibri, sans-serif">Calibri</option>
+          <option value="Segoe UI, sans-serif">Segoe UI</option>
+          <option value="Courier New, monospace">Courier New</option>
+        </select>
+      </div>
+      <div>
+        <label for="fontSizeSelect" style="margin:0;font-size:10px">Font Size:</label>
+        <select id="fontSizeSelect" style="width:85px;padding:3px;font-size:11px">
+          <option value="5px">5 px (Tiny)</option>
+          <option value="6px">6 px (Compact)</option>
+          <option value="7px" selected>7 px (Standard)</option>
+          <option value="8px">8 px (Large)</option>
+          <option value="9px">9 px (X-Large)</option>
+          <option value="10px">10 px (14pt equiv)</option>
+          <option value="12px">12 px (Max)</option>
+        </select>
+      </div>
+      <button class="secondary small" id="editNotesBtn" type="button">Edit Custom Note</button>
     </div>
   </div>
   <div id="customHeaderNote" class="hidden" style="margin-bottom:8px;padding:6px;background:#eef4f1;border-radius:6px">
@@ -823,27 +839,32 @@ function renderPrintState(){
  }
 
  const chosenSize = $("fontSizeSelect").value;
- applyDynamicFontSize(chosenSize);
+ const chosenFont = $("fontFamilySelect").value;
+ applyTypography(chosenSize, chosenFont);
 }
 
-function applyDynamicFontSize(sz){
+function applyTypography(sz, fontFamily){
  const wrapper = document.getElementById("screenPreviewWrapper");
- if(wrapper) wrapper.style.fontSize = sz;
+ if(wrapper){
+  wrapper.style.fontSize = sz;
+  wrapper.style.fontFamily = fontFamily;
+ }
  
  const printGridEl = document.getElementById("printGrid");
  if(printGridEl) printGridEl.style.fontSize = sz;
 
- // Inject dynamic print style tag for font size
- let styleTag = document.getElementById("dynamicPrintFontSize");
+ // Inject dynamic print style tag for font size and font family
+ let styleTag = document.getElementById("dynamicPrintTypography");
  if(!styleTag){
   styleTag = document.createElement("style");
-  styleTag.id = "dynamicPrintFontSize";
+  styleTag.id = "dynamicPrintTypography";
   document.head.appendChild(styleTag);
  }
- styleTag.innerHTML = `@media print { .print-grid { font-size: ${sz} !important; } .print-block li { font-size: calc(${sz} - 0.5px) !important; } }`;
+ styleTag.innerHTML = `@media print { #printState, #printState * { font-family: ${fontFamily} !important; } .print-grid { font-size: ${sz} !important; } .print-block li { font-size: calc(${sz} - 0.5px) !important; } }`;
 }
 
-$("fontSizeSelect").onchange = function(){ applyDynamicFontSize(this.value); };
+$("fontSizeSelect").onchange = function(){ renderPrintState(); };
+$("fontFamilySelect").onchange = function(){ renderPrintState(); };
 $("customNoteInput").oninput = renderPrintState;
 $("editNotesBtn").onclick = function(){ $("customNoteInput").parentNode.classList.toggle("hidden"); };
 
