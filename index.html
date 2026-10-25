@@ -645,8 +645,10 @@ function generateGridHTML(){
   const officeList = people.filter(p=>p.rank===r && p.rank!=="Attachment");
   const attachList = people.filter(p=>(p.rank==="Attachment"||current[p.id]==="Attachment") && actualRank(p)===r);
 
+  // OFFICE STRG excludes TD/Courier personnel (deducted from office strength)
   const officeStrg = officeList.filter(p=>current[p.id]!=="TD/Courier").length;
   const attachStrg = attachList.length;
+  // EFFECTIVE STRG = Office Strength (excluding TD) + Attachment
   const effectiveStrg = officeStrg + attachStrg;
 
   h+=`<tr><th class="rankcol">${r}</th>`+cols.map((c,i)=>{
